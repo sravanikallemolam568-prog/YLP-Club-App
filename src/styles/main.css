@@ -1,0 +1,124 @@
+/* ==========================================================================
+   PSS MIYAPUR GAVEL CLUB - DESIGN SYSTEM & COLOR TOKENS
+   ========================================================================== */
+
+:root {
+  /* Brand Palette - Gavel Club Navy & Gold */
+  --navy-dark: #0B192C;
+  --navy-mid: #1E3E62;
+  --navy-light: #2A4E78;
+  --gold-primary: #D4AF37;
+  --gold-bright: #F6C90E;
+  --gold-subtle: #AA7C11;
+  --teal-accent: #008080;
+
+  /* Status Colors */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-info: #3B82F6;
+
+  /* Light Mode Defaults */
+  --bg-main: #F4F6F9;
+  --bg-card: #FFFFFF;
+  --bg-nav: #FFFFFF;
+  --bg-modal: #FFFFFF;
+  --border-color: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --shadow-sm: 0 1px 3px rgba(11, 25, 44, 0.08);
+  --shadow-md: 0 4px 12px rgba(11, 25, 44, 0.1);
+  --shadow-lg: 0 10px 25px rgba(11, 25, 44, 0.15);
+  --badge-bg: #F1F5F9;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode Palette */
+  --bg-main: #070F1C;
+  --bg-card: #0F1D30;
+  --bg-nav: #0B192C;
+  --bg-modal: #11233B;
+  --border-color: #1E3452;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.5);
+  --badge-bg: #1A2B42;
+}
+
+/* Reset & Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  line-height: 1.5;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+a {
+  color: var(--gold-primary);
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--navy-mid);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-primary);
+}
+
+/* Utility Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.5); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
