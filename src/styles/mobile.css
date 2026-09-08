@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MOBILE-FIRST ANDROID RESPONSIVE LAYOUT & NAVIGATION
+   MOBILE-FIRST RESPONSIVE LAYOUT & TOUCH NAVIGATION
    ========================================================================== */
 
 /* Top Header Bar */
@@ -15,6 +15,8 @@
   top: 0;
   z-index: 100;
   box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .brand-pill {
@@ -26,21 +28,25 @@
 .brand-logo {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
+  border-radius: 10px;
+  object-fit: contain;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .brand-title {
-  font-size: 1.05rem;
+  font-size: 1.08rem;
   font-weight: 800;
   color: var(--gold-primary);
-  line-height: 1.1;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
 .brand-subtitle {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 .header-actions {
@@ -62,8 +68,10 @@
   justify-content: space-around;
   align-items: center;
   z-index: 500;
-  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .nav-item {
@@ -75,14 +83,15 @@
   color: var(--text-muted);
   font-size: 0.68rem;
   font-weight: 600;
-  width: 20%;
+  flex: 1;
   height: 100%;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.15s ease;
+  position: relative;
 }
 
 .nav-item i {
   font-size: 1.25rem;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .nav-item.active {
@@ -91,6 +100,19 @@
 
 .nav-item.active i {
   transform: translateY(-2px);
+  color: var(--gold-bright);
+}
+
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: var(--gold-primary);
+  border-radius: 0 0 3px 3px;
 }
 
 /* Sidebar for Tablet / Desktop */
@@ -99,9 +121,10 @@
   width: 260px;
   background-color: var(--bg-nav);
   border-right: 1px solid var(--border-color);
-  padding: 20px 12px;
+  padding: 22px 14px;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  min-height: calc(100vh - 64px);
 }
 
 @media (min-width: 992px) {
@@ -131,16 +154,23 @@
   text-align: center;
 }
 
-.side-nav-item:hover, .side-nav-item.active {
-  background-color: rgba(212, 175, 55, 0.12);
+.side-nav-item:hover {
+  background-color: rgba(212, 175, 55, 0.08);
   color: var(--gold-primary);
 }
 
-/* Mobile Data Cards (Replacing table view on small screens) */
+.side-nav-item.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.16) 0%, rgba(246, 201, 14, 0.08) 100%);
+  color: var(--gold-bright);
+  font-weight: 700;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* Mobile Data Cards */
 .mobile-card-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
 @media (min-width: 640px) {
@@ -158,12 +188,20 @@
 .member-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-hover);
 }
 
 .member-card-header {
@@ -173,8 +211,8 @@
 }
 
 .avatar-circle {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-dark) 100%);
   color: var(--gold-primary);
@@ -183,7 +221,8 @@
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .member-info {
@@ -192,7 +231,7 @@
 
 .member-name {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.02rem;
   color: var(--text-primary);
 }
 

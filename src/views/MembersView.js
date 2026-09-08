@@ -121,6 +121,12 @@ function renderMemberListHtml(membersList, branchFilter = 'All') {
               <div class="progress-bar-fill" style="width: ${(m.speechesCompleted || 0) * 10}%"></div>
             </div>
           </div>
+
+          <div style="margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--border-color); display: flex; justify-content: flex-end;">
+            <button class="btn btn-outline btn-delete-member" data-id="${m.id}" data-name="${m.name}" style="padding: 4px 10px; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
+              <i class="fa-solid fa-trash-can"></i> Remove Member
+            </button>
+          </div>
         </div>
       `).join('')}
     </div>
@@ -160,8 +166,51 @@ function bindMembersEvents() {
     }
 
     const container = document.getElementById('members-list-container');
-    if (container) container.innerHTML = renderMemberListHtml(list, 'All');
+    if (container) {
+      container.innerHTML = renderMemberListHtml(list, 'All');
+      bindDeleteMemberEvents();
+    }
   };
+
+  const bindDeleteMemberEvents = () => {
+    document.querySelectorAll('.btn-delete-member').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        const name = e.currentTarget.getAttribute('data-name');
+        
+        const confirmHtml = `
+          <div style="text-align: center; padding: 10px 0;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: #EF4444; margin-bottom: 12px;"></i>
+            <h3 style="margin-bottom: 8px;">Remove Member?</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;">
+              Are you sure you want to remove <strong>${name}</strong> (ID: ${id}) from PSS Miyapur Gavel Club? This action cannot be undone.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+              <button id="cancel-delete-member-btn" class="btn btn-outline" style="flex: 1;">Cancel</button>
+              <button id="confirm-delete-member-btn" class="btn" style="flex: 1; background: #EF4444; color: white;">
+                <i class="fa-solid fa-trash-can"></i> Yes, Remove
+              </button>
+            </div>
+          </div>
+        `;
+
+        openModal('Confirm Member Removal', confirmHtml);
+
+        document.getElementById('cancel-delete-member-btn')?.addEventListener('click', () => {
+          closeModal();
+        });
+
+        document.getElementById('confirm-delete-member-btn')?.addEventListener('click', () => {
+          dbService.deleteMember(id);
+          showToast(`Member ${name} removed successfully!`, 'success');
+          closeModal();
+          applyFilters();
+        });
+      });
+    });
+  };
+
+  bindDeleteMemberEvents();
 
   searchInput?.addEventListener('input', applyFilters);
   branchSelect?.addEventListener('change', applyFilters);

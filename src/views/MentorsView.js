@@ -1,4 +1,4 @@
-// 100% Manual Mentor Assignment View (STRICT ZERO AUTOMATIC MENTOR SELECTION RULES)
+// Mentee and Mentor List View with Contacts Only
 
 import { dbService } from '../services/dbService.js';
 import { authService } from '../services/authService.js';
@@ -20,42 +20,70 @@ export function renderMentorsView(branchFilter = 'All') {
     <div class="animate-fade-in">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
         <div>
-          <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-user-graduate" style="color: var(--gold-primary);"></i> Mentor Assignment (100% Manual Selection)</h2>
-          <p style="font-size: 0.88rem; color: var(--text-secondary);">Completely manual mentor assignment. No automatic speech rules or auto-assignments.</p>
+          <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-user-graduate" style="color: var(--gold-primary);"></i> Mentee & Mentor List</h2>
+          <p style="font-size: 0.88rem; color: var(--text-secondary);">Directory of mentees and mentors with contact numbers.</p>
         </div>
         ${authService.isECOfficer() ? `
           <button id="assign-mentor-btn" class="btn btn-primary">
-            <i class="fa-solid fa-user-check"></i> Assign Mentor
+            <i class="fa-solid fa-user-plus"></i> Assign Mentor
           </button>
         ` : ''}
       </div>
 
-      <!-- Mentors Registry Cards -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-handshake"></i> Active Mentor Assignments</div>
-        </div>
+      <!-- Clean Mentee & Mentor Contact List Table -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mentee Name</th>
+                <th>Mentee Contact</th>
+                <th>Mentor Name</th>
+                <th>Mentor Contact</th>
+                ${authService.isECOfficer() ? `<th>Action</th>` : ''}
+              </tr>
+            </thead>
+            <tbody>
+              ${mentors.length === 0 ? `
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                    No mentor assignments found. Click "Assign Mentor" to add.
+                  </td>
+                </tr>
+              ` : mentors.map(m => {
+                const juniorMember = members.find(mem => mem.id === m.juniorId || mem.name === m.juniorName) || { mobile: m.juniorMobile || 'N/A' };
+                const mentorMember = members.find(mem => mem.id === m.mentorId || mem.name === m.mentorName) || { mobile: m.mentorMobile || 'N/A' };
 
-        <div class="mobile-card-grid">
-          ${mentors.map(m => `
-            <div style="padding: 16px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--badge-bg); display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="badge badge-gold">${m.speechScope || 'All Speeches'}</span>
-                ${authService.isECOfficer() ? `
-                  <button class="btn btn-danger btn-sm remove-mentor-btn" data-id="${m.id}"><i class="fa-solid fa-trash"></i></button>
-                ` : ''}
-              </div>
-              <div style="font-weight: 800; font-size: 1.05rem;">
-                <i class="fa-solid fa-child" style="color: var(--gold-primary);"></i> Junior: ${m.juniorName}
-              </div>
-              <div style="font-weight: 700; color: var(--text-primary);">
-                <i class="fa-solid fa-user-tie" style="color: #10B981;"></i> Mentor: ${m.mentorName}
-              </div>
-              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">
-                Assigned Date: ${m.assignedDate} • Assigned By: ${m.assignedBy || 'Admin'}
-              </div>
-            </div>
-          `).join('')}
+                return `
+                  <tr>
+                    <td style="font-weight: 700;">
+                      <i class="fa-solid fa-child" style="color: var(--gold-primary); margin-right: 6px;"></i> ${m.juniorName}
+                    </td>
+                    <td>
+                      <a href="tel:${juniorMember.mobile}" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">
+                        <i class="fa-solid fa-phone" style="color: #3B82F6; margin-right: 4px;"></i> ${juniorMember.mobile}
+                      </a>
+                    </td>
+                    <td style="font-weight: 700; color: #10B981;">
+                      <i class="fa-solid fa-user-tie" style="margin-right: 6px;"></i> ${m.mentorName}
+                    </td>
+                    <td>
+                      <a href="tel:${mentorMember.mobile}" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">
+                        <i class="fa-solid fa-phone" style="color: #10B981; margin-right: 4px;"></i> ${mentorMember.mobile}
+                      </a>
+                    </td>
+                    ${authService.isECOfficer() ? `
+                      <td>
+                        <button class="btn btn-outline remove-mentor-btn" data-id="${m.id}" style="padding: 4px 10px; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
+                          <i class="fa-solid fa-trash-can"></i> Remove
+                        </button>
+                      </td>
+                    ` : ''}
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -70,63 +98,74 @@ function bindMentorsEvents() {
     const modalHtml = `
       <form id="assign-mentor-form">
         <div class="form-group">
-          <label class="form-label required">Select Junior Member</label>
+          <label class="form-label required">Select Mentee (Junior Member)</label>
           <select id="asg-junior" class="form-select" required>
-            ${members.map(m => `<option value="${m.name}">${m.name} (${m.branch})</option>`).join('')}
+            <option value="">-- Select Mentee --</option>
+            ${members.map(m => `
+              <option value="${m.id}" data-name="${m.name}" data-mobile="${m.mobile}">
+                ${m.name} (Contact: ${m.mobile})
+              </option>
+            `).join('')}
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label required">Select Mentor (Manual Choice - All Members Available)</label>
+          <label class="form-label required">Select Mentor</label>
           <select id="asg-mentor" class="form-select" required>
-            ${members.map(m => `<option value="${m.name}">${m.name} (${m.branch})</option>`).join('')}
+            <option value="">-- Select Mentor --</option>
+            ${members.map(m => `
+              <option value="${m.id}" data-name="${m.name}" data-mobile="${m.mobile}">
+                ${m.name} (Contact: ${m.mobile})
+              </option>
+            `).join('')}
           </select>
         </div>
 
-        <div class="form-group">
-          <label class="form-label required">For Speech Scope</label>
-          <select id="asg-speech" class="form-select" required>
-            <option value="All Speeches">All Speeches</option>
-            <option value="Speech 1">Speech 1 (Ice Breaker)</option>
-            <option value="Speech 2">Speech 2 (Organizing Your Speech)</option>
-            <option value="Speech 3">Speech 3 (Get to the Point)</option>
-            <option value="Speech 4">Speech 4 (How to Say It)</option>
-            <option value="Speech 5">Speech 5 (Your Body Speaks)</option>
-            <option value="Speech 6">Speech 6 (Vocal Variety)</option>
-            <option value="Speech 7">Speech 7 (Research Your Topic)</option>
-            <option value="Speech 8">Speech 8 (Get Comfortable with Visual Aids)</option>
-            <option value="Speech 9">Speech 9 (Persuade with Power)</option>
-            <option value="Speech 10">Speech 10 (Inspire Your Audience)</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
-          <i class="fa-solid fa-handshake-angle"></i> Complete Manual Mentor Assignment
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px; height: 46px;">
+          <i class="fa-solid fa-handshake-angle"></i> Assign Mentor
         </button>
       </form>
     `;
 
-    openModal('Manual Mentor Assignment', modalHtml);
+    openModal('Assign Mentor', modalHtml);
 
     document.getElementById('assign-mentor-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
-      const juniorName = document.getElementById('asg-junior').value;
-      const mentorName = document.getElementById('asg-mentor').value;
-      const speechScope = document.getElementById('asg-speech').value;
+      const juniorSelect = document.getElementById('asg-junior');
+      const mentorSelect = document.getElementById('asg-mentor');
 
-      if (juniorName === mentorName) {
-        showToast('Junior member and Mentor cannot be the same person.', 'error');
+      const juniorId = juniorSelect.value;
+      const mentorId = mentorSelect.value;
+
+      if (!juniorId || !mentorId) {
+        showToast('Please select both a Mentee and a Mentor.', 'error');
         return;
       }
 
+      if (juniorId === mentorId) {
+        showToast('Mentee and Mentor cannot be the same member.', 'error');
+        return;
+      }
+
+      const juniorOption = juniorSelect.options[juniorSelect.selectedIndex];
+      const mentorOption = mentorSelect.options[mentorSelect.selectedIndex];
+
+      const juniorName = juniorOption.getAttribute('data-name');
+      const juniorMobile = juniorOption.getAttribute('data-mobile');
+      const mentorName = mentorOption.getAttribute('data-name');
+      const mentorMobile = mentorOption.getAttribute('data-mobile');
+
       dbService.addMentorAssignment({
+        juniorId,
         juniorName,
+        juniorMobile,
+        mentorId,
         mentorName,
-        speechScope,
+        mentorMobile,
         assignedBy: authService.getCurrentUser()?.name || 'President'
       });
 
-      showToast(`Manually assigned ${mentorName} as mentor to ${juniorName}!`, 'success');
+      showToast(`Assigned ${mentorName} as mentor to ${juniorName}!`, 'success');
       closeModal();
       renderMentorsView('All');
     });
@@ -134,7 +173,7 @@ function bindMentorsEvents() {
 
   document.querySelectorAll('.remove-mentor-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const id = e.currentTarget.dataset.id;
+      const id = e.currentTarget.getAttribute('data-id');
       dbService.removeMentorAssignment(id);
       showToast('Mentor assignment removed.', 'info');
       renderMentorsView('All');

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PSS MIYAPUR GAVEL CLUB - DESIGN SYSTEM & COLOR TOKENS
+   PSS MIYAPUR GAVEL CLUB - MODERN DESIGN SYSTEM & COLOR TOKENS
    ========================================================================== */
 
 :root {
@@ -7,9 +7,12 @@
   --navy-dark: #0B192C;
   --navy-mid: #1E3E62;
   --navy-light: #2A4E78;
+  --navy-subtle: rgba(30, 62, 98, 0.15);
+  
   --gold-primary: #D4AF37;
   --gold-bright: #F6C90E;
   --gold-subtle: #AA7C11;
+  --gold-glow: rgba(212, 175, 55, 0.25);
   --teal-accent: #008080;
 
   /* Status Colors */
@@ -17,39 +20,44 @@
   --color-warning: #F59E0B;
   --color-danger: #EF4444;
   --color-info: #3B82F6;
+  --color-purple: #8B5CF6;
 
-  /* Light Mode Defaults */
-  --bg-main: #F4F6F9;
+  /* Light Mode Palette */
+  --bg-main: #F8FAFC;
   --bg-card: #FFFFFF;
   --bg-nav: #FFFFFF;
   --bg-modal: #FFFFFF;
   --border-color: #E2E8F0;
+  --border-hover: #CBD5E1;
   --text-primary: #0F172A;
   --text-secondary: #475569;
   --text-muted: #94A3B8;
-  --shadow-sm: 0 1px 3px rgba(11, 25, 44, 0.08);
-  --shadow-md: 0 4px 12px rgba(11, 25, 44, 0.1);
-  --shadow-lg: 0 10px 25px rgba(11, 25, 44, 0.15);
+  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 36px rgba(15, 23, 42, 0.12);
   --badge-bg: #F1F5F9;
+  --input-bg: #F8FAFC;
 }
 
 [data-theme="dark"] {
-  /* Dark Mode Palette */
-  --bg-main: #070F1C;
-  --bg-card: #0F1D30;
-  --bg-nav: #0B192C;
-  --bg-modal: #11233B;
-  --border-color: #1E3452;
+  /* Dark Mode Palette - Luxury Slate Navy */
+  --bg-main: #060D18;
+  --bg-card: #0E1B2E;
+  --bg-nav: #0B1626;
+  --bg-modal: #102138;
+  --border-color: #1A2D47;
+  --border-hover: #2B4569;
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.5);
-  --badge-bg: #1A2B42;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.65);
+  --badge-bg: #14253D;
+  --input-bg: #0B1626;
 }
 
-/* Reset & Box Sizing */
+/* Reset & Base Setup */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -66,6 +74,8 @@ html, body {
   line-height: 1.5;
   overflow-x: hidden;
   user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -78,6 +88,11 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: var(--gold-primary);
   text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--gold-bright);
 }
 
 button, input, select, textarea {
@@ -101,7 +116,7 @@ button {
   background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--navy-mid);
+  background: var(--border-color);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -110,15 +125,15 @@ button {
 
 /* Utility Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulseGlow {
   0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
-  50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.5); }
+  50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.45); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

@@ -1,4 +1,4 @@
-// Dashboard View with Time-Aware Greeting, Live Stats, Branch Distribution, Next Meeting, and EC Officers
+// Clean, Focused Dashboard View
 
 import { dbService } from '../services/dbService.js';
 import { authService } from '../services/authService.js';
@@ -7,7 +7,6 @@ export function renderDashboardView(branchFilter = 'All') {
   const user = authService.getCurrentUser();
   let members = dbService.getMembers();
   let meetings = dbService.getMeetings();
-  let ec = dbService.getECCommittee();
   let attendance = dbService.getAttendance();
 
   // Apply Branch Filter
@@ -17,156 +16,165 @@ export function renderDashboardView(branchFilter = 'All') {
     attendance = attendance.filter(a => a.branch === branchFilter);
   }
 
-  // Time-Aware Greeting Calculation
+  // Time-Aware Greeting
   const currentHour = new Date().getHours();
   let timeGreeting = 'Good morning';
   if (currentHour >= 12 && currentHour < 17) timeGreeting = 'Good afternoon';
   else if (currentHour >= 17) timeGreeting = 'Good evening';
 
-  // Metrics Calculations
+  // Core Metrics
   const totalMembers = members.length;
   const totalSpeeches = members.reduce((sum, m) => sum + (m.speechesCompleted || 0), 0);
   const meetingsHeld = meetings.length;
-
   const presentCount = attendance.filter(a => a.status === 'Present').length;
   const avgAttendancePct = attendance.length > 0 ? Math.round((presentCount / attendance.length) * 100) : 85;
-
-  // Branch Distribution Counts
-  const miyapurCount = dbService.getMembers().filter(m => m.branch === 'Miyapur').length;
-  const ghmcCount = dbService.getMembers().filter(m => m.branch === 'GHMC').length;
-  const mkrCount = dbService.getMembers().filter(m => m.branch === 'MKR').length;
 
   const nextMeeting = meetings.find(m => m.status === 'Upcoming') || meetings[0];
 
   return `
-    <div class="animate-fade-in">
-      <!-- Time Greeting & Welcome Banner -->
-      <div class="card" style="background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-dark) 100%); border-color: var(--gold-primary); margin-bottom: 20px; color: #FFFFFF;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+    <div class="animate-fade-in" style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <!-- Welcome Hero Banner -->
+      <div class="card" style="background: linear-gradient(135deg, #0F2038 0%, #071222 100%); border-color: rgba(212, 175, 55, 0.4); color: #FFFFFF; padding: 18px 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
           <div>
-            <div style="font-size: 0.85rem; color: var(--gold-bright); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
-              <i class="fa-solid fa-clock"></i> ${timeGreeting}, ${user ? user.name : 'Gavelier'}!
+            <div style="font-size: 0.8rem; color: var(--gold-bright); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fa-solid fa-sun-plant-wilt"></i> ${timeGreeting}, ${user ? user.name : 'Gavelier'}!
             </div>
-            <h2 style="font-size: 1.6rem; margin-top: 4px; color: #FFFFFF;">PSS Miyapur Gavel Club Dashboard</h2>
-            <p style="font-size: 0.9rem; color: #94A3B8; margin-top: 2px;">
-              Empowering young leaders through speech, communication & leadership excellence.
-            </p>
+            <h2 style="font-size: 1.45rem; margin-top: 4px; color: #FFFFFF;">PSS Miyapur Gavel Club</h2>
+            <p style="font-size: 0.85rem; color: #94A3B8; margin-top: 2px;">Youth Leadership Program Dashboard</p>
           </div>
-          <div class="badge badge-gold" style="font-size: 0.85rem; padding: 8px 14px;">
-            <i class="fa-solid fa-code-branch"></i> Active Branch: ${branchFilter}
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span class="badge badge-gold" style="padding: 6px 12px; font-size: 0.8rem;">
+              <i class="fa-solid fa-code-branch"></i> ${branchFilter} Branch
+            </span>
           </div>
         </div>
       </div>
 
-      <!-- Stat Tiles Grid -->
+      <!-- 4 Key Performance Indicators (KPIs) -->
       <div class="stats-grid">
         <div class="stat-tile">
-          <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="stat-lbl">Active Members</div>
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+          </div>
           <div class="stat-val">${totalMembers}</div>
-          <div class="stat-lbl">Total Members</div>
         </div>
+
         <div class="stat-tile">
-          <div class="stat-icon"><i class="fa-solid fa-microphone"></i></div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="stat-lbl">Speeches Delivered</div>
+            <div class="stat-icon"><i class="fa-solid fa-microphone"></i></div>
+          </div>
           <div class="stat-val">${totalSpeeches}</div>
-          <div class="stat-lbl">Speeches Completed</div>
         </div>
+
         <div class="stat-tile">
-          <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="stat-lbl">Meetings Held</div>
+            <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+          </div>
           <div class="stat-val">${meetingsHeld}</div>
-          <div class="stat-lbl">Meetings Held</div>
         </div>
+
         <div class="stat-tile">
-          <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="stat-lbl">Avg Attendance</div>
+            <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+          </div>
           <div class="stat-val">${avgAttendancePct}%</div>
-          <div class="stat-lbl">Avg Attendance</div>
         </div>
       </div>
 
-      <!-- Grid Layout for Next Meeting & Branch Breakdown -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px;">
-        
-        <!-- Next Meeting Showcase Card -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-calendar-day"></i> Next Meeting</div>
-            <span class="badge badge-gold">${nextMeeting ? nextMeeting.status : 'Scheduled'}</span>
+      <!-- Next Scheduled Meeting Highlight -->
+      <div class="card" style="border-left: 4px solid var(--gold-primary);">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-calendar-day"></i> Next Scheduled Meeting
           </div>
-          ${nextMeeting ? `
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="font-weight: 700; font-size: 1.1rem; color: var(--gold-primary);">
-                Date: ${nextMeeting.date} (${nextMeeting.startTime})
+          <span class="badge badge-gold">${nextMeeting ? nextMeeting.status : 'Scheduled'}</span>
+        </div>
+
+        ${nextMeeting ? `
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <div style="font-weight: 800; font-size: 1.1rem; color: var(--gold-primary);">
+                <i class="fa-solid fa-clock" style="margin-right: 6px;"></i> ${nextMeeting.date} (${nextMeeting.startTime})
               </div>
-              <div style="font-size: 0.9rem; color: var(--text-secondary);">
-                <i class="fa-solid fa-location-dot"></i> Branch: ${nextMeeting.branch}
+              <div style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 4px;">
+                <i class="fa-solid fa-location-dot" style="color: #EF4444; margin-right: 4px;"></i> Location / Branch: <strong>${nextMeeting.branch}</strong>
               </div>
-              <div style="margin-top: 8px; padding: 10px; background-color: var(--badge-bg); border-radius: 10px; font-size: 0.85rem;">
-                <div style="font-weight: 700; margin-bottom: 4px;">Role Highlights:</div>
-                <div><strong>Gavelier:</strong> ${nextMeeting.roles?.Gavelier || 'TBD'}</div>
-                <div><strong>Topic Master:</strong> ${nextMeeting.roles?.['Topic Master'] || 'TBD'}</div>
+              <div style="font-size: 0.84rem; color: var(--text-muted); margin-top: 6px;">
+                Gavelier of the Day: <strong style="color: var(--text-primary);">${nextMeeting.roles?.Gavelier || 'TBD'}</strong>
               </div>
-              <a href="#agenda" class="btn btn-primary btn-sm" style="margin-top: 6px; width: 100%;">
-                <i class="fa-solid fa-list-check"></i> View Meeting Agenda
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <a href="#agenda" class="btn btn-primary btn-sm" style="height: 40px; padding: 0 16px;">
+                <i class="fa-solid fa-list-check"></i> View Agenda
+              </a>
+              <a href="#meetings" class="btn btn-outline btn-sm" style="height: 40px; padding: 0 16px;">
+                <i class="fa-solid fa-user-tag"></i> Manage Roles
               </a>
             </div>
-          ` : '<p>No upcoming meetings scheduled.</p>'}
-        </div>
-
-        <!-- Branch Distribution Card -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-chart-simple"></i> Branch Distribution</div>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">
-                <span>Miyapur Branch</span>
-                <span>${miyapurCount} Members</span>
-              </div>
-              <div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${(miyapurCount/Math.max(totalMembers,1))*100}%"></div></div>
-            </div>
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">
-                <span>GHMC Branch</span>
-                <span>${ghmcCount} Members</span>
-              </div>
-              <div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${(ghmcCount/Math.max(totalMembers,1))*100}%"></div></div>
-            </div>
-            <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">
-                <span>MKR Branch</span>
-                <span>${mkrCount} Members</span>
-              </div>
-              <div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${(mkrCount/Math.max(totalMembers,1))*100}%"></div></div>
-            </div>
+        ` : `
+          <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 0.88rem;">
+            No upcoming meetings scheduled.
           </div>
-        </div>
+        `}
       </div>
 
-      <!-- Executive Committee Showcase -->
+      <!-- Main Action Shortcuts Grid -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-user-gear"></i> Executive Committee (EC)</div>
-          <a href="#settings" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Manage EC</a>
+          <div class="card-title"><i class="fa-solid fa-compass"></i> Navigation & Shortcuts</div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--badge-bg);">
-            <div style="font-size: 0.75rem; color: var(--gold-primary); font-weight: 700; text-transform: uppercase;">President</div>
-            <div style="font-weight: 700; font-size: 0.95rem; margin-top: 2px;">${ec.president || 'Priya Varma'}</div>
-          </div>
-          <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--badge-bg);">
-            <div style="font-size: 0.75rem; color: var(--gold-primary); font-weight: 700; text-transform: uppercase;">VP Education</div>
-            <div style="font-weight: 700; font-size: 0.95rem; margin-top: 2px;">${ec.vpEducation || 'Kiran Kumar'}</div>
-          </div>
-          <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--badge-bg);">
-            <div style="font-size: 0.75rem; color: var(--gold-primary); font-weight: 700; text-transform: uppercase;">VP Membership</div>
-            <div style="font-weight: 700; font-size: 0.95rem; margin-top: 2px;">${ec.vpMembership || 'Sravani Reddy'}</div>
-          </div>
-          <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--badge-bg);">
-            <div style="font-size: 0.75rem; color: var(--gold-primary); font-weight: 700; text-transform: uppercase;">VP Public Relations</div>
-            <div style="font-weight: 700; font-size: 0.95rem; margin-top: 2px;">${ec.vpPR || 'Rahul Sharma'}</div>
-          </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+          <a href="#members" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
+            <i class="fa-solid fa-users" style="color: var(--gold-primary); font-size: 1.1rem;"></i>
+            <div style="text-align: left;">
+              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Members</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted);">Directory & Profiles</div>
+            </div>
+          </a>
+
+          <a href="#meetings" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
+            <i class="fa-solid fa-calendar-days" style="color: #3B82F6; font-size: 1.1rem;"></i>
+            <div style="text-align: left;">
+              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Meetings</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted);">Agendas & Roles</div>
+            </div>
+          </a>
+
+          <a href="#attendance" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
+            <i class="fa-solid fa-clipboard-user" style="color: #10B981; font-size: 1.1rem;"></i>
+            <div style="text-align: left;">
+              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Attendance</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted);">Mark & History</div>
+            </div>
+          </a>
+
+          <a href="#speeches" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
+            <i class="fa-solid fa-scroll" style="color: #8B5CF6; font-size: 1.1rem;"></i>
+            <div style="text-align: left;">
+              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Speeches</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted);">Progress & Track</div>
+            </div>
+          </a>
+
+          <a href="#mentors" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
+            <i class="fa-solid fa-user-graduate" style="color: #F59E0B; font-size: 1.1rem;"></i>
+            <div style="text-align: left;">
+              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Mentors</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted);">Mentee Directory</div>
+            </div>
+          </a>
         </div>
       </div>
+
     </div>
   `;
 }

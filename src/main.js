@@ -1,9 +1,10 @@
-// Application Initializer & Client-Side Router
+// Application Initializer & Client-Side Router with Auth Guard
 
 import './styles/main.css';
 import './styles/components.css';
 import './styles/mobile.css';
 
+import { authService } from './services/authService.js';
 import { renderSplashScreen } from './components/SplashScreen.js';
 import { renderHeader } from './components/Header.js';
 import { renderNavigation } from './components/Navigation.js';
@@ -12,12 +13,14 @@ import { renderDashboardView } from './views/DashboardView.js';
 import { renderMembersView } from './views/MembersView.js';
 import { renderSpeechesView } from './views/SpeechesView.js';
 import { renderMeetingsView } from './views/MeetingsView.js';
+import { renderMediaHubView } from './views/MediaHubView.js';
 import { renderAgendaConfigView } from './views/AgendaConfigView.js';
 import { renderRolesView } from './views/RolesView.js';
 import { renderAttendanceView } from './views/AttendanceView.js';
 import { renderMentorsView } from './views/MentorsView.js';
 import { renderSettingsView } from './views/SettingsView.js';
 import { renderLoginView } from './views/LoginView.js';
+import { initAIAssistant } from './components/AIAssistant.js';
 
 class AppController {
   constructor() {
@@ -46,7 +49,19 @@ class AppController {
   }
 
   renderApp() {
-    const { bottomNavHtml, sideNavHtml } = renderNavigation(this.activeView);
+    // Enforce Authentication Guard: Must be logged in to access app screens
+    const isLoggedIn = authService.isLoggedIn();
+    if (!isLoggedIn && this.activeView !== 'login') {
+      this.activeView = 'login';
+      window.location.hash = '#login';
+    }
+
+    const isLoginPage = (this.activeView === 'login' && !isLoggedIn);
+
+    const { bottomNavHtml, sideNavHtml } = isLoginPage 
+      ? { bottomNavHtml: '', sideNavHtml: '' }
+      : renderNavigation(this.activeView);
+
     const headerHtml = renderHeader(this.activeBranch);
 
     let viewHtml = '';
@@ -55,6 +70,7 @@ class AppController {
       case 'members': viewHtml = renderMembersView(this.activeBranch); break;
       case 'speeches': viewHtml = renderSpeechesView(this.activeBranch); break;
       case 'meetings': viewHtml = renderMeetingsView(this.activeBranch); break;
+      case 'media': viewHtml = renderMediaHubView(this.activeBranch); break;
       case 'agenda': viewHtml = renderAgendaConfigView(this.activeBranch); break;
       case 'roles': viewHtml = renderRolesView(this.activeBranch); break;
       case 'attendance': viewHtml = renderAttendanceView(this.activeBranch); break;
@@ -66,7 +82,7 @@ class AppController {
 
     this.appContainer.innerHTML = `
       ${headerHtml}
-      <div class="app-wrapper">
+      <div class="app-wrapper" style="${isLoginPage ? 'padding-bottom: 0;' : ''}">
         ${sideNavHtml}
         <main class="main-content">
           ${viewHtml}
@@ -74,6 +90,11 @@ class AppController {
       </div>
       ${bottomNavHtml}
     `;
+
+    // Mount AI assistant floating widget on all authenticated screens
+    if (!isLoginPage) {
+      initAIAssistant();
+    }
 
     this.bindHeaderEvents();
   }

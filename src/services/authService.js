@@ -10,22 +10,16 @@ export const ROLES = {
 
 class AuthService {
   constructor() {
-    this.currentUser = JSON.parse(localStorage.getItem(AUTH_USER_KEY) || 'null');
-    
-    // Default fallback demo user if none exists
-    if (!this.currentUser) {
-      this.currentUser = {
-        name: 'Priya Varma (President)',
-        email: 'president@pssgavelclub.org',
-        role: ROLES.PRESIDENT,
-        branch: 'Miyapur'
-      };
-      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(this.currentUser));
-    }
+    const stored = localStorage.getItem(AUTH_USER_KEY);
+    this.currentUser = stored ? JSON.parse(stored) : null;
   }
 
   getCurrentUser() {
     return this.currentUser;
+  }
+
+  isLoggedIn() {
+    return !!this.currentUser;
   }
 
   login(email, password, selectedRole = ROLES.PRESIDENT) {

@@ -6,6 +6,7 @@ export function renderNavigation(activeView) {
     { id: 'members', label: 'Members', icon: 'fa-users' },
     { id: 'speeches', label: 'Speeches', icon: 'fa-scroll' },
     { id: 'meetings', label: 'Meetings', icon: 'fa-calendar-days' },
+    { id: 'media', label: 'Media Hub', icon: 'fa-photo-film' },
     { id: 'agenda', label: 'Agenda', icon: 'fa-list-check' },
     { id: 'roles', label: 'Roles', icon: 'fa-award' },
     { id: 'attendance', label: 'Attendance', icon: 'fa-clipboard-user' },
@@ -13,13 +14,13 @@ export function renderNavigation(activeView) {
     { id: 'settings', label: 'EC Committee', icon: 'fa-sliders' }
   ];
 
-  // Mobile Bottom Bar (Shows 5 primary items: Dashboard, Members, Speeches, Meetings, Agenda/More)
+  // Mobile Bottom Bar
   const mobileNavItems = [
     { id: 'dashboard', label: 'Home', icon: 'fa-house' },
     { id: 'members', label: 'Members', icon: 'fa-users' },
-    { id: 'speeches', label: 'Speeches', icon: 'fa-scroll' },
     { id: 'meetings', label: 'Meetings', icon: 'fa-calendar-days' },
-    { id: 'agenda', label: 'Agenda', icon: 'fa-list-check' },
+    { id: 'media', label: 'Media', icon: 'fa-photo-film' },
+    { id: 'speeches', label: 'Speeches', icon: 'fa-scroll' },
     { id: 'attendance', label: 'Attendance', icon: 'fa-clipboard-user' },
     { id: 'mentors', label: 'Mentors', icon: 'fa-user-graduate' }
   ];
