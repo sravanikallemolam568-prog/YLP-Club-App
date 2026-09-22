@@ -56,6 +56,15 @@ class AppController {
       window.location.hash = '#login';
     }
 
+    // Strict Route Guard for VP Membership
+    if (isLoggedIn && authService.isVPMembership()) {
+      const vpmAllowed = ['dashboard', 'members', 'attendance', 'login'];
+      if (!vpmAllowed.includes(this.activeView)) {
+        this.activeView = 'dashboard';
+        window.location.hash = '#dashboard';
+      }
+    }
+
     const isLoginPage = (this.activeView === 'login' && !isLoggedIn);
 
     const { bottomNavHtml, sideNavHtml } = isLoginPage 

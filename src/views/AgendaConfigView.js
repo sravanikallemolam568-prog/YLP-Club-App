@@ -24,6 +24,18 @@ export function renderAgendaConfigView(branchFilter = 'All') {
 
   return `
     <div class="animate-fade-in">
+      <!-- Combined Module Tabs -->
+      <div style="display:flex; gap:0; margin-bottom:24px; border-bottom:2px solid #DADCE0;">
+        <a href="#meetings"
+           style="padding:10px 18px; font-size:0.875rem; font-weight:600; color:var(--text-secondary); border-bottom:3px solid transparent; margin-bottom:-2px; text-decoration:none; display:flex; align-items:center; gap:7px; transition:all 0.15s;">
+          <i class="fa-solid fa-calendar-days"></i> Meetings
+        </a>
+        <a href="#agenda"
+           style="padding:10px 18px; font-size:0.875rem; font-weight:700; color:#4285F4; border-bottom:3px solid #4285F4; margin-bottom:-2px; text-decoration:none; display:flex; align-items:center; gap:7px; background:#F8F9FA;">
+          <i class="fa-solid fa-list-check"></i> Agenda Config
+        </a>
+      </div>
+
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
         <div>
           <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-list-check" style="color: var(--gold-primary);"></i> Configurable Meeting Agenda</h2>

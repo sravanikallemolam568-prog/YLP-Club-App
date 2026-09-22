@@ -1,63 +1,75 @@
 /* ==========================================================================
-   PSS MIYAPUR GAVEL CLUB - MODERN DESIGN SYSTEM & COLOR TOKENS
+   PSS MIYAPUR GAVEL CLUB — GOOGLE MATERIAL DESIGN SYSTEM
    ========================================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-  /* Brand Palette - Gavel Club Navy & Gold */
-  --navy-dark: #0B192C;
-  --navy-mid: #1E3E62;
-  --navy-light: #2A4E78;
-  --navy-subtle: rgba(30, 62, 98, 0.15);
-  
-  --gold-primary: #D4AF37;
-  --gold-bright: #F6C90E;
-  --gold-subtle: #AA7C11;
-  --gold-glow: rgba(212, 175, 55, 0.25);
-  --teal-accent: #008080;
+  /* ── Google Brand Colors ── */
+  --google-blue:   #4285F4;
+  --google-red:    #EA4335;
+  --google-yellow: #FBBC04;
+  --google-green:  #34A853;
+  --google-blue-dark:   #1967D2;
+  --google-blue-light:  #D2E3FC;
+  --google-red-light:   #FCE8E6;
+  --google-yellow-light:#FEF7E0;
+  --google-green-light: #E6F4EA;
 
-  /* Status Colors */
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
-  --color-info: #3B82F6;
-  --color-purple: #8B5CF6;
+  /* ── Keep compat variables (mapped to Google palette) ── */
+  --gold-primary:  #4285F4;   /* replaces gold → Google Blue */
+  --gold-bright:   #1967D2;
+  --gold-subtle:   #185ABC;
+  --gold-glow:     rgba(66, 133, 244, 0.25);
+  --navy-dark:     #202124;
+  --navy-mid:      #3C4043;
+  --navy-light:    #5F6368;
+  --navy-subtle:   rgba(32, 33, 36, 0.08);
+  --teal-accent:   #34A853;
 
-  /* Light Mode Palette */
-  --bg-main: #F8FAFC;
-  --bg-card: #FFFFFF;
-  --bg-nav: #FFFFFF;
-  --bg-modal: #FFFFFF;
-  --border-color: #E2E8F0;
-  --border-hover: #CBD5E1;
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #94A3B8;
-  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 16px 36px rgba(15, 23, 42, 0.12);
-  --badge-bg: #F1F5F9;
-  --input-bg: #F8FAFC;
+  /* ── Status Colors ── */
+  --color-success: #34A853;
+  --color-warning: #FBBC04;
+  --color-danger:  #EA4335;
+  --color-info:    #4285F4;
+  --color-purple:  #A142F4;
+
+  /* ── Light Mode (Default) ── */
+  --bg-main:      #F8F9FA;   /* Google's light grey */
+  --bg-card:      #FFFFFF;
+  --bg-nav:       #FFFFFF;
+  --bg-modal:     #FFFFFF;
+  --border-color: #DADCE0;   /* Google border grey */
+  --border-hover: #BDC1C6;
+  --text-primary:   #202124;   /* Google primary text */
+  --text-secondary: #5F6368;   /* Google secondary text */
+  --text-muted:     #9AA0A6;
+  --shadow-sm:  0 1px 3px rgba(60,64,67,0.08), 0 1px 2px rgba(60,64,67,0.06);
+  --shadow-md:  0 4px 12px rgba(60,64,67,0.12), 0 2px 6px rgba(60,64,67,0.08);
+  --shadow-lg:  0 8px 24px rgba(60,64,67,0.16), 0 4px 10px rgba(60,64,67,0.10);
+  --badge-bg:   #E8F0FE;   /* Google blue tint */
+  --input-bg:   #FFFFFF;
 }
 
 [data-theme="dark"] {
-  /* Dark Mode Palette - Luxury Slate Navy */
-  --bg-main: #060D18;
-  --bg-card: #0E1B2E;
-  --bg-nav: #0B1626;
-  --bg-modal: #102138;
-  --border-color: #1A2D47;
-  --border-hover: #2B4569;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.65);
-  --badge-bg: #14253D;
-  --input-bg: #0B1626;
+  /* ── Dark Mode — Google Dark Surface ── */
+  --bg-main:    #202124;
+  --bg-card:    #2D2E31;
+  --bg-nav:     #292A2D;
+  --bg-modal:   #35363A;
+  --border-color: #5F6368;
+  --border-hover: #80868B;
+  --text-primary:   #E8EAED;
+  --text-secondary: #9AA0A6;
+  --text-muted:     #5F6368;
+  --shadow-sm:  0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:  0 6px 20px rgba(0,0,0,0.5);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,0.65);
+  --badge-bg:   #1A2540;
+  --input-bg:   #292A2D;
 }
 
-/* Reset & Base Setup */
+/* ── Reset & Base ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -68,72 +80,50 @@
 html, body {
   width: 100%;
   height: 100%;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-primary);
   line-height: 1.5;
   overflow-x: hidden;
   user-select: none;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', 'Roboto', sans-serif;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
 }
 
 a {
-  color: var(--gold-primary);
+  color: var(--google-blue);
   text-decoration: none;
   transition: color 0.2s ease;
 }
+a:hover { color: var(--google-blue-dark); }
 
-a:hover {
-  color: var(--gold-bright);
-}
+button, input, select, textarea { font-family: inherit; font-size: inherit; }
+button { cursor: pointer; border: none; background: none; outline: none; }
 
-button, input, select, textarea {
-  font-family: inherit;
-  font-size: inherit;
-}
+/* ── Scrollbars ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--google-blue); }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  outline: none;
-}
-
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-main);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gold-primary);
-}
-
-/* Utility Animations */
+/* ── Animations ── */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulseBlue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(66,133,244,0.3); }
+  50%       { box-shadow: 0 0 0 6px rgba(66,133,244,0); }
 }
 
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
-  50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.45); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+.animate-fade-in { animation: fadeIn 0.24s cubic-bezier(0.16,1,0.3,1) forwards; }

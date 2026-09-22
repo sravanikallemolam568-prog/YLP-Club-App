@@ -5,6 +5,7 @@ const AUTH_USER_KEY = 'pssgavel_auth_user';
 export const ROLES = {
   MEMBER: 'Member',
   EC_OFFICER: 'EC Officer',
+  VP_MEMBERSHIP: 'VP Membership',
   PRESIDENT: 'President'
 };
 
@@ -25,6 +26,7 @@ class AuthService {
   login(email, password, selectedRole = ROLES.PRESIDENT) {
     let name = 'Club Member';
     if (selectedRole === ROLES.PRESIDENT) name = 'Priya Varma (President)';
+    else if (selectedRole === ROLES.VP_MEMBERSHIP) name = 'Sravani Reddy (VP Membership)';
     else if (selectedRole === ROLES.EC_OFFICER) name = 'Kiran Kumar (VP Ed)';
     else name = 'Rahul Sharma (Member)';
 
@@ -59,8 +61,20 @@ class AuthService {
     return this.currentUser?.role === ROLES.PRESIDENT;
   }
 
+  isVPMembership() {
+    return this.currentUser?.role === ROLES.VP_MEMBERSHIP;
+  }
+
   isECOfficer() {
     return this.currentUser?.role === ROLES.EC_OFFICER || this.currentUser?.role === ROLES.PRESIDENT;
+  }
+
+  canManageMembers() {
+    return this.isPresident() || this.isVPMembership() || this.isECOfficer();
+  }
+
+  canManageMeetings() {
+    return this.isPresident() || this.isECOfficer();
   }
 
   canEditAdmin() {

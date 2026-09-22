@@ -37,6 +37,9 @@ export function renderLoginView() {
             <button class="btn btn-outline role-switch-btn" data-role="${ROLES.EC_OFFICER}">
               <i class="fa-solid fa-user-shield" style="color: #10B981;"></i> Switch to EC Officer
             </button>
+            <button class="btn btn-outline role-switch-btn" data-role="${ROLES.VP_MEMBERSHIP}">
+              <i class="fa-solid fa-users-gear" style="color: #06B6D4;"></i> Switch to VP Membership
+            </button>
             <button class="btn btn-outline role-switch-btn" data-role="${ROLES.MEMBER}">
               <i class="fa-solid fa-user" style="color: #3B82F6;"></i> Switch to Member (Read-Only)
             </button>
@@ -67,6 +70,7 @@ export function renderLoginView() {
               <select id="login-role" class="form-select">
                 <option value="${ROLES.PRESIDENT}">President (Full Admin)</option>
                 <option value="${ROLES.EC_OFFICER}">EC Officer (Manage Members & Meetings)</option>
+                <option value="${ROLES.VP_MEMBERSHIP}">VP Membership (Manage Members & Attendance)</option>
                 <option value="${ROLES.MEMBER}">Member (View Only)</option>
               </select>
             </div>
