@@ -6,9 +6,7 @@ import { openModal, closeModal, showToast } from '../components/Modal.js';
 
 export function renderSpeechesView(branchFilter = 'All') {
   let members = dbService.getMembers();
-  if (branchFilter !== 'All') {
-    members = members.filter(m => m.branch === branchFilter);
-  }
+  if (branchFilter !== 'All') members = members.filter(m => m.branch === branchFilter);
 
   const speeches = dbService.getSpeechList();
 
@@ -30,39 +28,17 @@ export function renderSpeechesView(branchFilter = 'All') {
         ` : ''}
       </div>
 
-      <!-- Speech Curriculum Overview Cards -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
-        ${speeches.map(s => `
-          <div class="card" style="border-left: 4px solid var(--gold-primary);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span class="badge badge-gold">Speech #${s.id}</span>
-              <i class="fa-solid fa-microphone" style="color: var(--gold-primary);"></i>
-            </div>
-            <div style="font-weight: 700; font-size: 1.05rem; margin-top: 8px;">${s.title}</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">${s.desc}</div>
-          </div>
-        `).join('')}
-      </div>
-
-      <!-- Member Speech Progress Table / Cards -->
       <div class="card">
         <div class="card-header">
           <div class="card-title"><i class="fa-solid fa-chart-line"></i> Member Speech Progress Registry</div>
         </div>
-        <div class="mobile-card-grid">
-          ${members.map(m => `
-            <div style="padding: 14px; border: 1px solid var(--border-color); border-radius: 12px; background-color: var(--badge-bg);">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="font-weight: 700;">${m.name} (${m.branch})</div>
-                <span class="badge badge-gold">${m.speechesCompleted || 0} / 10 Speeches</span>
-              </div>
-              <div style="margin-top: 10px;">
-                <div class="progress-bar-container">
-                  <div class="progress-bar-fill" style="width: ${(m.speechesCompleted || 0) * 10}%"></div>
-                </div>
-              </div>
-            </div>
-          `).join('')}
+        <div class="table-container speech-table-wrap">
+          <table class="data-table speech-table">
+            <thead><tr><th>Member</th>${speeches.map(s => `<th title="${s.title}">Speech ${s.id}</th>`).join('')}<th>Total</th></tr></thead>
+            <tbody>
+              ${members.map(m => { const completed = m.speechesCompleted || 0; return `<tr><td><div class="member-table-name"><span class="table-avatar">${m.name.charAt(0)}</span><div><strong>${m.name}</strong><small>${m.branch}</small></div></div></td>${speeches.map(s => `<td class="speech-status-cell ${s.id <= completed ? 'is-complete' : ''}" aria-label="${s.id <= completed ? 'Completed' : 'Pending'}"><span class="speech-status-dot"></span></td>`).join('')}<td><strong>${completed}/10</strong></td></tr>`; }).join('')}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -105,7 +81,6 @@ function bindSpeechesEvents() {
       e.preventDefault();
       const memberId = document.getElementById('rec-member-id').value;
       const speechNum = parseInt(document.getElementById('rec-speech-num').value, 10);
-      
       const member = dbService.getMembers().find(m => m.id === memberId);
       if (member) {
         const newCount = Math.max(member.speechesCompleted || 0, speechNum);

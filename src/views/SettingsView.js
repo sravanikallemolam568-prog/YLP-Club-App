@@ -30,6 +30,10 @@ export function renderSettingsView() {
             <label class="form-label required">President</label>
             <input type="text" id="ec-pres" class="form-input" value="${ec.president || ''}" required />
           </div>
+          <div class="form-group">
+            <label class="form-label required">President Email</label>
+            <input type="email" id="ec-pres-email" class="form-input" value="${ec.presidentEmail || ''}" required />
+          </div>
 
           <div class="form-group">
             <label class="form-label required">VP Education</label>
@@ -39,11 +43,24 @@ export function renderSettingsView() {
           <div class="form-group">
             <label class="form-label required">VP Membership</label>
             <input type="text" id="ec-vpmem" class="form-input" value="${ec.vpMembership || ''}" required />
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">
+              <i class="fa-solid fa-lock" style="color: var(--google-blue);"></i> Access is assigned by the President. This role can manage Members and Attendance only.
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label required">VP Membership Email</label>
+            <input type="email" id="ec-vpmem-email" class="form-input" value="${ec.vpMembershipEmail || ''}" required />
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-key" style="color: var(--google-blue);"></i> This email is required when signing in as VP Membership.</div>
           </div>
 
           <div class="form-group">
             <label class="form-label required">VP Public Relations (PR)</label>
             <input type="text" id="ec-vppr" class="form-input" value="${ec.vpPR || ''}" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label required">VP Public Relations Email</label>
+            <input type="email" id="ec-vppr-email" class="form-input" value="${ec.vpPREmail || ''}" required />
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-key" style="color: var(--google-blue);"></i> This email opens Media Hub access only.</div>
           </div>
 
           <div class="form-group">
@@ -81,9 +98,12 @@ function bindSettingsEvents() {
     e.preventDefault();
     const updatedEc = {
       president: document.getElementById('ec-pres').value,
+      presidentEmail: document.getElementById('ec-pres-email').value,
       vpEducation: document.getElementById('ec-vped').value,
       vpMembership: document.getElementById('ec-vpmem').value,
+      vpMembershipEmail: document.getElementById('ec-vpmem-email').value,
       vpPR: document.getElementById('ec-vppr').value,
+      vpPREmail: document.getElementById('ec-vppr-email').value,
       secretary: document.getElementById('ec-sec').value,
       jointSecretary: document.getElementById('ec-jsec').value,
       sergeant: document.getElementById('ec-sgt').value

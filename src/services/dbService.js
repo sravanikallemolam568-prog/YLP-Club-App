@@ -161,9 +161,12 @@ const DEFAULT_MEETINGS = [
 
 const DEFAULT_EC_COMMITTEE = {
   president: 'Priya Varma',
+  presidentEmail: 'president@pssgavelclub.org',
   vpEducation: 'Kiran Kumar',
   vpMembership: 'Sravani Reddy',
+  vpMembershipEmail: 'user@pssgavelclub.org',
   vpPR: 'Rahul Sharma',
+  vpPREmail: 'rahul@pssgavelclub.org',
   secretary: 'Anjali Rao',
   jointSecretary: 'Kiran Kumar',
   sergeant: 'Rahul Sharma'
@@ -332,7 +335,7 @@ class DBService {
 
   // EC Committee
   getECCommittee() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.EC_COMMITTEE) || '{}');
+    return { ...DEFAULT_EC_COMMITTEE, ...JSON.parse(localStorage.getItem(STORAGE_KEYS.EC_COMMITTEE) || '{}') };
   }
 
   updateECCommittee(ecData) {

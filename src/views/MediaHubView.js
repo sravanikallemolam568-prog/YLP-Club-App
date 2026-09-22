@@ -43,7 +43,7 @@ export function renderMediaHubView(branchFilter = 'All') {
           <h2 style="font-size: 1.5rem; color: var(--text-primary);"><i class="fa-solid fa-photo-film" style="color: var(--gold-primary);"></i> Meeting Media Hub</h2>
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Select a meeting date from the list below to view its photos and video recordings.</p>
         </div>
-        ${authService.isECOfficer() ? `
+        ${authService.canManageMedia() ? `
           <button id="add-media-btn" class="btn btn-primary">
             <i class="fa-solid fa-cloud-arrow-up"></i> Upload Media
           </button>
@@ -81,7 +81,7 @@ export function renderMediaHubView(branchFilter = 'All') {
                 <button class="btn btn-primary btn-sm open-meeting-media-btn" data-idx="${idx}" style="height: 36px; padding: 0 14px; font-size: 0.82rem;">
                   <i class="fa-solid fa-photo-film"></i> View Photos & Videos
                 </button>
-                ${authService.isECOfficer() ? `
+                ${authService.canManageMedia() ? `
                   <button class="btn btn-danger btn-sm delete-meeting-media-btn" data-meetingid="${group.meeting.id}" style="height: 36px; padding: 0 12px; font-size: 0.82rem;" title="Remove all media for this meeting">
                     <i class="fa-solid fa-trash"></i>
                   </button>

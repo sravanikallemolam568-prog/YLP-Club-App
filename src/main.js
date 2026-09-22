@@ -65,6 +65,14 @@ class AppController {
       }
     }
 
+    if (isLoggedIn && authService.isVPPR()) {
+      const prAllowed = ['dashboard', 'media', 'login'];
+      if (!prAllowed.includes(this.activeView)) {
+        this.activeView = 'dashboard';
+        window.location.hash = '#dashboard';
+      }
+    }
+
     const isLoginPage = (this.activeView === 'login' && !isLoggedIn);
 
     const { bottomNavHtml, sideNavHtml } = isLoginPage 

@@ -1,11 +1,13 @@
 // Authentication & Role-Based Access Control (RBAC) Service
 
 const AUTH_USER_KEY = 'pssgavel_auth_user';
+const EC_STORAGE_KEY = 'pssgavel_ec';
 
 export const ROLES = {
   MEMBER: 'Member',
   EC_OFFICER: 'EC Officer',
   VP_MEMBERSHIP: 'VP Membership',
+  VP_PR: 'VP Public Relations',
   PRESIDENT: 'President'
 };
 
@@ -24,9 +26,17 @@ class AuthService {
   }
 
   login(email, password, selectedRole = ROLES.PRESIDENT) {
+    const normalizedEmail = (email || '').trim().toLowerCase();
+    if (selectedRole === ROLES.VP_MEMBERSHIP || selectedRole === ROLES.VP_PR) {
+      const committee = JSON.parse(localStorage.getItem(EC_STORAGE_KEY) || '{}');
+      const assignedEmail = (selectedRole === ROLES.VP_PR ? committee.vpPREmail || 'rahul@pssgavelclub.org' : committee.vpMembershipEmail || 'user@pssgavelclub.org').trim().toLowerCase();
+      if (normalizedEmail && (!assignedEmail || normalizedEmail !== assignedEmail)) return null;
+    }
+
     let name = 'Club Member';
     if (selectedRole === ROLES.PRESIDENT) name = 'Priya Varma (President)';
     else if (selectedRole === ROLES.VP_MEMBERSHIP) name = 'Sravani Reddy (VP Membership)';
+    else if (selectedRole === ROLES.VP_PR) name = 'Rahul Sharma (VP Public Relations)';
     else if (selectedRole === ROLES.EC_OFFICER) name = 'Kiran Kumar (VP Ed)';
     else name = 'Rahul Sharma (Member)';
 
@@ -65,6 +75,14 @@ class AuthService {
     return this.currentUser?.role === ROLES.VP_MEMBERSHIP;
   }
 
+  isVPPR() {
+    return this.currentUser?.role === ROLES.VP_PR;
+  }
+
+  isReadOnly() {
+    return this.currentUser?.role === ROLES.MEMBER;
+  }
+
   isECOfficer() {
     return this.currentUser?.role === ROLES.EC_OFFICER || this.currentUser?.role === ROLES.PRESIDENT;
   }
@@ -75,6 +93,10 @@ class AuthService {
 
   canManageMeetings() {
     return this.isPresident() || this.isECOfficer();
+  }
+
+  canManageMedia() {
+    return this.isPresident() || this.isECOfficer() || this.isVPPR();
   }
 
   canEditAdmin() {

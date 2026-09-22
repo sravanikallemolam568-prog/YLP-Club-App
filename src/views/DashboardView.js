@@ -31,22 +31,23 @@ export function renderDashboardView(branchFilter = 'All') {
 
   const nextMeeting = meetings.find(m => m.status === 'Upcoming') || meetings[0];
   const isVPM = authService.isVPMembership();
+  const isVPPR = authService.isVPPR();
 
   return `
     <div class="animate-fade-in" style="display: flex; flex-direction: column; gap: 16px;">
       
       <!-- Welcome Hero Banner -->
-      <div class="card" style="background: linear-gradient(135deg, #0F2038 0%, #071222 100%); border-color: rgba(212, 175, 55, 0.4); color: #FFFFFF; padding: 18px 20px;">
+      <div class="card" style="background: linear-gradient(120deg, #1A73E8 0%, #4285F4 58%, #34A853 150%); border-color: rgba(255, 255, 255, 0.24); color: #FFFFFF; padding: 24px 26px;">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
           <div>
-            <div style="font-size: 0.8rem; color: var(--gold-bright); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+            <div style="font-size: 0.78rem; color: #E8F0FE; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;">
               <i class="fa-solid fa-sun-plant-wilt"></i> ${timeGreeting}, ${user ? user.name : 'Gavelier'}!
             </div>
             <h2 style="font-size: 1.45rem; margin-top: 4px; color: #FFFFFF;">PSS Miyapur Gavel Club</h2>
-            <p style="font-size: 0.85rem; color: #94A3B8; margin-top: 2px;">Youth Leadership Program Dashboard</p>
+            <p style="font-size: 0.85rem; color: #E8F0FE; margin-top: 4px;">Youth Leadership Program Dashboard</p>
           </div>
           <div style="display: flex; gap: 8px; align-items: center;">
-            <span class="badge badge-gold" style="padding: 6px 12px; font-size: 0.8rem;">
+            <span class="badge" style="padding: 6px 12px; font-size: 0.8rem; color: #FFFFFF; border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.14);">
               <i class="fa-solid fa-code-branch"></i> ${branchFilter} Branch
             </span>
           </div>
@@ -99,6 +100,23 @@ export function renderDashboardView(branchFilter = 'All') {
           <div style="padding: 12px; color: var(--text-secondary); font-size: 0.95rem;">
             Welcome VP Membership! Please ensure that all new member registrations and attendance records for the upcoming week are updated <strong>before Sunday</strong>.
           </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px;">
+            <a href="#members" class="btn btn-primary btn-sm"><i class="fa-solid fa-users"></i> Manage Members</a>
+            <a href="#attendance" class="btn btn-outline btn-sm"><i class="fa-solid fa-clipboard-user"></i> Mark Attendance</a>
+          </div>
+        </div>
+      ` : isVPPR ? `
+        <div class="card" style="border-left: 4px solid var(--google-blue);">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-photo-film"></i> Media Hub Workspace</div>
+            <span class="badge badge-info">VP PR Access</span>
+          </div>
+          <div style="padding: 12px; color: var(--text-secondary); font-size: 0.95rem;">
+            Manage club photos, meeting videos, and shared media from one dedicated workspace.
+          </div>
+          <div style="margin-top: 4px;">
+            <a href="#media" class="btn btn-primary btn-sm"><i class="fa-solid fa-photo-film"></i> Open Media Hub</a>
+          </div>
         </div>
       ` : `
         <div class="card" style="border-left: 4px solid var(--gold-primary);">
@@ -123,12 +141,9 @@ export function renderDashboardView(branchFilter = 'All') {
                 </div>
               </div>
 
-              <div style="display: flex; gap: 10px;">
-                <a href="#agenda" class="btn btn-primary btn-sm" style="height: 40px; padding: 0 16px;">
-                  <i class="fa-solid fa-list-check"></i> View Agenda
-                </a>
-                <a href="#meetings" class="btn btn-outline btn-sm" style="height: 40px; padding: 0 16px;">
-                  <i class="fa-solid fa-user-tag"></i> Manage Roles
+              <div>
+                <a href="#meetings" class="btn btn-primary btn-sm" style="height: 40px; padding: 0 16px;">
+                  <i class="fa-solid fa-arrow-right"></i> Open Meeting
                 </a>
               </div>
             </div>
@@ -139,57 +154,6 @@ export function renderDashboardView(branchFilter = 'All') {
           `}
         </div>
       `}
-
-      <!-- Main Action Shortcuts Grid -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-compass"></i> Navigation & Shortcuts</div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
-          <a href="#members" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
-            <i class="fa-solid fa-users" style="color: var(--gold-primary); font-size: 1.1rem;"></i>
-            <div style="text-align: left;">
-              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Members</div>
-              <div style="font-size: 0.72rem; color: var(--text-muted);">Directory & Profiles</div>
-            </div>
-          </a>
-
-          <a href="#attendance" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
-            <i class="fa-solid fa-clipboard-user" style="color: #10B981; font-size: 1.1rem;"></i>
-            <div style="text-align: left;">
-              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Attendance</div>
-              <div style="font-size: 0.72rem; color: var(--text-muted);">Mark & History</div>
-            </div>
-          </a>
-
-          ${!isVPM ? `
-            <a href="#meetings" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
-              <i class="fa-solid fa-calendar-days" style="color: #3B82F6; font-size: 1.1rem;"></i>
-              <div style="text-align: left;">
-                <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Meetings</div>
-                <div style="font-size: 0.72rem; color: var(--text-muted);">Agendas & Roles</div>
-              </div>
-            </a>
-
-            <a href="#speeches" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
-              <i class="fa-solid fa-scroll" style="color: #8B5CF6; font-size: 1.1rem;"></i>
-              <div style="text-align: left;">
-                <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Speeches</div>
-                <div style="font-size: 0.72rem; color: var(--text-muted);">Progress & Track</div>
-              </div>
-            </a>
-
-            <a href="#mentors" class="btn btn-outline" style="justify-content: flex-start; padding: 12px 14px; text-decoration: none;">
-              <i class="fa-solid fa-user-graduate" style="color: #F59E0B; font-size: 1.1rem;"></i>
-              <div style="text-align: left;">
-                <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">Mentors</div>
-                <div style="font-size: 0.72rem; color: var(--text-muted);">Mentee Directory</div>
-              </div>
-            </a>
-          ` : ''}
-        </div>
-      </div>
 
     </div>
   `;

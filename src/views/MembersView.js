@@ -33,12 +33,12 @@ export function renderMembersView(branchFilter = 'All') {
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Manage, register, search and filter PSS Miyapur Gavel Club members.</p>
         </div>
         <div style="display: flex; gap: 10px;">
-          <button id="export-members-excel-btn" class="btn btn-outline">
-            <i class="fa-solid fa-file-excel" style="color: #10B981;"></i> Export Excel
-          </button>
+          ${!authService.isReadOnly() ? `<button id="export-members-excel-btn" class="btn btn-outline">
+            <i class="fa-solid fa-download" style="color: #34A853;"></i> Download List
+          </button>` : ''}
           ${authService.isECOfficer() ? `
             <button id="add-member-btn" class="btn btn-primary">
-              <i class="fa-solid fa-user-plus"></i> Register Member
+              <i class="fa-solid fa-user-plus"></i> Add Member
             </button>
           ` : ''}
         </div>
@@ -106,41 +106,24 @@ function renderMemberListHtml(membersList, branchFilter = 'All') {
   }
 
   return `
-    <div class="mobile-card-grid">
-      ${filtered.map(m => `
-        <div class="member-card">
-          <div class="member-card-header">
-            <div class="avatar-circle">${m.name.charAt(0)}</div>
-            <div class="member-info">
-              <div class="member-name">${m.name}</div>
-              <div class="member-sub">ID: ${m.id} • ${m.branch}</div>
-            </div>
-            <span class="badge ${m.status === 'Active' ? 'badge-success' : 'badge-warning'}">${m.status}</span>
-          </div>
-
-          <div style="font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
-            <div><i class="fa-solid fa-phone" style="width: 16px;"></i> ${m.mobile}</div>
-            <div><i class="fa-solid fa-graduation-cap" style="width: 16px;"></i> ${m.classYear} (${m.schoolCollege})</div>
-            <div><i class="fa-solid fa-user-graduate" style="width: 16px;"></i> Mentor: ${m.mentor || 'None'}</div>
-          </div>
-
-          <div style="margin-top: 6px;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; margin-bottom: 4px;">
-              <span>Speech Progress</span>
-              <span>${m.speechesCompleted || 0} / 10 (${(m.speechesCompleted || 0) * 10}%)</span>
-            </div>
-            <div class="progress-bar-container">
-              <div class="progress-bar-fill" style="width: ${(m.speechesCompleted || 0) * 10}%"></div>
-            </div>
-          </div>
-
-          <div style="margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--border-color); display: flex; justify-content: flex-end;">
-            <button class="btn btn-outline btn-delete-member" data-id="${m.id}" data-name="${m.name}" style="padding: 4px 10px; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
-              <i class="fa-solid fa-trash-can"></i> Remove Member
-            </button>
-          </div>
-        </div>
-      `).join('')}
+    <div class="table-container members-table-wrap">
+      <table class="data-table members-table">
+        <thead><tr><th>Member</th><th>Contact</th><th>Branch</th><th>Status</th><th>Education</th><th>Mentor</th><th>Speech Progress</th><th>Action</th></tr></thead>
+        <tbody>
+          ${filtered.map(m => `
+            <tr>
+              <td><div class="member-table-name"><span class="table-avatar">${m.name.charAt(0)}</span><div><strong>${m.name}</strong><small>ID: ${m.id}</small></div></div></td>
+              <td><span class="table-detail"><i class="fa-solid fa-phone"></i>${m.mobile}</span></td>
+              <td><span class="badge badge-info">${m.branch}</span></td>
+              <td><span class="badge ${m.status === 'Active' ? 'badge-success' : 'badge-warning'}">${m.status}</span></td>
+              <td><strong>${m.classYear}</strong><small class="table-muted">${m.schoolCollege}</small></td>
+              <td><span class="table-detail"><i class="fa-solid fa-user-graduate"></i>${m.mentor || 'None'}</span></td>
+              <td><div class="member-speech-progress"><strong>${m.speechesCompleted || 0}/10</strong><div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${(m.speechesCompleted || 0) * 10}%"></div></div></div></td>
+              <td>${!authService.isReadOnly() ? `<button class="btn btn-outline btn-delete-member" data-id="${m.id}" data-name="${m.name}" style="padding: 6px 10px; font-size: 0.75rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.3);"><i class="fa-solid fa-trash-can"></i> Remove</button>` : '<span class="table-muted">View only</span>'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
     </div>
   `;
 }

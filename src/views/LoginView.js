@@ -11,14 +11,24 @@ export function renderLoginView() {
   }, 50);
 
   return `
-    <div class="animate-fade-in" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; padding: 16px;">
-      <div class="card" style="width: 100%; max-width: 440px; border-color: rgba(212, 175, 55, 0.4); box-shadow: var(--shadow-lg); background: var(--bg-card);">
+    <div class="login-page animate-fade-in">
+      <section class="login-aside">
+        <div class="login-aside-mark"><i class="fa-solid fa-gavel"></i></div>
+        <div class="login-kicker"><span></span> CLUB OPERATIONS</div>
+        <h1>Lead with clarity.<br /><strong>Speak with confidence.</strong></h1>
+        <p>One focused workspace for members, mentors, meetings, and the leaders who make every session count.</p>
+        <div class="login-color-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <div class="login-aside-foot"><i class="fa-solid fa-shield-halved"></i> Secure role-based access</div>
+      </section>
+
+      <section class="login-panel">
+        <div class="card login-card">
         
         <!-- Header Branding -->
-        <div style="text-align: center; margin-bottom: 24px;">
-          <img src="/gavel-club-logo.svg" alt="Logo" style="width: 80px; height: 80px; margin-bottom: 12px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));" />
-          <h2 style="font-size: 1.5rem; color: var(--gold-primary);">PSS MIYAPUR GAVEL CLUB</h2>
-          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Youth Leadership Program • Member & Admin Authentication</p>
+        <div class="login-heading">
+          <div class="login-heading-top"><span>Welcome back</span><span class="badge badge-info">YLP PORTAL</span></div>
+          <h2>Sign in to your workspace</h2>
+          <p>Use your club credentials to continue.</p>
         </div>
 
         ${currentUser ? `
@@ -39,6 +49,9 @@ export function renderLoginView() {
             </button>
             <button class="btn btn-outline role-switch-btn" data-role="${ROLES.VP_MEMBERSHIP}">
               <i class="fa-solid fa-users-gear" style="color: #06B6D4;"></i> Switch to VP Membership
+            </button>
+            <button class="btn btn-outline role-switch-btn" data-role="${ROLES.VP_PR}">
+              <i class="fa-solid fa-photo-film" style="color: #4285F4;"></i> Switch to VP Public Relations
             </button>
             <button class="btn btn-outline role-switch-btn" data-role="${ROLES.MEMBER}">
               <i class="fa-solid fa-user" style="color: #3B82F6;"></i> Switch to Member (Read-Only)
@@ -71,6 +84,7 @@ export function renderLoginView() {
                 <option value="${ROLES.PRESIDENT}">President (Full Admin)</option>
                 <option value="${ROLES.EC_OFFICER}">EC Officer (Manage Members & Meetings)</option>
                 <option value="${ROLES.VP_MEMBERSHIP}">VP Membership (Manage Members & Attendance)</option>
+                <option value="${ROLES.VP_PR}">VP Public Relations (Manage Media Hub)</option>
                 <option value="${ROLES.MEMBER}">Member (View Only)</option>
               </select>
             </div>
@@ -80,7 +94,8 @@ export function renderLoginView() {
             </button>
           </form>
         `}
-      </div>
+        </div>
+      </section>
     </div>
   `;
 }
@@ -114,7 +129,15 @@ function bindLoginEvents() {
     }
 
     setTimeout(() => {
-      authService.login(email, pass, role);
+      const loggedInUser = authService.login(email, pass, role);
+      if (!loggedInUser) {
+        showToast('This email is not assigned to the selected access role.', 'error');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Account';
+        }
+        return;
+      }
       showToast(`Logged in successfully as ${role}!`, 'success');
       window.location.hash = '#dashboard';
       window.location.reload();

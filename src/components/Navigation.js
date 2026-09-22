@@ -4,6 +4,7 @@ import { authService } from '../services/authService.js';
 
 export function renderNavigation(activeView) {
   const isVPM = authService.isVPMembership();
+  const isVPPR = authService.isVPPR();
 
   // If the active view is attendance/agenda, highlight the parent nav item
   const highlightNavId = (activeView === 'attendance') ? 'members' : (activeView === 'agenda') ? 'meetings' : activeView;
@@ -31,9 +32,15 @@ export function renderNavigation(activeView) {
 
   // Strict RBAC Filter for VP Membership
   if (isVPM) {
-    const vpmAllowed = ['dashboard', 'members'];
+    const vpmAllowed = ['dashboard', 'members', 'attendance'];
     navItems = navItems.filter(item => vpmAllowed.includes(item.id));
     mobileNavItems = mobileNavItems.filter(item => vpmAllowed.includes(item.id));
+  }
+
+  if (isVPPR) {
+    const prAllowed = ['dashboard', 'media'];
+    navItems = navItems.filter(item => prAllowed.includes(item.id));
+    mobileNavItems = mobileNavItems.filter(item => prAllowed.includes(item.id));
   }
 
   const bottomNavHtml = `
@@ -50,10 +57,10 @@ export function renderNavigation(activeView) {
   const sideNavHtml = `
     <aside class="side-nav">
       <div style="padding: 10px 16px 20px 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px;">
-        <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.15rem; color: var(--gold-primary);">
+        <div style="font-family: 'Google Sans', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
           PSS MIYAPUR GAVEL
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-muted);">NAVIGATION MENU</div>
+        <div style="font-size: 0.72rem; color: var(--google-blue); font-weight: 700; letter-spacing: 0.6px;">CLUB OPERATIONS</div>
       </div>
       ${navItems.map(item => `
         <a href="#${item.id}" class="side-nav-item ${highlightNavId === item.id ? 'active' : ''}" data-view="${item.id}">

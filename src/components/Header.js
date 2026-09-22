@@ -27,11 +27,11 @@ export function renderHeader(activeBranch, onBranchChange, onThemeToggle) {
 
         <!-- Light / Dark Theme Toggle -->
         <button id="theme-toggle-btn" class="btn btn-outline btn-icon" style="width: 38px; height: 38px;" title="Toggle Light/Dark Theme">
-          <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}" style="color: ${isDark ? '#F6C90E' : '#0B192C'}"></i>
+          <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}" style="color: ${isDark ? '#FBBC04' : '#5F6368'}"></i>
         </button>
 
         <!-- User Role Profile Pill -->
-        <div class="badge badge-gold" style="padding: 6px 10px; cursor: pointer;" id="user-profile-pill" title="Current User Role">
+        <div class="badge badge-info" style="padding: 6px 10px; cursor: pointer;" id="user-profile-pill" title="Current User Role">
           <i class="fa-solid fa-user-shield"></i> ${user ? user.role : 'Sign In'}
         </div>
       </div>

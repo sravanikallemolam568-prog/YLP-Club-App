@@ -59,9 +59,9 @@ export function renderAttendanceView(branchFilter = 'All') {
             Mark Present · Informed Absent · Uninformed Absent for each session
           </p>
         </div>
-        <button id="export-attendance-excel-btn" class="btn btn-outline btn-sm">
+        ${!authService.isReadOnly() ? `<button id="export-attendance-excel-btn" class="btn btn-outline btn-sm">
           <i class="fa-solid fa-file-excel" style="color:#34A853;"></i> Export Excel
-        </button>
+        </button>` : '<span class="badge badge-outline">View only</span>'}
       </div>
 
       <!-- Meeting Selector -->

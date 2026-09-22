@@ -77,14 +77,14 @@ export function renderMeetingsView(branchFilter = 'All') {
 
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <a href="#agenda" class="btn btn-outline btn-sm">
-                  <i class="fa-solid fa-list-check" style="color: #3B82F6;"></i> Agenda
+                  <i class="fa-solid fa-list-check" style="color: #4285F4;"></i> Open Agenda
                 </a>
                 ${authService.isECOfficer() ? `
                   <button class="btn btn-primary btn-sm assign-roles-btn" data-id="${mtg.id}">
-                    <i class="fa-solid fa-user-tag"></i> Assign Roles
+                    <i class="fa-solid fa-user-tag"></i> Manage Roles
                   </button>
                   <button class="btn btn-outline btn-sm mark-completed-btn" data-id="${mtg.id}" style="color: #10B981; border-color: rgba(16,185,129,0.3);">
-                    <i class="fa-solid fa-circle-check"></i> Mark Completed
+                    <i class="fa-solid fa-circle-check"></i> Complete Meeting
                   </button>
                 ` : ''}
               </div>

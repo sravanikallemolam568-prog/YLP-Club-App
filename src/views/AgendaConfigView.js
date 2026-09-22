@@ -2,6 +2,7 @@
 
 import { dbService } from '../services/dbService.js';
 import { AgendaImageService } from '../services/agendaImageService.js';
+import { authService } from '../services/authService.js';
 import { showToast } from '../components/Modal.js';
 
 export function renderAgendaConfigView(branchFilter = 'All') {
@@ -10,6 +11,7 @@ export function renderAgendaConfigView(branchFilter = 'All') {
     meetings = meetings.filter(m => m.branch === branchFilter);
   }
   const selectedMeeting = meetings[0] || dbService.getMeetings()[0];
+  const readOnly = authService.isReadOnly();
 
   setTimeout(() => {
     bindAgendaEvents(selectedMeeting);
@@ -42,12 +44,12 @@ export function renderAgendaConfigView(branchFilter = 'All') {
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Dynamic agenda timing auto-recalculation & branded agenda image card generator.</p>
         </div>
         <div style="display: flex; gap: 10px;">
-          <button id="gen-agenda-text-btn" class="btn btn-outline">
+          ${!readOnly ? `<button id="gen-agenda-text-btn" class="btn btn-outline">
             <i class="fa-solid fa-copy"></i> Copy Agenda Text
           </button>
           <button id="gen-agenda-img-btn" class="btn btn-primary">
             <i class="fa-solid fa-image"></i> Generate Agenda Image
-          </button>
+          </button>` : '<span class="badge badge-outline">View only</span>'}
         </div>
       </div>
 
@@ -64,7 +66,7 @@ export function renderAgendaConfigView(branchFilter = 'All') {
           </div>
           <div class="form-group" style="margin:0;">
             <label class="form-label">Meeting Start Time</label>
-            <input type="text" id="agenda-start-time-input" class="form-input" value="${selectedMeeting.startTime || '10:00 AM'}" placeholder="e.g. 10:00 AM" />
+            <input type="text" id="agenda-start-time-input" class="form-input" value="${selectedMeeting.startTime || '10:00 AM'}" placeholder="e.g. 10:00 AM" ${readOnly ? 'disabled' : ''} />
           </div>
         </div>
       </div>
@@ -73,7 +75,7 @@ export function renderAgendaConfigView(branchFilter = 'All') {
       <div class="card" style="margin-bottom: 24px;">
         <div class="card-header">
           <div class="card-title"><i class="fa-solid fa-sliders"></i> Dynamic Timeline Editor</div>
-          <button id="add-agenda-row-btn" class="btn btn-outline btn-sm"><i class="fa-solid fa-plus"></i> Add Agenda Item</button>
+          ${!readOnly ? '<button id="add-agenda-row-btn" class="btn btn-outline btn-sm"><i class="fa-solid fa-plus"></i> Add Agenda Item</button>' : '<span class="badge badge-outline">View only</span>'}
         </div>
 
         <div class="table-container">
@@ -94,10 +96,10 @@ export function renderAgendaConfigView(branchFilter = 'All') {
                 <tr data-index="${idx}">
                   <td style="font-weight: 700;">#${idx + 1}</td>
                   <td>
-                    <input type="text" class="form-input agenda-activity" value="${item.activity}" style="min-height: 38px;" />
+                    <input type="text" class="form-input agenda-activity" value="${item.activity}" style="min-height: 38px;" ${readOnly ? 'disabled' : ''} />
                   </td>
                   <td>
-                    <select class="form-select agenda-member" style="min-height: 38px;">
+                    <select class="form-select agenda-member" style="min-height: 38px;" ${readOnly ? 'disabled' : ''}>
                       <option value="TBD" ${!item.member || item.member === 'TBD' ? 'selected' : ''}>TBD</option>
                       ${dbService.getMembers().map(m => `
                         <option value="${m.name}" ${item.member === m.name ? 'selected' : ''}>${m.name}</option>
@@ -105,12 +107,12 @@ export function renderAgendaConfigView(branchFilter = 'All') {
                     </select>
                   </td>
                   <td>
-                    <input type="number" class="form-input agenda-duration" value="${item.duration || 5}" min="1" max="120" style="width: 80px; min-height: 38px;" />
+                    <input type="number" class="form-input agenda-duration" value="${item.duration || 5}" min="1" max="120" style="width: 80px; min-height: 38px;" ${readOnly ? 'disabled' : ''} />
                   </td>
                   <td style="font-weight: 700; color: var(--gold-primary);">${item.startTime}</td>
                   <td style="font-weight: 700; color: var(--text-primary);">${item.endTime}</td>
                   <td>
-                    <button class="btn btn-danger btn-sm remove-row-btn" data-index="${idx}"><i class="fa-solid fa-trash"></i></button>
+                    ${!readOnly ? `<button class="btn btn-danger btn-sm remove-row-btn" data-index="${idx}"><i class="fa-solid fa-trash"></i></button>` : '<span class="table-muted">View only</span>'}
                   </td>
                 </tr>
               `).join('')}
