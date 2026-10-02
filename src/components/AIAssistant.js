@@ -2,6 +2,7 @@
 
 import { dbService } from '../services/dbService.js';
 import { authService } from '../services/authService.js';
+import { closeModal, openModal, showToast } from './Modal.js';
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent';
 const API_KEY_STORAGE = 'pssgavel_gemini_key';
@@ -270,17 +271,72 @@ function injectChatUI() {
   renderChatMessages();
 }
 
-function getOrPromptApiKey() {
+function promptForApiKey() {
+  return new Promise((resolve) => {
+    openModal(
+      'AI Assistant Setup',
+      `
+        <div style="display: grid; gap: 14px;">
+          <p style="margin: 0; color: var(--text-secondary); line-height: 1.5;">
+            Enter your Google Gemini API key to activate the assistant. Your key is stored locally on this device only.
+          </p>
+          <label style="display: grid; gap: 8px; color: var(--text-primary); font-weight: 600;">
+            <span>Gemini API Key</span>
+            <input id="gemini-api-key-input" type="password" class="form-input" placeholder="Paste your Gemini API key" style="padding-right: 12px;" />
+          </label>
+          <p style="margin: 0; font-size: 0.78rem; color: var(--text-muted);">
+            Need a key? Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: var(--teal-deep);">Google AI Studio</a>
+          </p>
+        </div>
+      `,
+      `
+        <button type="button" class="btn btn-outline" id="gemini-api-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="gemini-api-save-btn">Save Key</button>
+      `
+    );
+
+    const input = document.getElementById('gemini-api-key-input');
+    const saveBtn = document.getElementById('gemini-api-save-btn');
+    const cancelBtn = document.getElementById('gemini-api-cancel-btn');
+
+    const submitValue = () => {
+      const value = input?.value.trim();
+      if (!value) {
+        showToast('Please enter a valid Gemini API key.', 'error');
+        input?.focus();
+        return;
+      }
+
+      localStorage.setItem(API_KEY_STORAGE, value);
+      closeModal();
+      resolve(value);
+    };
+
+    saveBtn?.addEventListener('click', submitValue);
+    cancelBtn?.addEventListener('click', () => {
+      closeModal();
+      resolve(null);
+    });
+
+    input?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        submitValue();
+      }
+    });
+
+    input?.focus();
+  });
+}
+
+async function getOrPromptApiKey() {
   let key = localStorage.getItem(API_KEY_STORAGE);
   if (!key || key.trim() === '') {
-    key = prompt(
-      '🤖 Gavel Club AI Assistant\n\nEnter your Google Gemini API Key to activate the AI assistant.\n\nGet a free key at: https://aistudio.google.com/app/apikey\n\nYour key is stored locally on this device only.'
-    );
-    if (key && key.trim()) {
-      localStorage.setItem(API_KEY_STORAGE, key.trim());
-    } else {
+    key = await promptForApiKey();
+    if (!key || key.trim() === '') {
       return null;
     }
+    key = key.trim();
   }
   return key;
 }
@@ -314,7 +370,7 @@ function bindWidgetEvents() {
     const message = input?.value.trim();
     if (!message) return;
 
-    const apiKey = getOrPromptApiKey();
+    const apiKey = await getOrPromptApiKey();
     if (!apiKey) return;
 
     input.value = '';

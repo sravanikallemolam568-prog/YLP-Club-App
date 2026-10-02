@@ -10,7 +10,9 @@ const STORAGE_KEYS = {
   EC_COMMITTEE: 'pssgavel_ec',
   AGENDA_TEMPLATES: 'pssgavel_agenda_templates',
   MEDIA: 'pssgavel_media',
-  ELECTIONS: 'pssgavel_elections'
+  ELECTIONS: 'pssgavel_elections',
+  SUPPORT_TICKETS: 'pssgavel_support_tickets',
+  REMINDERS: 'pssgavel_reminders'
 };
 
 // Initial Seed Data for immediate demonstration of all 34 requirements
@@ -193,6 +195,48 @@ const DEFAULT_ATTENDANCE = [
   { meetingId: 'MTG-2026-0818', date: '2026-08-18', branch: 'Miyapur', memberId: 'M-105', memberName: 'Priya Varma', status: 'Present', startTime: '10:00 AM' }
 ];
 
+const DEFAULT_SUPPORT_TICKETS = [
+  {
+    id: 'TKT-1001',
+    title: 'Need meeting password details',
+    category: 'Meeting Access',
+    description: 'I joined the last meeting but did not receive the password in time. Please share the link and password details in advance.',
+    status: 'Open',
+    submittedBy: 'Rahul Sharma',
+    createdAt: '2026-08-20T10:30:00.000Z'
+  },
+  {
+    id: 'TKT-1002',
+    title: 'Speech evaluation support',
+    category: 'Mentoring',
+    description: 'I want guidance on preparing for my upcoming speech evaluation and would like mentor feedback before the next meeting.',
+    status: 'In Progress',
+    submittedBy: 'Sravani Reddy',
+    createdAt: '2026-08-22T12:10:00.000Z'
+  }
+];
+
+const DEFAULT_REMINDERS = [
+  {
+    id: 'REM-1001',
+    title: 'Meeting reminder',
+    message: 'Share the Zoom link and final agenda with members before the evening session.',
+    dueDate: '2026-08-28',
+    type: 'Meeting',
+    done: false,
+    createdAt: '2026-08-20T09:00:00.000Z'
+  },
+  {
+    id: 'REM-1002',
+    title: 'Attendance follow-up',
+    message: 'Follow up with members who were absent in the last meeting.',
+    dueDate: '2026-08-25',
+    type: 'Attendance',
+    done: true,
+    createdAt: '2026-08-18T09:00:00.000Z'
+  }
+];
+
 class DBService {
   constructor() {
     this.initLocalStorage();
@@ -219,6 +263,12 @@ class DBService {
     }
     if (!localStorage.getItem(STORAGE_KEYS.ELECTIONS)) {
       localStorage.setItem(STORAGE_KEYS.ELECTIONS, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SUPPORT_TICKETS)) {
+      localStorage.setItem(STORAGE_KEYS.SUPPORT_TICKETS, JSON.stringify(DEFAULT_SUPPORT_TICKETS));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.REMINDERS)) {
+      localStorage.setItem(STORAGE_KEYS.REMINDERS, JSON.stringify(DEFAULT_REMINDERS));
     }
   }
 
@@ -386,6 +436,65 @@ class DBService {
       election.id === id ? { ...election, ...updates } : election
     );
     this.saveElections(elections);
+  }
+
+  // Support Tickets
+  getSupportTickets() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.SUPPORT_TICKETS) || '[]');
+  }
+
+  addSupportTicket(ticketData) {
+    const tickets = this.getSupportTickets();
+    const ticket = {
+      id: `TKT-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      status: 'Open',
+      ...ticketData
+    };
+    tickets.unshift(ticket);
+    localStorage.setItem(STORAGE_KEYS.SUPPORT_TICKETS, JSON.stringify(tickets));
+    return ticket;
+  }
+
+  updateSupportTicket(id, updates) {
+    const tickets = this.getSupportTickets().map(ticket =>
+      ticket.id === id ? { ...ticket, ...updates } : ticket
+    );
+    localStorage.setItem(STORAGE_KEYS.SUPPORT_TICKETS, JSON.stringify(tickets));
+  }
+
+  // Reminders
+  getReminders() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.REMINDERS) || '[]');
+  }
+
+  saveReminders(reminders) {
+    localStorage.setItem(STORAGE_KEYS.REMINDERS, JSON.stringify(reminders));
+  }
+
+  addReminder(reminderData) {
+    const reminders = this.getReminders();
+    const reminder = {
+      id: `REM-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      done: false,
+      ...reminderData
+    };
+    reminders.unshift(reminder);
+    this.saveReminders(reminders);
+    return reminder;
+  }
+
+  toggleReminder(id) {
+    const reminders = this.getReminders().map(reminder =>
+      reminder.id === id ? { ...reminder, done: !reminder.done } : reminder
+    );
+    this.saveReminders(reminders);
+  }
+
+  deleteReminder(id) {
+    const reminders = this.getReminders().filter(reminder => reminder.id !== id);
+    this.saveReminders(reminders);
   }
 }
 

@@ -38,6 +38,9 @@ export function renderClubConnectView(branchFilter = 'All') {
     .sort((first, second) => String(first.date).localeCompare(String(second.date)));
   const contacts = getEcContacts();
   const canManageCalls = authService.canManageMeetings();
+  const currentUser = authService.getCurrentUser() || { name: 'Club Member', email: 'member@pssgavelclub.org' };
+  const supportTickets = dbService.getSupportTickets()
+    .sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
 
   setTimeout(() => bindClubConnectEvents(), 50);
 
@@ -143,6 +146,70 @@ export function renderClubConnectView(branchFilter = 'All') {
           <details class="connect-faq"><summary>Where can I see my meeting role or agenda?</summary><p>Open Meetings to review roles, then open Agenda to see the planned activities and timings.</p></details>
           <details class="connect-faq"><summary>How do I record attendance?</summary><p>Open More, choose Attendance, select the meeting, and choose the appropriate status for each member.</p></details>
         </div>
+
+        <div class="support-ticket-layout">
+          <form id="connect-ticket-form" class="connect-card connect-support-form">
+            <div><h4>Create support ticket</h4><p class="section-note">Raise a request and the EC can track it.</p></div>
+            <label>
+              <span>Category</span>
+              <select id="ticket-category" class="form-select">
+                <option value="Meeting Access">Meeting Access</option>
+                <option value="Mentoring">Mentoring</option>
+                <option value="Attendance">Attendance</option>
+                <option value="Event Query">Event Query</option>
+                <option value="General Help">General Help</option>
+              </select>
+            </label>
+            <label>
+              <span>Title</span>
+              <input id="ticket-title" class="form-input" maxlength="100" placeholder="Brief title for your issue" required />
+            </label>
+            <label>
+              <span>Details</span>
+              <textarea id="ticket-details" class="form-input" rows="4" maxlength="1200" placeholder="Describe what you need help with" required></textarea>
+            </label>
+            <div class="support-ticket-form-footer">
+              <button class="btn btn-primary" type="submit"><i class="fa-solid fa-ticket"></i> Submit Ticket</button>
+              <span class="support-ticket-user">Raised by: ${escapeHtml(currentUser.name || 'Club Member')}</span>
+            </div>
+          </form>
+
+          <div class="connect-card support-ticket-panel">
+            <div class="support-ticket-header">
+              <div>
+                <h4>Recent support tickets</h4>
+                <p class="section-note">Tracks club issues and follow-up requests.</p>
+              </div>
+              <span class="support-ticket-badge">${supportTickets.length} total</span>
+            </div>
+            <div class="support-ticket-list" id="support-ticket-list">
+              ${supportTickets.length ? supportTickets.map(ticket => `
+                <article class="support-ticket-item" data-ticket-id="${escapeHtml(ticket.id)}">
+                  <div class="support-ticket-row">
+                    <div>
+                      <h5>${escapeHtml(ticket.title)}</h5>
+                      <p>${escapeHtml(ticket.category)}</p>
+                    </div>
+                    <span class="support-status status-${escapeHtml(ticket.status).toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(ticket.status)}</span>
+                  </div>
+                  <p class="support-ticket-description">${escapeHtml(ticket.description)}</p>
+                  <div class="support-ticket-meta">
+                    <span>By ${escapeHtml(ticket.submittedBy || currentUser.name)}</span>
+                    <span>${new Date(ticket.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <div class="support-ticket-actions">
+                    <select class="form-select support-ticket-status" data-ticket-id="${escapeHtml(ticket.id)}">
+                      <option value="Open" ${ticket.status === 'Open' ? 'selected' : ''}>Open</option>
+                      <option value="In Progress" ${ticket.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                      <option value="Resolved" ${ticket.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
+                  </div>
+                </article>
+              `).join('') : '<div class="connect-empty"><i class="fa-regular fa-clipboard"></i><h4>No tickets yet</h4><p>Support requests created by members will appear here.</p></div>'}
+            </div>
+          </div>
+        </div>
+
         <form id="connect-support-form" class="connect-card connect-support-form">
           <div><h4>Contact your club</h4><p class="section-note">Tell the EC what you need help with.</p></div>
           <label><span>Send to</span>
@@ -173,6 +240,41 @@ function bindClubConnectEvents() {
       }
       dbService.updateMeeting(meetingId, { videoPlatform, videoLink });
       showToast('Meeting link saved.', 'success');
+      window.location.reload();
+    });
+  });
+
+  document.getElementById('connect-ticket-form')?.addEventListener('submit', event => {
+    event.preventDefault();
+    const category = document.getElementById('ticket-category')?.value || 'General Help';
+    const title = document.getElementById('ticket-title')?.value.trim();
+    const description = document.getElementById('ticket-details')?.value.trim();
+    const currentUser = authService.getCurrentUser() || { name: 'Club Member', email: 'member@pssgavelclub.org' };
+
+    if (!title || !description) {
+      showToast('Please fill in the ticket title and details.', 'error');
+      return;
+    }
+
+    dbService.addSupportTicket({
+      title,
+      category,
+      description,
+      status: 'Open',
+      submittedBy: currentUser.name || 'Club Member'
+    });
+
+    showToast('Support ticket created successfully.', 'success');
+    window.location.reload();
+  });
+
+  document.querySelectorAll('.support-ticket-status').forEach(select => {
+    select.addEventListener('change', event => {
+      const ticketId = event.target.dataset.ticketId;
+      const status = event.target.value;
+      if (!ticketId || !status) return;
+      dbService.updateSupportTicket(ticketId, { status });
+      showToast('Ticket status updated.', 'success');
       window.location.reload();
     });
   });
