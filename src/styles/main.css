@@ -1,0 +1,141 @@
+/* ==========================================================================
+   PSS MIYAPUR GAVEL CLUB — GOOGLE MATERIAL DESIGN SYSTEM
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ── Requested brand palette ── */
+  --teal-primary: #45C9BD;
+  --teal-dark: #2FB8AD;
+  --teal-soft: #DFF7F5;
+  --teal-strong: #1CA59E;
+  --teal-deep: #1E7D76;
+  --white: #FFFFFF;
+  --dark-text: #263238;
+  --light-bg: #F5F7F7;
+  --light-gray: #E9EFEF;
+  --border-gray: #DDE5E4;
+
+  --google-blue:   var(--teal-primary);
+  --google-red:    #EA4335;
+  --google-yellow: #FBBC04;
+  --google-green:  var(--teal-dark);
+  --google-blue-dark:   var(--teal-deep);
+  --google-blue-light:  var(--teal-soft);
+  --google-red-light:   #FCE8E6;
+  --google-yellow-light:#FEF7E0;
+  --google-green-light: #E7F9F7;
+
+  --gold-primary:  var(--teal-primary);
+  --gold-bright:   var(--teal-dark);
+  --gold-subtle:   var(--teal-strong);
+  --gold-glow:     rgba(69, 201, 189, 0.22);
+  --navy-dark:     #263238;
+  --navy-mid:      #40535B;
+  --navy-light:    #6D7C82;
+  --navy-subtle:   rgba(38, 50, 56, 0.06);
+  --teal-accent:   var(--teal-primary);
+
+  --color-success: var(--teal-dark);
+  --color-warning: #FBBC04;
+  --color-danger:  #EA4335;
+  --color-info:    var(--teal-primary);
+  --color-purple:  #8A73FF;
+
+  --bg-main:      #F5F7F7;
+  --bg-main-gradient: linear-gradient(180deg, #F5F7F7 0%, #F2F7F7 100%);
+  --bg-card:      #FFFFFF;
+  --bg-nav:       #FFFFFF;
+  --bg-modal:     #FFFFFF;
+  --border-color: #DDE5E4;
+  --border-hover: #C7D7D5;
+  --text-primary:   #263238;
+  --text-secondary: #5B6A6F;
+  --text-muted:     #8B9AA0;
+  --shadow-sm:  0 6px 18px rgba(38, 50, 56, 0.06), 0 1px 3px rgba(38, 50, 56, 0.04);
+  --shadow-md:  0 10px 24px rgba(38, 50, 56, 0.08), 0 3px 10px rgba(38, 50, 56, 0.05);
+  --shadow-lg:  0 18px 38px rgba(38, 50, 56, 0.10), 0 8px 18px rgba(38, 50, 56, 0.06);
+  --badge-bg:   #EAFCF9;
+  --input-bg:   #FFFFFF;
+  --focus-ring: rgba(69, 201, 189, 0.18);
+}
+
+[data-theme="dark"] {
+  /* ── Dark Mode — Google Dark Surface ── */
+  --bg-main:    #202124;
+  --bg-main-gradient: linear-gradient(135deg, #202124 0%, #292A2D 100%);
+  --bg-card:    #2D2E31;
+  --bg-nav:     #292A2D;
+  --bg-modal:   #35363A;
+  --border-color: #5F6368;
+  --border-hover: #80868B;
+  --text-primary:   #E8EAED;
+  --text-secondary: #9AA0A6;
+  --text-muted:     #5F6368;
+  --shadow-sm:  0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:  0 6px 20px rgba(0,0,0,0.5);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,0.65);
+  --badge-bg:   #1A2540;
+  --input-bg:   #292A2D;
+  --focus-ring: rgba(138, 180, 248, 0.24);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-main-gradient);
+  color: var(--text-primary);
+  line-height: 1.5;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Google Sans', 'Roboto', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+a {
+  color: var(--google-blue);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover { color: var(--google-blue-dark); }
+
+button, input, select, textarea { font-family: inherit; font-size: inherit; }
+button { cursor: pointer; border: none; background: none; outline: none; }
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--google-blue); }
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulseBlue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(66,133,244,0.3); }
+  50%       { box-shadow: 0 0 0 6px rgba(66,133,244,0); }
+}
+
+.animate-fade-in { animation: fadeIn 0.24s cubic-bezier(0.16,1,0.3,1) forwards; }

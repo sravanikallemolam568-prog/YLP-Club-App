@@ -1,0 +1,891 @@
+
+Build a complete, professional Android application called “PSS Miyapur Gavel Club” using my existing Gavel Club application as the functional reference.
+IMPORTANT:
+Do NOT remove existing functionality.
+Preserve the existing features and logic unless specifically changed below.
+Improve the UI/UX.
+Convert/rebuild the application into a proper Android-compatible application.
+Use Firebase Authentication and Cloud Firestore for persistent data.
+Make the application responsive for Android phones and tablets.
+The final result must be a REAL WORKING APPLICATION, not a mockup.
+1. ANDROID APPLICATION
+The current application is primarily a web application and is not suitable enough for Android.
+Convert/rebuild it as a proper Android-compatible application.
+Requirements:
+Must run correctly on Android phones.
+Must support portrait mode.
+Must have touch-friendly controls.
+Must have responsive layouts.
+Must have mobile-friendly navigation.
+No unwanted horizontal scrolling.
+Use Capacitor or another reliable Android-compatible approach.
+Generate a working APK.
+Generate an AAB for Play Store deployment.
+Application name:PSS Miyapur Gavel Club
+Use my Gavel Club logo as the Android app icon.
+Add a proper Android splash screen.
+Firebase Authentication and Firestore must work inside the Android application.
+2. USER ROLES
+Create role-based access for:
+Member
+Members can:
+View dashboard.
+View their profile.
+View club members.
+View their speech progress.
+View meetings.
+View assigned roles.
+View attendance.
+View mentor information.
+View meeting agenda.
+Sign out.
+Members must not be able to modify administrative information.
+EC Officer
+EC Officers can:
+Register members.
+Manage members.
+Manage meetings.
+Assign meeting roles.
+Manage attendance.
+Manage speech progress.
+Assign mentors manually.
+Create and edit meeting agendas.
+View club statistics.
+Manage EC information.
+President
+President has full administrative access:
+All EC Officer features.
+Manage EC committee.
+Manage members.
+Manage meetings.
+Manage speech progress.
+Manage attendance.
+Manage mentors.
+Manage roles.
+Manage agenda.
+Manage application settings.
+View all club statistics.
+3. DASHBOARD
+Create a professional dashboard containing:
+Total Members
+Speeches Completed
+Meetings Held
+Average Attendance
+Branch Distribution
+Recent Activity
+EC Committee
+Next Meeting
+Greeting should change according to the time:
+Good morning
+Good afternoon
+Good evening
+4. BRANCHES
+Support:
+Miyapur
+GHMC
+MKR
+Allow administrators to filter members by branch.
+5. MEMBER REGISTRATION
+Create a member registration form with:
+Full Name — REQUIRED
+Mobile Number — REQUIRED
+Class / Year — REQUIRED
+School / College — REQUIRED
+Branch — REQUIRED
+Mentor — REQUIRED only if the club chooses to assign one during registration
+Parent Gender
+Other unnecessary personal information
+Validate all required fields.
+Mobile number must accept a valid 10-digit Indian mobile number.
+Do not allow incomplete forms to be saved.
+Show clear validation messages such as:
+“Please enter the member's full name.”
+“Please enter a valid 10-digit mobile number.”
+“Please select a branch.”
+6. MEMBER MANAGEMENT
+Create a searchable member list.
+Administrators can:
+Add member
+Edit member
+View member
+Assign mentor
+View branch
+View speech progress
+View attendance
+View meeting roles
+Use cards on mobile and tables/cards on larger screens.
+7. MEMBER FILTERS
+Add filters on the Members page for:
+Branch
+Mentor
+Class / Year
+Membership Status
+Speech Progress
+Registration Date
+Branch options:
+All Branches
+Miyapur
+GHMC
+MKR
+Filters must work together.
+Example:
+Branch = MiyapurMentor = Selected MentorStatus = Active
+Only matching members should be displayed.
+Add:
+Clear Filters
+8. EXCEL EXPORT
+Add an Export to Excel button on the Members page.
+Authorized administrators must be able to export member information to an Excel-compatible .xlsx file.
+The export should include:
+Member ID
+Full Name
+Mobile Number
+Class / Year
+School / College
+Branch
+Mentor
+Speech Progress
+Speeches Completed
+Attendance Percentage
+Registration Date
+Membership Status
+Do not export unnecessary sensitive information.
+Allow:
+Export all members.
+Export selected branch.
+Export filtered members.
+Export current search/filter results.
+Use a reliable Excel library such as SheetJS/XLSX.
+Filename format:
+PSS_Miyapur_Gavel_Club_Members_YYYY-MM-DD.xlsx
+The export must work on Android and desktop/web.
+9. SPEECH TRACKER
+Support these 10 speeches:
+Ice Breaker
+Organizing Your Speech
+Get to the Point
+How to Say It
+Your Body Speaks
+Vocal Variety
+Research Your Topic
+Get Comfortable with Visual Aids
+Persuade with Power
+Inspire Your Audience
+For each member display:
+Speech number
+Speech title
+Status
+Completion date
+Evaluator
+Mentor
+Progress percentage
+Use visual progress bars.
+Authorized EC users can mark speeches as completed.
+10. SPEECH FILTERS
+Add filters for:
+Branch
+Mentor
+Completed speeches
+Pending speeches
+Progress percentage
+Examples:
+Completed Speech 1
+Completed 5+ speeches
+Pending speeches
+100% completed
+11. MEETINGS
+Create complete meeting management.
+Each meeting contains:
+Meeting date
+Branch
+Start time
+Meeting status
+Prepared speeches
+Assigned roles
+Meeting agenda
+Show:
+Upcoming meetings
+Previous meetings
+Completed meetings
+12. CONFIGURABLE MEETING AGENDA + MEMBER ASSIGNMENT + AUTOMATIC AGENDA IMAGE
+IMPORTANT:
+The agenda and meeting timing must NOT be hard-coded.
+The administrator must be able to configure the meeting agenda directly inside the application.
+Create an Agenda Settings / Meeting Configuration section.
+Administrators can:
+Add agenda items.
+Edit agenda items.
+Delete agenda items.
+Change agenda order.
+Set meeting start time.
+Set duration for each agenda item.
+Assign members to agenda items.
+Add activities.
+Remove activities.
+Save agenda.
+Reuse saved agenda templates.
+
+Agenda Item Configuration
+For every agenda item provide:
+Agenda Item
+Assigned Member
+Start Time
+Duration
+End Time
+Order
+Example:
+
+
+
+Time
+
+
+Activity
+
+
+Member
+
+
+10:00–10:05
+
+
+Opening
+
+
+Rahul
+
+
+10:05–10:15
+
+
+Prepared Speech
+
+
+Sravani
+
+
+10:15–10:25
+
+
+Prepared Speech
+
+
+Anjali
+
+
+10:25–10:35
+
+
+Table Topics
+
+
+Kiran
+
+
+10:35–10:45
+
+
+Evaluation
+
+
+Priya
+The administrator manually selects:
+Activity
+Member
+Duration
+The application automatically calculates:
+Start time
+End time
+Full timeline
+If one duration changes, automatically recalculate all following agenda times.
+
+Automatic Agenda Text Generation
+After the administrator assigns members and timings, the application must automatically generate a formatted agenda text.
+Example:
+PSS MIYAPUR GAVEL CLUB
+Meeting Agenda
+Date: 18 August 2026Branch: MiyapurStart Time: 10:00 AM
+10:00–10:05 AM — Opening — Rahul
+10:05–10:15 AM — Prepared Speech — Sravani
+10:15–10:25 AM — Prepared Speech — Anjali
+10:25–10:35 AM — Table Topics — Kiran
+10:35–10:45 AM — Evaluation — Priya
+The administrator should NOT manually type this text.
+The application must generate it automatically from the agenda data.
+
+Generate Agenda Image
+Add a button:
+Generate Agenda Image
+When clicked, the application should create a professional agenda image/card containing:
+Gavel Club logo
+Meeting date
+Branch
+Start time
+Agenda items
+Assigned members
+Start and end times
+Clean formatting
+The generated image should be:
+Viewable in the app
+Downloadable
+Shareable on WhatsApp
+Saveable on Android devices
+
+Auto Update
+If the administrator changes:
+Member
+Duration
+Activity
+Meeting date
+Branch
+Start time
+The agenda text and agenda image must regenerate automatically.
+No outdated information should remain.
+
+Firestore Storage
+Store in Firestore:
+Meeting ID
+Meeting date
+Branch
+Agenda item
+Assigned member
+Duration
+Start time
+End time
+Display order
+Created by
+Created date
+The data must remain available after refreshing, closing, and reopening the application.
+
+Required Workflow
+Admin creates agenda↓Admin assigns members↓Admin sets durations↓Application calculates times↓Application generates agenda text↓Application generates agenda image↓Admin downloads or shares the agenda image
+Do NOT hard-code timings or member assignments.
+13. MEETING FILTERS
+Add filters for:
+Branch
+Date
+Upcoming
+Completed
+Meeting status
+14. MEETING ROLES
+Support:
+Sergeant
+Gavelier
+Topic Master
+Evaluator
+Timer
+Ah-Counter
+Listener
+Videographer
+General Evaluator
+Activity Master
+Administrators can manually assign members to roles.
+15. ROLE TRACKER
+Track how many times each member performs each role.
+Display:
+Member | Sergeant | Gavelier | Topic Master | Evaluator | Timer | Ah-Counter | Listener | Videographer | General Evaluator | Activity Master
+Add filters for:
+Branch
+Member
+Role
+Number of times performed
+16. ATTENDANCE + EXCEL EXPORT
+Create meeting-based attendance.
+Attendance statuses:
+Present
+Informed Absent
+Uninformed Absent
+Authorized users can:
+Mark Present
+Mark Informed Absent
+Mark Uninformed Absent
+Mark All Present
+Mark All Absent
+Save attendance
+Calculate:
+Present count
+Informed absent count
+Uninformed absent count
+Total members
+Attendance percentage
+Attendance Filters
+Add filters for:
+Branch
+Meeting date
+Member
+Attendance status
+Filters must work together.
+Add:
+Clear Filters
+Export Attendance to Excel
+Add an Export Attendance to Excel button.
+Authorized administrators must be able to export attendance records into an Excel-compatible .xlsx file.
+The Excel file should include:
+Meeting Date
+Branch
+Member ID
+Member Name
+Attendance Status
+Meeting Start Time
+Attendance Percentage
+Total Meetings
+Present Count
+Informed Absent Count
+Uninformed Absent Count
+The administrator must be able to:
+Export all attendance records.
+Export attendance for a selected meeting.
+Export attendance for a selected branch.
+Export attendance for a selected member.
+Export filtered attendance results.
+Export attendance for a selected date/date range.
+The Excel export must respect the currently selected filters.
+Example:
+If the administrator selects:
+Branch: Miyapur Meeting Date: 18 August 2026
+then the Excel file should contain only the matching Miyapur attendance records for that meeting.
+Use a reliable Excel library such as SheetJS/XLSX, consistent with the Member Excel Export.
+Filename format:
+PSS_Miyapur_Gavel_Club_Attendance_YYYY-MM-DD.xlsx
+The Excel file must work on:
+Android
+Desktop
+Web
+Make sure the exported Excel data is properly formatted, with clear column headings and one attendance record per row.
+17. MENTOR ASSIGNMENT — MANUAL ONLY
+IMPORTANT:
+Mentor assignment must be completely manual.
+DO NOT create any automatic mentor-assignment logic.
+DO NOT use speech completion to determine mentors.
+DO NOT use:
+More than 5 speeches
+Speech progress
+Progress percentage
+Any automatic eligibility calculation
+Any automatic mentor selection
+The application must NEVER automatically choose a mentor.
+Mentor Assignment Form
+Create:
+Junior Member
+Required dropdown.
+Mentor
+Required dropdown.
+For Speech
+Required dropdown.
+Options:
+All Speeches
+Speech 1
+Speech 2
+Speech 3
+Speech 4
+Speech 5
+Speech 6
+Speech 7
+Speech 8
+Speech 9
+Speech 10
+The administrator manually selects:
+Junior member.
+Mentor.
+Speech/all speeches.
+Clicks Assign Mentor.
+Save the assignment to Firestore.
+Mentor List
+The Mentor dropdown should display available club members normally.
+Do NOT automatically filter mentors based on speech count.
+Do NOT automatically select a mentor.
+The administrator makes the final mentor-selection decision.
+The mentor assignment can be changed or removed later by an authorized administrator.
+18. MENTOR ASSIGNMENT PAGE
+Show:
+Junior Member
+Assigned Mentor
+Speech
+Assignment Date
+Assigned By
+Edit
+Remove
+Add search/filter options for:
+Member
+Mentor
+Branch
+Speech
+19. EC COMMITTEE
+Support:
+President
+VP Education
+VP Membership
+VP PR
+Secretary
+Joint Secretary
+Sergeant
+Allow authorized users to update EC member names.
+Display EC members on dashboard.
+20. AUTHENTICATION
+Use Firebase Authentication.
+Users can:
+Register.
+Sign in.
+Sign out.
+Maintain session.
+Do NOT store passwords directly in JavaScript.
+Implement secure role-based authorization.
+Frontend role checks alone must NOT be considered security.
+Use Firestore security rules.
+21. FIREBASE DATABASE
+Use:
+Firebase Authentication
+Cloud Firestore
+Collections can include:
+users
+members
+meetings
+attendance
+speeches
+roles
+mentorAssignments
+agendaTemplates
+ecCommittee
+activities
+Data must persist after:
+Refresh
+Closing browser
+Reopening application
+Installing/reopening Android app
+Do not use localStorage as the primary database.
+22. FIRESTORE SECURITY
+Implement proper Firestore security rules.
+Members should only access authorized information.
+EC Officers should have appropriate administrative permissions.
+President should have full administrative permissions.
+Never expose passwords or private secrets.
+23. MOBILE UI
+For Android:
+Use mobile navigation.
+Use hamburger menu or bottom navigation.
+Make buttons touch-friendly.
+Make forms responsive.
+Convert large tables to cards where appropriate.
+Make tables horizontally scrollable only when necessary.
+Make dialogs responsive.
+Prevent content overflow.
+24. DESIGN
+Use a professional Gavel Club design.
+Existing design direction:
+Navy
+Gold
+White
+Teal
+Green
+Red
+Amber
+Use:
+Clean cards
+Rounded corners
+Subtle shadows
+Professional typography
+Good spacing
+Smooth lightweight animations
+Support:
+Light mode
+Dark mode
+25. SPLASH SCREEN
+Display:
+PSS MiyapurGavel Club
+Administration Platform
+Use the Gavel Club logo.
+26. ERROR HANDLING
+Handle:
+Invalid login
+Registration failure
+Missing fields
+Firebase connection failure
+Permission denied
+Network unavailable
+Invalid data
+Failed database operations
+Show understandable error messages.
+27. LOADING STATES
+Show loading indicators when:
+Loading members
+Loading meetings
+Loading attendance
+Loading speeches
+Saving data
+Registering users
+Updating records
+Exporting Excel
+28. DATA VALIDATION
+Validate:
+Email
+Password
+Name
+Mobile number
+Required fields
+Meeting date
+Meeting time
+Prevent duplicate member records where appropriate.
+29. SEARCH
+Add search functionality for:
+Members
+Speech tracker
+Role tracker
+Mentor assignments
+Meetings
+Search should update results efficiently.
+30. PERFORMANCE
+Keep the app fast.
+Avoid unnecessary Firestore reads.
+Use efficient queries.
+Do not reload the entire application after small updates.
+Use reusable components/functions.
+Keep Android performance smooth.
+31. CODE QUALITY
+Organize the project cleanly.
+Separate:
+UI
+Authentication
+Firebase configuration
+Database functions
+Authorization
+Member management
+Meeting management
+Attendance
+Speech tracking
+Mentor management
+EC management
+Excel export
+Agenda management
+Remove duplicate code.
+Do not break existing features.
+32. IMPORTANT IMPLEMENTATION PROCESS
+First inspect my existing project/code.
+Understand the current HTML, CSS and JavaScript.
+Then:
+Preserve existing features.
+Fix existing bugs.
+Improve UI/UX.
+Add Firebase Authentication.
+Add Firestore persistence.
+Add role-based authorization.
+Add configurable agenda timing.
+Add manual mentor assignment.
+Add filters.
+Add Excel export.
+Make the application Android responsive.
+Convert it to Android.
+Configure the app icon.
+Configure splash screen.
+Build APK.
+Build AAB.
+Test all major features.
+Fix all errors before completion.
+33. DO NOT DO THESE THINGS
+Do NOT:
+Automatically assign mentors.
+Automatically select mentors.
+Use speech count to assign mentors.
+Use “more than 5 speeches” as a mentor rule.
+Hard-code meeting agenda timings.
+Remove existing features.
+Create fake database data as the final solution.
+Use localStorage as the main database.
+Store passwords in plaintext.
+Create a mobile-only website instead of an Android-compatible application.
+34. FINAL TESTING CHECKLIST
+Before declaring the project complete, test:
+Splash screen
+Login
+Registration
+Member role
+EC Officer role
+President role
+Dashboard
+Member registration
+Required-field validation
+Member search
+Member filters
+Branch filtering
+Excel export
+Speech tracker
+Speech filters
+Meetings
+Meeting filters
+Configurable agenda
+Dynamic agenda timing
+Meeting role assignment
+Role tracker
+Role filters
+Attendance
+Attendance filters
+Mentor assignment
+Manual mentor selection
+Mentor search/filter
+No automatic mentor assignment
+EC settings
+Dark mode
+Sign out
+Firebase persistence
+Firestore security
+Android responsiveness
+Android app icon
+Android splash screen
+APK generation
+AAB generation
+Do not consider the project complete until these features are implemented, tested and working.
+
+
+
+
+
+
+
+
+Implementation Plan: PSS Miyapur Gavel Club Android Application
+Build a complete, professional, production-grade Android application for “PSS Miyapur Gavel Club” using modern web technologies (HTML5, CSS3, JavaScript/TypeScript, Vite/Vanilla architecture, SheetJS, HTML2Canvas) packaged with Capacitor for Android native APK and AAB generation, integrated with Firebase Authentication and Cloud Firestore for persistent cloud database storage.
+
+1. Architecture & Technology Stack
+PSS Miyapur Gavel Club Android AppCore Client LayerCapacitor Native Android BridgeFirebase Backend ServicesUI / Design System - Navy & Gold Gavel Theme, Dark/Light ModeMobile Navigation & Responsive Layout - Phone & TabletModule: Auth & Role-Based Access ControlModule: Dashboard & AnalyticsModule: Member Management & Multi-FiltersModule: 10-Speech Tracker & ProgressModule: Configurable Dynamic Agenda & Image GeneratorModule: Meetings & Manual Role AssignmentModule: Attendance & Excel ExportModule: 100% Manual Mentor ManagementModule: EC Committee & App SettingsAndroid Project: com.pssgavelclub.miyapurApp Icon & Adaptive IconsSplash Screen Native & Web FallbackCapacitor Plugins: Filesystem, Share, StatusBar, HapticsGradle Build: APK & AAB GenerationFirebase AuthenticationCloud Firestore PersistenceFirestore Security Rules
+Key Libraries & Tools:
+Frontend: Modern ES6+ JavaScript, CSS3 Design System with CSS variables (light/dark mode, Navy #0B192C, #1E3E62, Gold #D4AF37, #F6C90E, Teal, White), FontAwesome 6 icons, Google Fonts (Outfit & Plus Jakarta Sans).
+Persistence: Firebase SDK v10+ (Authentication + Firestore) with robust local caching / offline fallback and automatic synchronization.
+Data Export: SheetJS (xlsx) for .xlsx export of Members and Attendance (respecting active filters).
+Visual Agenda Generator: Canvas API & html2canvas for high-resolution downloadable, shareable branded meeting agenda graphics.
+Mobile Native Container: Capacitor v6+ configured for Android, with AndroidManifest, splash screens, mipmap icons, and Gradle build automation for debug/release APK and AAB.
+
+2. Core Functional Modules & Specifications
+A. Role-Based Access Control (RBAC)
+President: Full administrative access across all modules (EC Committee management, full member/meeting/attendance/speech/mentor/agenda deletion and edits, application settings).
+EC Officer: Administrative operations (Register/edit members, manage meetings, assign meeting roles, mark attendance, record speech progress, assign mentors manually, create/edit agendas, export reports).
+Member: Read-only access to their profile, club members list, speech progress, meeting schedules, assigned roles, attendance record, mentor info, meeting agendas; personal sign out.
+B. Dashboard & Branch Distribution
+Live stats: Total Members, Speeches Completed, Meetings Held, Average Attendance %.
+Time-aware dynamic greeting: "Good morning / Good afternoon / Good evening".
+Branch distribution metrics for Miyapur, GHMC, MKR.
+Next upcoming meeting countdown/badge, Recent Activity log, and current Executive Committee showcase.
+C. Member Management & Multi-Filters
+Registration Form: Required field validation (Full Name, 10-digit Indian Mobile ^[6-9]\d{9}$, Class/Year, School/College, Branch [Miyapur, GHMC, MKR], Optional Mentor selection).
+Multi-Filter System: Synchronous multi-faceted filtering by Branch, Mentor, Class/Year, Status (Active/Inactive), Speech Progress (0 to 10), and Registration Date. Clear Filters button.
+Excel Export: SheetJS export generating PSS_Miyapur_Gavel_Club_Members_YYYY-MM-DD.xlsx containing Member ID, Full Name, Mobile, Class/Year, School/College, Branch, Mentor, Speeches Completed, Attendance %, Registration Date, Status. Supports exporting all, by branch, or by filtered search results.
+D. 10-Speech Tracker
+Tracking the 10 Toastmasters / Gavel speeches:
+Ice Breaker
+Organizing Your Speech
+Get to the Point
+How to Say It
+Your Body Speaks
+Vocal Variety
+Research Your Topic
+Get Comfortable with Visual Aids
+Persuade with Power
+Inspire Your Audience
+Member speech progress cards with visual percentage bars, completion timestamps, evaluators, and mentor notes.
+EC/President completion entry modal with speech filters (Branch, Mentor, Completed Speeches, Pending Speeches, Percentage).
+E. Configurable Dynamic Agenda & Image Card Generator
+Dynamic Calculation: Meeting Start Time + Durations (in minutes) for each agenda item dynamically calculate startTime and endTime across the entire timeline.
+Live Re-calculation: Changing any duration or start time immediately recalculates all subsequent agenda timings.
+Automatic Agenda Text Generation: Generates clean formatted text for copy/sharing without manual typing.
+Branded Agenda Image Card Generator: Generates high-res image card containing Gavel Club logo, Meeting Date, Branch, Start Time, and beautifully styled activity timeline. Ready to save or share directly to WhatsApp.
+Agenda Template Saving & Reusability: Save custom agenda templates to Firestore and reload them for new meetings.
+F. Meeting Management & Role Tracker
+Meetings with Date, Branch, Start Time, Status (Upcoming, In Progress, Completed), Agenda, and Roles.
+10 Official Roles: Sergeant, Gavelier, Topic Master, Evaluator, Timer, Ah-Counter, Listener, Videographer, General Evaluator, Activity Master.
+Role Tracker Matrix: Tracks lifetime frequency of each role performed by each member with filtering by branch, member, and role.
+G. Attendance Management & Excel Export
+Meeting-based tracking: Present, Informed Absent, Uninformed Absent.
+Quick actions: Mark Present, Mark Informed Absent, Mark Uninformed Absent, Mark All Present, Mark All Absent.
+Live calculation of Present Count, Informed Absent, Uninformed Absent, Total Members, Attendance %.
+Excel Export: PSS_Miyapur_Gavel_Club_Attendance_YYYY-MM-DD.xlsx with Meeting Date, Branch, Member ID, Name, Status, Start Time, Attendance %, Total Meetings, Present/Absent counts. Strictly respects active filters (e.g. Miyapur branch on a specific date).
+H. 100% Manual Mentor Assignment (Strict Rule)
+ZERO automatic mentor assignments or eligibility constraints.
+Manual selection form: Junior Member dropdown, Mentor dropdown (all active club members), For Speech (All Speeches / Speech 1–10).
+Mentor Assignment Registry with search, branch filter, speech filter, edit, and remove.
+I. Executive Committee (EC) Settings
+Roles: President, VP Education, VP Membership, VP PR, Secretary, Joint Secretary, Sergeant.
+Officer management interface with instant update and dashboard reflection.
+
+3. Proposed Project Structure
+c:\Users\Student\Documents\YLP-ANDROID\
+├── index.html                     # Main Single Page App Entry Point
+├── package.json                   # Dependencies & Build scripts
+├── vite.config.js                 # Vite bundler configuration
+├── capacitor.config.json          # Capacitor native Android app config
+├── firestore.rules                # Cloud Firestore Security Rules
+├── public/
+│   ├── favicon.ico
+│   ├── gavel-club-logo.svg        # Premium SVG Gavel Club branding logo
+│   └── gavel-club-logo.png        # High-res PNG logo
+├── src/
+│   ├── main.js                    # Application initializer & router
+│   ├── config/
+│   │   └── firebase.js            # Firebase Auth & Firestore client configuration
+│   ├── services/
+│   │   ├── authService.js         # Firebase authentication & session state
+│   │   ├── dbService.js           # Firestore CRUD operations & local sync
+│   │   ├── excelService.js        # SheetJS XLSX exporter for members & attendance
+│   │   └── agendaImageService.js  # Dynamic agenda calculation & canvas image generator
+│   ├── state/
+│   │   └── store.js               # Reactive application state & caching
+│   ├── styles/
+│   │   ├── main.css               # Global tokens, light/dark themes, responsive grid
+│   │   ├── components.css         # Cards, modals, buttons, badges, forms, toast notifications
+│   │   └── mobile.css             # Android-first touch UI, bottom nav, drawer, safe areas
+│   ├── components/
+│   │   ├── SplashScreen.js        # Animated Android-first splash screen
+│   │   ├── Navigation.js          # Bottom navigation bar (mobile) + side nav (tablet/desktop)
+│   │   ├── Header.js              # Top bar with branch selector, theme toggle, user profile
+│   │   └── Modal.js               # Accessible mobile-friendly modal dialogs
+│   ├── views/
+│   │   ├── LoginView.js           # Firebase Auth login & registration view
+│   │   ├── DashboardView.js       # Live metrics, time greeting, branch charts, EC
+│   │   ├── MembersView.js         # Member list, multi-filters, add/edit modal, Excel export
+│   │   ├── SpeechesView.js        # 10-Speech tracker, progress bars, completion modal
+│   │   ├── MeetingsView.js        # Meeting list, status filter, meeting details
+│   │   ├── AgendaConfigView.js    # Configurable agenda, duration auto-calc, image generator
+│   │   ├── RolesView.js           # 10-Role tracker matrix & member role history
+│   │   ├── AttendanceView.js      # Attendance sheet, bulk actions, attendance Excel export
+│   │   ├── MentorsView.js         # 100% manual mentor assignment & management
+│   │   └── SettingsView.js        # EC committee editor, branch config, app settings
+│   └── utils/
+│       ├── validators.js          # 10-digit mobile, email, required field validators
+│       ├── formatters.js          # Date/time formatting, speech names, status badges
+│       └── nativeBridge.js        # Capacitor Haptics, StatusBar, Share, Filesystem bridge
+└── android/                       # Native Android Studio / Gradle Project
+   ├── build.gradle
+   ├── app/
+   │   ├── build.gradle           # APK and AAB build scripts
+   │   └── src/main/
+   │       ├── AndroidManifest.xml # Permissions, portrait orientation, app title
+   │       └── res/
+   │           ├── values/strings.xml, styles.xml
+   │           ├── mipmap-*/      # Custom PSS Miyapur Gavel Club app icons
+   │           └── drawable/      # Splash screen drawables
+
+4. Verification & Testing Plan
+Automated & Build Verification:
+Frontend Validation:
+Verify Vite build / bundling runs without any syntax or runtime errors.
+Run linter / type checks on all JavaScript and CSS modules.
+Native Android & Capacitor Build:
+Initialize Capacitor Android platform (@capacitor/core, @capacitor/cli, @capacitor/android).
+Configure capacitor.config.json with appId com.pssgavelclub.miyapur, appName PSS Miyapur Gavel Club.
+Setup Android icons and splash assets.
+Run Gradle tasks to generate Debug/Release APK and AAB (Android App Bundle).
+Manual Verification Checklist (All 34 User Requirements):
+ Splash Screen: Professional logo, "PSS Miyapur Gavel Club Administration Platform", smooth fade to main UI.
+ Authentication & Roles: Login, Register, Role validation (Member, EC Officer, President), secure session handling.
+ Dashboard: Time-based greeting (morning/afternoon/evening), live member count, speech stats, branch distribution, EC list.
+ Member Registration & Form Validation: Mandatory checks for Name, 10-digit Indian Mobile, Class/Year, School/College, Branch.
+ Member Multi-Filters & Search: Multi-filter by Branch (Miyapur, GHMC, MKR), Mentor, Class, Status, Speech count + Clear Filters.
+ Member Excel Export: Generates PSS_Miyapur_Gavel_Club_Members_YYYY-MM-DD.xlsx with accurate filtered rows.
+ 10-Speech Tracker: All 10 speech titles, visual progress percentage, completion entry by EC/President.
+ Configurable Agenda: Add/edit/order agenda items, set durations, auto-calculate timeline start/end times, auto-generate agenda text.
+ Agenda Image Card Generator: HTML5 Canvas rendering of branded meeting card, download & share ready.
+ Meetings & 10 Meeting Roles: Manage meetings, assign roles, Role Tracker frequency matrix.
+ Attendance & Attendance Excel Export: Present/Informed/Uninformed absent tracking, bulk actions, filtered Excel export PSS_Miyapur_Gavel_Club_Attendance_YYYY-MM-DD.xlsx.
+ 100% Manual Mentor Assignment: Junior member + Mentor dropdown + Speech selection, ZERO automatic logic.
+ EC Committee Management: Update officer names, reflects instantly on dashboard.
+ Mobile UX & Theming: Touch-friendly buttons, bottom navigation, responsive cards, Dark/Light mode toggle.
+ Firebase Persistence: Firestore collections populated and live synced.
+ APK and AAB Assets: Generated in the Android build artifacts.
+

@@ -1,0 +1,107 @@
+// Authentication & Role-Based Access Control (RBAC) Service
+
+const AUTH_USER_KEY = 'pssgavel_auth_user';
+const EC_STORAGE_KEY = 'pssgavel_ec';
+
+export const ROLES = {
+  MEMBER: 'Member',
+  EC_OFFICER: 'EC Officer',
+  VP_MEMBERSHIP: 'VP Membership',
+  VP_PR: 'VP Public Relations',
+  PRESIDENT: 'President'
+};
+
+class AuthService {
+  constructor() {
+    const stored = localStorage.getItem(AUTH_USER_KEY);
+    this.currentUser = stored ? JSON.parse(stored) : null;
+  }
+
+  getCurrentUser() {
+    return this.currentUser;
+  }
+
+  isLoggedIn() {
+    return !!this.currentUser;
+  }
+
+  login(email, password, selectedRole = ROLES.PRESIDENT) {
+    const normalizedEmail = (email || '').trim().toLowerCase();
+    if (selectedRole === ROLES.VP_MEMBERSHIP || selectedRole === ROLES.VP_PR) {
+      const committee = JSON.parse(localStorage.getItem(EC_STORAGE_KEY) || '{}');
+      const assignedEmail = (selectedRole === ROLES.VP_PR ? committee.vpPREmail || 'rahul@pssgavelclub.org' : committee.vpMembershipEmail || 'user@pssgavelclub.org').trim().toLowerCase();
+      if (normalizedEmail && (!assignedEmail || normalizedEmail !== assignedEmail)) return null;
+    }
+
+    let name = 'Club Member';
+    if (selectedRole === ROLES.PRESIDENT) name = 'Priya Varma (President)';
+    else if (selectedRole === ROLES.VP_MEMBERSHIP) name = 'Sravani Reddy (VP Membership)';
+    else if (selectedRole === ROLES.VP_PR) name = 'Rahul Sharma (VP Public Relations)';
+    else if (selectedRole === ROLES.EC_OFFICER) name = 'Kiran Kumar (VP Ed)';
+    else name = 'Rahul Sharma (Member)';
+
+    this.currentUser = {
+      name: name,
+      email: email || 'user@pssgavelclub.org',
+      role: selectedRole,
+      branch: 'Miyapur'
+    };
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(this.currentUser));
+    return this.currentUser;
+  }
+
+  register(name, email, password, role = ROLES.MEMBER, branch = 'Miyapur') {
+    this.currentUser = {
+      name,
+      email,
+      role,
+      branch
+    };
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(this.currentUser));
+    return this.currentUser;
+  }
+
+  logout() {
+    this.currentUser = null;
+    localStorage.removeItem(AUTH_USER_KEY);
+  }
+
+  // Permission Checks
+  isPresident() {
+    return this.currentUser?.role === ROLES.PRESIDENT;
+  }
+
+  isVPMembership() {
+    return this.currentUser?.role === ROLES.VP_MEMBERSHIP;
+  }
+
+  isVPPR() {
+    return this.currentUser?.role === ROLES.VP_PR;
+  }
+
+  isReadOnly() {
+    return this.currentUser?.role === ROLES.MEMBER;
+  }
+
+  isECOfficer() {
+    return this.currentUser?.role === ROLES.EC_OFFICER || this.currentUser?.role === ROLES.PRESIDENT;
+  }
+
+  canManageMembers() {
+    return this.isPresident() || this.isVPMembership() || this.isECOfficer();
+  }
+
+  canManageMeetings() {
+    return this.isPresident() || this.isECOfficer();
+  }
+
+  canManageMedia() {
+    return this.isPresident() || this.isECOfficer() || this.isVPPR();
+  }
+
+  canEditAdmin() {
+    return this.isECOfficer();
+  }
+}
+
+export const authService = new AuthService();
