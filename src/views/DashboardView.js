@@ -176,6 +176,13 @@ export function renderDashboardView(branchFilter = 'All') {
   const nextMeeting = meetings.find(m => m.date && m.date !== todayLabel) || meetings[0];
   const presentCount = attendance.filter(a => a.status === 'Present').length;
   const absentCount = attendance.filter(a => a.status !== 'Present').length;
+  const speechList = dbService.getSpeechList();
+  const totalSpeechProjects = members.length * speechList.length;
+  const completedSpeechProjects = members.reduce((total, member) =>
+    total + Math.min(Math.max(Number(member.speechesCompleted) || 0, 0), speechList.length), 0);
+  const speechProgressPercent = totalSpeechProjects
+    ? Math.round((completedSpeechProjects / totalSpeechProjects) * 100)
+    : 0;
 
   setTimeout(() => bindReminderEvents(), 40);
 
@@ -191,12 +198,15 @@ export function renderDashboardView(branchFilter = 'All') {
         </div>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(69,201,189,0.08), rgba(255,255,255,1)); border: 1px solid rgba(69, 201, 189, 0.14); border-radius: 22px; padding: 20px 18px; margin-bottom: 22px; box-shadow: var(--shadow-sm);">
-        <img src="/gavel-club-logo.svg" alt="PSS Gavel Club logo" style="width: 52px; height: 52px; object-fit: cover; border-radius: 16px; flex-shrink: 0;" />
-        <div>
-          <div style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); font-weight: 700;">PSS MIYAPUR GAVEL</div>
-          <div style="font-size: 1.6rem; font-weight: 800; margin-top: 4px; line-height: 1.1;">Gavel Club Management</div>
+      <div class="home-speech-overview">
+        <div class="home-speech-overview-copy">
+          <div class="home-speech-overview-title"><i class="fa-solid fa-microphone-lines"></i> Speech progress</div>
+          <div class="home-speech-overview-count">${completedSpeechProjects} of ${totalSpeechProjects} projects completed</div>
+          <div class="home-speech-overview-track" role="progressbar" aria-label="Club speech project completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${speechProgressPercent}">
+            <span style="width: ${speechProgressPercent}%"></span>
+          </div>
         </div>
+        <a class="btn btn-outline btn-sm" href="#speeches"><i class="fa-solid fa-arrow-right"></i> View progress</a>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 26px;">

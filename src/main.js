@@ -5,6 +5,7 @@ import './styles/components.css';
 import './styles/mobile.css';
 
 import { authService } from './services/authService.js';
+import { startCloudSync } from './services/cloudDataService.js';
 import { renderSplashScreen } from './components/SplashScreen.js';
 import { renderHeader } from './components/Header.js';
 import { renderNavigation } from './components/Navigation.js';
@@ -23,18 +24,30 @@ import { renderLoginView } from './views/LoginView.js';
 import { renderClubConnectView } from './views/ClubConnectView.js';
 import { renderECElectionsView } from './views/ECElectionsView.js';
 import { initAIAssistant } from './components/AIAssistant.js';
+import { showToast } from './components/Modal.js';
 
 class AppController {
   constructor() {
     this.activeBranch = 'All';
     this.activeView = 'dashboard';
     this.appContainer = document.getElementById('app');
+    window.addEventListener('club:cloud-error', (event) => {
+      showToast(event.detail || 'Could not save records to Firestore.', 'error');
+    });
   }
 
   init() {
     // Show splash screen first
-    renderSplashScreen(() => {
+    renderSplashScreen(async () => {
       this.bindHashRouter();
+      await authService.initialize();
+      if (authService.isLoggedIn() && !authService.getCurrentUser()?.offline) {
+        const synced = await startCloudSync(authService.getCurrentUser().role);
+        if (!synced) {
+          await authService.logout();
+          window.location.hash = '#login';
+        }
+      }
       this.renderApp();
     });
   }

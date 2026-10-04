@@ -3,9 +3,18 @@
 import { dbService } from '../services/dbService.js';
 import { authService } from '../services/authService.js';
 import { showToast } from '../components/Modal.js';
+import { exportCloudBackup, getCloudStatus } from '../services/cloudDataService.js';
 
 export function renderSettingsView() {
   const ec = dbService.getECCommittee();
+  const cloudStatus = getCloudStatus();
+  const statusLabels = {
+    online: 'Connected to Firestore',
+    connecting: 'Connecting to Firestore',
+    error: 'Database connection needs attention',
+    offline: 'Not connected',
+    unconfigured: 'Firebase setup required'
+  };
 
   setTimeout(() => {
     bindSettingsEvents();
@@ -19,6 +28,18 @@ export function renderSettingsView() {
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Manage EC officer designations and application preferences.</p>
         </div>
       </div>
+
+      <section class="card" style="max-width: 700px; margin-bottom: 18px; padding: 18px;">
+        <div class="card-title"><i class="fa-solid fa-cloud"></i> Permanent club storage</div>
+        <p style="margin: 8px 0; color: var(--text-secondary); font-size: 0.86rem;">${statusLabels[cloudStatus.state] || 'Database status unknown'}</p>
+        ${cloudStatus.error ? `<p style="margin: 8px 0; color: var(--color-danger); font-size: 0.8rem;">${cloudStatus.error}</p>` : ''}
+        ${authService.isPresident() ? `
+          <button id="download-cloud-cache-btn" type="button" class="btn btn-outline btn-sm" style="margin-top: 6px;">
+            <i class="fa-solid fa-download"></i> Download current cache
+          </button>
+        ` : ''}
+        <p style="margin: 10px 0 0; color: var(--text-muted); font-size: 0.76rem; line-height: 1.45;">This file is a copy of records currently cached on this device. Configure scheduled Firestore exports for a complete server-side backup.</p>
+      </section>
 
       <div class="card" style="max-width: 700px;">
         <div class="card-header">
@@ -107,6 +128,11 @@ export function renderSettingsView() {
 }
 
 function bindSettingsEvents() {
+  document.getElementById('download-cloud-cache-btn')?.addEventListener('click', () => {
+    exportCloudBackup();
+    showToast('Current device cache downloaded. Use scheduled Firestore exports for cloud backups.', 'success');
+  });
+
   document.getElementById('ec-settings-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const updatedEc = {

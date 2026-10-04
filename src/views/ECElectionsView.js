@@ -38,7 +38,7 @@ function getElectionStatus(election, now = Date.now()) {
 
 function getVoterKey() {
   const user = authService.getCurrentUser();
-  return (user?.email || user?.name || '').trim().toLowerCase();
+  return user?.uid || '';
 }
 
 export function renderECElectionsView() {
@@ -58,7 +58,7 @@ export function renderECElectionsView() {
         ${canManage ? '<button id="create-election-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create election</button>' : ''}
       </header>
 
-      <div class="election-local-notice"><i class="fa-solid fa-circle-info"></i><span>This poll is stored on this device only. Votes are not synced or secured across devices, so use a shared election service for official results.</span></div>
+      <div class="election-local-notice"><i class="fa-solid fa-circle-info"></i><span>Votes are stored in the club's Firestore database and tied to your signed-in account.</span></div>
 
       ${elections.length ? elections.map(election => renderElectionCard(election, voterKey)).join('') : `
         <div class="connect-empty election-empty"><i class="fa-solid fa-check-to-slot"></i><h3>No EC elections yet</h3><p>${canManage ? 'Create an election and add candidates for each position.' : 'The EC has not created an election yet.'}</p></div>

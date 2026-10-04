@@ -1,10 +1,12 @@
 // Clean login experience with club branding and simple mobile-friendly form
 
-import { authService, ROLES } from '../services/authService.js';
+import { authService } from '../services/authService.js';
+import { dbService } from '../services/dbService.js';
 import { showToast } from '../components/Modal.js';
 
 export function renderLoginView() {
   const currentUser = authService.getCurrentUser();
+  const firebaseConfigured = authService.isConfigured();
 
   setTimeout(() => {
     bindLoginEvents();
@@ -32,46 +34,30 @@ export function renderLoginView() {
               <span class="badge badge-info" style="margin-top: 10px; font-size: 0.8rem;">${currentUser.role}</span>
             </div>
 
-            <details class="role-switch-menu">
-              <summary><i class="fa-solid fa-user-gear"></i> Switch Role</summary>
-              <div class="role-switch-options">
-                <button class="btn btn-outline role-switch-btn" data-role="${ROLES.PRESIDENT}">President</button>
-                <button class="btn btn-outline role-switch-btn" data-role="${ROLES.EC_OFFICER}">EC Officer</button>
-                <button class="btn btn-outline role-switch-btn" data-role="${ROLES.VP_MEMBERSHIP}">VP Membership</button>
-                <button class="btn btn-outline role-switch-btn" data-role="${ROLES.VP_PR}">VP Public Relations</button>
-                <button class="btn btn-outline role-switch-btn" data-role="${ROLES.MEMBER}">Member</button>
-              </div>
-            </details>
-
             <button id="logout-btn" class="btn btn-danger" style="width: 100%; height: 44px; margin-top: 12px;">
               <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
             </button>
+          ` : !firebaseConfigured ? `
+            <div role="status" style="padding: 14px; border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-secondary); line-height: 1.5;">
+              <strong style="color: var(--text-primary);">Open on this device</strong>
+              <div style="margin-top: 6px;">Firebase can be connected later. For now, records stay in this browser and are not shared or backed up.</div>
+              <button id="open-device-mode-btn" type="button" class="btn btn-primary" style="width: 100%; margin-top: 14px;">Open app</button>
+            </div>
           ` : `
             <form id="login-form">
               <div class="form-group">
                 <label class="form-label required">Email / Username</label>
-                <input type="email" id="login-email" class="form-input" value="president@pssgavelclub.org" placeholder="yourname@domain.com" required />
+                <input type="email" id="login-email" class="form-input" placeholder="yourname@domain.com" required />
               </div>
 
               <div class="form-group">
                 <label class="form-label required">Password</label>
                 <div style="position: relative;">
-                  <input type="password" id="login-password" class="form-input" value="••••••••" placeholder="Enter password" required style="padding-right: 42px;" />
+                  <input type="password" id="login-password" class="form-input" placeholder="Enter password" required style="padding-right: 42px;" />
                   <button type="button" id="toggle-password-btn" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);" title="Show/Hide Password">
                     <i class="fa-solid fa-eye" id="eye-icon"></i>
                   </button>
                 </div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label required">Select Role</label>
-                <select id="login-role" class="form-select">
-                  <option value="${ROLES.PRESIDENT}">President</option>
-                  <option value="${ROLES.EC_OFFICER}">EC Officer</option>
-                  <option value="${ROLES.VP_MEMBERSHIP}">VP Membership</option>
-                  <option value="${ROLES.VP_PR}">VP Public Relations</option>
-                  <option value="${ROLES.MEMBER}">Member</option>
-                </select>
               </div>
 
               <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px; height: 46px;">
@@ -86,6 +72,13 @@ export function renderLoginView() {
 }
 
 function bindLoginEvents() {
+  document.getElementById('open-device-mode-btn')?.addEventListener('click', () => {
+    dbService.clearLegacyDemoData();
+    authService.continueOnThisDevice();
+    showToast('Opened in local-only mode. Data stays in this browser.', 'info');
+    window.location.hash = '#dashboard';
+  });
+
   const togglePassBtn = document.getElementById('toggle-password-btn');
   togglePassBtn?.addEventListener('click', () => {
     const passInput = document.getElementById('login-password');
@@ -101,11 +94,10 @@ function bindLoginEvents() {
     }
   });
 
-  document.getElementById('login-form')?.addEventListener('submit', (e) => {
+  document.getElementById('login-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-password').value;
-    const role = document.getElementById('login-role').value;
     const submitBtn = document.getElementById('login-submit-btn');
 
     if (submitBtn) {
@@ -113,36 +105,25 @@ function bindLoginEvents() {
       submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...`;
     }
 
-    setTimeout(() => {
-      const loggedInUser = authService.login(email, pass, role);
-      if (!loggedInUser) {
-        showToast('This email is not assigned to the selected access role.', 'error');
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Login';
-        }
-        return;
+    try {
+      const loggedInUser = await authService.loginWithPassword(email, pass);
+      showToast(`Signed in as ${loggedInUser.role}.`, 'success');
+      window.location.hash = '#dashboard';
+    } catch (error) {
+      const message = error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found'
+        ? 'Email or password is incorrect.'
+        : error.message || 'Unable to sign in. Check your connection and try again.';
+      showToast(message, 'error');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Login';
       }
-      showToast(`Logged in successfully as ${role}!`, 'success');
-      window.location.hash = '#dashboard';
-      window.location.reload();
-    }, 400);
+    }
   });
 
-  document.querySelectorAll('.role-switch-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const role = e.currentTarget.dataset.role;
-      authService.login('', '', role);
-      showToast(`Switched role to ${role}`, 'success');
-      window.location.hash = '#dashboard';
-      window.location.reload();
-    });
-  });
-
-  document.getElementById('logout-btn')?.addEventListener('click', () => {
-    authService.logout();
+  document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    await authService.logout();
     showToast('Signed out successfully.', 'info');
     window.location.hash = '#login';
-    window.location.reload();
   });
 }

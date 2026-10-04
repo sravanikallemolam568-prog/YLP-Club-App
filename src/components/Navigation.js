@@ -26,7 +26,7 @@ export function renderNavigation(activeView) {
 
   let extraItems = [
     { id: 'attendance', label: 'Attendance', icon: 'fa-clipboard-user' },
-    { id: 'speeches', label: 'Speeches', icon: 'fa-scroll' },
+    { id: 'speeches', label: 'Speech Progress', icon: 'fa-microphone-lines' },
     { id: 'mentors', label: 'Mentors', icon: 'fa-user-graduate' },
     { id: 'roles', label: 'Roles', icon: 'fa-award' },
     { id: 'settings', label: 'EC Committee', icon: 'fa-sliders' },

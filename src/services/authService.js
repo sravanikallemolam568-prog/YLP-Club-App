@@ -1,7 +1,7 @@
-// Authentication & Role-Based Access Control (RBAC) Service
-
-const AUTH_USER_KEY = 'pssgavel_auth_user';
-const EC_STORAGE_KEY = 'pssgavel_ec';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db, firebaseConfigured } from '../config/firebase.js';
+import { getCloudStatus, startCloudSync, stopCloudSync } from './cloudDataService.js';
 
 export const ROLES = {
   MEMBER: 'Member',
@@ -10,63 +10,137 @@ export const ROLES = {
   VP_PR: 'VP Public Relations',
   PRESIDENT: 'President'
 };
+const LOCAL_MODE_KEY = 'pssgavel_local_mode';
 
 class AuthService {
   constructor() {
-    const stored = localStorage.getItem(AUTH_USER_KEY);
-    this.currentUser = stored ? JSON.parse(stored) : null;
+    this.currentUser = null;
+    this.initializePromise = null;
+    this.lastAuthError = '';
   }
 
   getCurrentUser() {
     return this.currentUser;
   }
 
+  isConfigured() {
+    return firebaseConfigured;
+  }
+
+  getLastAuthError() {
+    return this.lastAuthError;
+  }
+
   isLoggedIn() {
     return !!this.currentUser;
   }
 
-  login(email, password, selectedRole = ROLES.PRESIDENT) {
-    const normalizedEmail = (email || '').trim().toLowerCase();
-    if (selectedRole === ROLES.VP_MEMBERSHIP || selectedRole === ROLES.VP_PR) {
-      const committee = JSON.parse(localStorage.getItem(EC_STORAGE_KEY) || '{}');
-      const assignedEmail = (selectedRole === ROLES.VP_PR ? committee.vpPREmail || 'rahul@pssgavelclub.org' : committee.vpMembershipEmail || 'user@pssgavelclub.org').trim().toLowerCase();
-      if (normalizedEmail && (!assignedEmail || normalizedEmail !== assignedEmail)) return null;
+  async initialize() {
+    if (!firebaseConfigured || !auth || !db) {
+      if (localStorage.getItem(LOCAL_MODE_KEY) === 'true') {
+        this.currentUser = {
+          name: 'Local device session',
+          email: '',
+          role: ROLES.PRESIDENT,
+          branch: 'Miyapur',
+          offline: true
+        };
+      }
+      return !!this.currentUser;
+    }
+    if (this.initializePromise) return this.initializePromise;
+
+    this.initializePromise = new Promise(resolve => {
+      let settled = false;
+      const finish = value => {
+        if (settled) return;
+        settled = true;
+        resolve(value);
+      };
+
+      onAuthStateChanged(auth, async firebaseUser => {
+        if (!firebaseUser) {
+          this.currentUser = null;
+          stopCloudSync();
+          finish(false);
+          return;
+        }
+
+        try {
+          await this.loadProfile(firebaseUser);
+          finish(true);
+        } catch (error) {
+          this.lastAuthError = error.message || 'This account is not configured for the club app.';
+          this.currentUser = null;
+          await signOut(auth).catch(() => {});
+          finish(false);
+        }
+      });
+    });
+
+    return this.initializePromise;
+  }
+
+  async loadProfile(firebaseUser) {
+    const profileSnapshot = await getDoc(doc(db, 'users', firebaseUser.uid));
+    if (!profileSnapshot.exists()) {
+      throw new Error('Your account has no club role yet. Ask the President to provision your account.');
     }
 
-    let name = 'Club Member';
-    if (selectedRole === ROLES.PRESIDENT) name = 'Priya Varma (President)';
-    else if (selectedRole === ROLES.VP_MEMBERSHIP) name = 'Sravani Reddy (VP Membership)';
-    else if (selectedRole === ROLES.VP_PR) name = 'Rahul Sharma (VP Public Relations)';
-    else if (selectedRole === ROLES.EC_OFFICER) name = 'Kiran Kumar (VP Ed)';
-    else name = 'Rahul Sharma (Member)';
+    const profile = profileSnapshot.data();
+    if (!Object.values(ROLES).includes(profile.role)) {
+      throw new Error('Your account has an invalid club role. Ask the President to correct your profile.');
+    }
 
     this.currentUser = {
-      name: name,
-      email: email || 'user@pssgavelclub.org',
-      role: selectedRole,
-      branch: 'Miyapur'
+      uid: firebaseUser.uid,
+      name: profile.name || firebaseUser.displayName || firebaseUser.email || 'Club member',
+      email: firebaseUser.email || '',
+      role: profile.role,
+      branch: profile.branch || 'Miyapur'
     };
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(this.currentUser));
+    this.lastAuthError = '';
     return this.currentUser;
   }
 
-  register(name, email, password, role = ROLES.MEMBER, branch = 'Miyapur') {
+  async loginWithPassword(email, password) {
+    if (!firebaseConfigured || !auth || !db) {
+      throw new Error('Firebase is not configured. Add the real project settings to .env first.');
+    }
+
+    try {
+      const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      await this.loadProfile(credential.user);
+      const synced = await startCloudSync(this.currentUser.role);
+      if (!synced) throw new Error(getCloudStatus().error || 'Could not connect to the club database.');
+      return this.currentUser;
+    } catch (error) {
+      this.currentUser = null;
+      await signOut(auth).catch(() => {});
+      stopCloudSync();
+      throw error;
+    }
+  }
+
+  continueOnThisDevice() {
+    localStorage.setItem(LOCAL_MODE_KEY, 'true');
     this.currentUser = {
-      name,
-      email,
-      role,
-      branch
+      name: 'Local device session',
+      email: '',
+      role: ROLES.PRESIDENT,
+      branch: 'Miyapur',
+      offline: true
     };
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(this.currentUser));
     return this.currentUser;
   }
 
-  logout() {
+  async logout() {
     this.currentUser = null;
-    localStorage.removeItem(AUTH_USER_KEY);
+    localStorage.removeItem(LOCAL_MODE_KEY);
+    stopCloudSync();
+    if (auth?.currentUser) await signOut(auth);
   }
 
-  // Permission Checks
   isPresident() {
     return this.currentUser?.role === ROLES.PRESIDENT;
   }
@@ -84,7 +158,7 @@ class AuthService {
   }
 
   isECOfficer() {
-    return this.currentUser?.role === ROLES.EC_OFFICER || this.currentUser?.role === ROLES.PRESIDENT;
+    return this.currentUser?.role === ROLES.EC_OFFICER || this.isPresident();
   }
 
   canManageMembers() {

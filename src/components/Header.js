@@ -17,6 +17,8 @@ export function renderHeader(activeBranch) {
       </div>
 
       <div class="header-actions">
+        ${user ? `
+        ${user.offline ? '<span class="badge badge-warning" title="Changes are saved only in this browser">Local-only</span>' : ''}
         <select id="global-branch-selector" class="form-select" style="padding: 6px 10px; font-size: 0.82rem; height: 38px; border-radius: 8px; font-weight: 600; width: 130px;">
           <option value="All" ${activeBranch === 'All' ? 'selected' : ''}>All Branches</option>
           <option value="Miyapur" ${activeBranch === 'Miyapur' ? 'selected' : ''}>Miyapur</option>
@@ -29,8 +31,9 @@ export function renderHeader(activeBranch) {
         </button>
 
         <div class="badge badge-info" style="padding: 6px 10px; cursor: pointer;" id="user-profile-pill" title="Current User Role">
-          <i class="fa-solid fa-user-shield"></i> ${user ? user.role : 'President'}
+          <i class="fa-solid fa-user-shield"></i> ${user.offline ? 'Local ' : ''}${user.role}
         </div>
+        ` : ''}
       </div>
     </header>
   `;

@@ -1,4 +1,4 @@
-// 10-Speech Progress Tracker View
+// Member speech development progress view
 
 import { dbService } from '../services/dbService.js';
 import { authService } from '../services/authService.js';
@@ -9,6 +9,13 @@ export function renderSpeechesView(branchFilter = 'All') {
   if (branchFilter !== 'All') members = members.filter(m => m.branch === branchFilter);
 
   const speeches = dbService.getSpeechList();
+  const totalProjects = members.length * speeches.length;
+  const completedProjects = members.reduce((total, member) =>
+    total + Math.min(Math.max(Number(member.speechesCompleted) || 0, 0), speeches.length), 0);
+  const membersInProgress = members.filter(member => {
+    const completed = Math.min(Math.max(Number(member.speechesCompleted) || 0, 0), speeches.length);
+    return completed > 0 && completed < speeches.length;
+  }).length;
 
   setTimeout(() => {
     bindSpeechesEvents();
@@ -18,29 +25,47 @@ export function renderSpeechesView(branchFilter = 'All') {
     <div class="animate-fade-in">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
         <div>
-          <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-scroll" style="color: var(--gold-primary);"></i> 10-Speech Tracker</h2>
-          <p style="font-size: 0.88rem; color: var(--text-secondary);">Track progress across all 10 Toastmasters & Gavel Club speeches.</p>
+          <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-microphone-lines" style="color: var(--teal-deep);"></i> Member Speech Progress</h2>
+          <p style="font-size: 0.88rem; color: var(--text-secondary);">Follow each member’s prepared-speech journey and next project.</p>
         </div>
         ${authService.isECOfficer() ? `
           <button id="record-speech-btn" class="btn btn-primary">
-            <i class="fa-solid fa-circle-check"></i> Record Speech Completion
+            <i class="fa-solid fa-circle-check"></i> Record progress
           </button>
         ` : ''}
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-chart-line"></i> Member Speech Progress Registry</div>
+      <section class="speech-progress-summary" aria-label="Speech progress summary">
+        <div><span>Projects completed</span><strong>${completedProjects} / ${totalProjects}</strong></div>
+        <div><span>Members in progress</span><strong>${membersInProgress}</strong></div>
+        <div class="speech-progress-summary-track" role="progressbar" aria-label="Overall speech project completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${totalProjects ? Math.round((completedProjects / totalProjects) * 100) : 0}">
+          <span style="width: ${totalProjects ? Math.round((completedProjects / totalProjects) * 100) : 0}%"></span>
         </div>
-        <div class="table-container speech-table-wrap">
-          <table class="data-table speech-table">
-            <thead><tr><th>Member</th>${speeches.map(s => `<th title="${s.title}">Speech ${s.id}</th>`).join('')}<th>Total</th></tr></thead>
-            <tbody>
-              ${members.map(m => { const completed = m.speechesCompleted || 0; return `<tr><td><div class="member-table-name"><span class="table-avatar">${m.name.charAt(0)}</span><div><strong>${m.name}</strong><small>${m.branch}</small></div></div></td>${speeches.map(s => `<td class="speech-status-cell ${s.id <= completed ? 'is-complete' : ''}" aria-label="${s.id <= completed ? 'Completed' : 'Pending'}"><span class="speech-status-dot"></span></td>`).join('')}<td><strong>${completed}/10</strong></td></tr>`; }).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </section>
+
+      <section class="speech-member-list" aria-label="Member speech progress">
+        ${members.length ? members.map(member => {
+          const completed = Math.min(Math.max(Number(member.speechesCompleted) || 0, 0), speeches.length);
+          const percentage = speeches.length ? Math.round((completed / speeches.length) * 100) : 0;
+          const nextSpeech = speeches[completed];
+
+          return `
+            <article class="speech-member-row">
+              <span class="speech-member-avatar" aria-hidden="true">${member.name.charAt(0)}</span>
+              <div class="speech-member-details">
+                <div class="speech-member-heading">
+                  <div><strong>${member.name}</strong><small>${member.branch}</small></div>
+                  <span class="speech-member-count">${completed} / ${speeches.length}</span>
+                </div>
+                <div class="speech-member-track" role="progressbar" aria-label="${member.name} speech progress" aria-valuemin="0" aria-valuemax="${speeches.length}" aria-valuenow="${completed}">
+                  <span style="width: ${percentage}%"></span>
+                </div>
+                <p>${nextSpeech ? `Next: Speech ${nextSpeech.id} · ${nextSpeech.title}` : 'All speech projects completed'}</p>
+              </div>
+            </article>
+          `;
+        }).join('') : '<div class="speech-list-empty">No members found for this branch.</div>'}
+      </section>
     </div>
   `;
 }
