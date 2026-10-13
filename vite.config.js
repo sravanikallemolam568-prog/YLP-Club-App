@@ -8,7 +8,8 @@ export default defineConfig(({ mode }) => {
     root: '.',
     plugins: [createLocalGeminiProxy({
       apiKey: env.GEMINI_API_KEY || env.VITE_GEMINI_API_KEY || '',
-      model: env.GEMINI_MODEL || env.VITE_GEMINI_MODEL || 'gemini-3.8-flash'
+      groqApiKey: env.GROQ_API_KEY || env.VITE_GROQ_API_KEY || '',
+      model: env.GEMINI_MODEL || env.VITE_GEMINI_MODEL || 'gemini-1.5-flash'
     })],
     build: {
       outDir: 'dist',

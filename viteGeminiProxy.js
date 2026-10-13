@@ -42,7 +42,9 @@ Current local club context:
 ${JSON.stringify(context || {})}`;
 }
 
-export function createLocalGeminiProxy({ apiKey, model }) {
+export function createLocalGeminiProxy({ apiKey, model, groqApiKey }) {
+  const effectiveGroqKey = groqApiKey || (apiKey && apiKey.startsWith('gsk_') ? apiKey : '');
+
   return {
     name: 'local-gemini-proxy',
     apply: 'serve',
@@ -56,10 +58,6 @@ export function createLocalGeminiProxy({ apiKey, model }) {
           sendJson(response, 405, { error: 'Use POST to send an assistant message.' });
           return;
         }
-        if (!apiKey) {
-          sendJson(response, 503, { error: 'Set GEMINI_API_KEY in the local .env file to enable the assistant.' });
-          return;
-        }
 
         try {
           const input = await readRequestBody(request);
@@ -69,6 +67,59 @@ export function createLocalGeminiProxy({ apiKey, model }) {
             sendJson(response, 400, { error: 'Enter a question under 2,000 characters.' });
             return;
           }
+
+          // If Groq API key is present, route to Groq Cloud (supports Qwen / GPT-OSS models)
+          if (effectiveGroqKey) {
+            const messages = [
+              { role: 'system', content: createSystemInstruction(input.context) }
+            ];
+            for (const item of history) {
+              if (item && item.text) {
+                messages.push({
+                  role: item.role === 'model' || item.role === 'assistant' ? 'assistant' : 'user',
+                  content: item.text
+                });
+              }
+            }
+            messages.push({ role: 'user', content: message });
+
+            const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${effectiveGroqKey}`
+              },
+              signal: AbortSignal.timeout(45000),
+              body: JSON.stringify({
+                model: 'qwen/qwen3.8-27b',
+                messages,
+                temperature: 0.7,
+                max_tokens: 1024
+              })
+            });
+
+            const groqData = await groqRes.json().catch(() => ({}));
+            if (!groqRes.ok) {
+              const errMsg = groqData?.error?.message || 'Groq request failed.';
+              sendJson(response, groqRes.status, { error: errMsg });
+              return;
+            }
+
+            const replyText = groqData?.choices?.[0]?.message?.content?.trim();
+            if (!replyText) {
+              sendJson(response, 502, { error: 'Groq returned no answer.' });
+              return;
+            }
+            sendJson(response, 200, { text: replyText });
+            return;
+          }
+
+          // Fallback to Gemini
+          if (!apiKey) {
+            sendJson(response, 503, { error: 'Set GROQ_API_KEY or GEMINI_API_KEY in the local .env file.' });
+            return;
+          }
+
           const contents = history.map(item => {
             if (!item || !['user', 'model'].includes(item.role) || typeof item.text !== 'string' || item.text.length > 2000) {
               throw new Error('Chat history is invalid.');
