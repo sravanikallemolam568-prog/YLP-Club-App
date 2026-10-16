@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PSS Miyapur Gavel Club</string>
+    <string name="title_activity_main">PSS Miyapur Gavel Club</string>
+    <string name="package_name">com.pssgavelclub.miyapur</string>
+    <string name="custom_url_scheme">com.pssgavelclub.miyapur</string>
+</resources>
