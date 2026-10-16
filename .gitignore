@@ -5,3 +5,6 @@ dist/
 .env
 .env.*
 !.env.example
+*.jks
+*.keystore
+local.properties
