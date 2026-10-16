@@ -1,0 +1,18 @@
+{
+  "appId": "com.pssgavelclub.miyapur",
+  "appName": "PSS Miyapur Gavel Club",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "backgroundColor": "#0B192C"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0B192C",
+      "showSpinner": false
+    }
+  }
+}

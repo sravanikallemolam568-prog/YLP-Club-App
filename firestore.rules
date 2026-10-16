@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function profilePath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function hasProfile() {
+      return signedIn() && exists(profilePath());
+    }
+
+    function hasRole(allowedRoles) {
+      return hasProfile() && get(profilePath()).data.role in allowedRoles;
+    }
+
+    function clubLeaders() {
+      return hasRole(['President', 'EC Officer']);
+    }
+
+    function canRead(collectionName) {
+      return hasRole(['President', 'EC Officer', 'Member'])
+        || (hasRole(['VP Membership'])
+          && collectionName in ['members', 'meetings', 'attendance', 'settings', 'elections', 'supportTickets', 'reminders'])
+        || (hasRole(['VP Public Relations'])
+          && collectionName in ['meetings', 'settings', 'media', 'elections', 'supportTickets', 'reminders']);
+    }
+
+    function canWrite(collectionName) {
+      return (collectionName == 'members' && hasRole(['President', 'EC Officer', 'VP Membership']))
+        || (collectionName == 'meetings' && clubLeaders())
+        || (collectionName == 'attendance' && hasRole(['President', 'EC Officer', 'VP Membership']))
+        || (collectionName == 'mentors' && clubLeaders())
+        || (collectionName == 'settings' && hasRole(['President']))
+        || (collectionName == 'media' && hasRole(['President', 'EC Officer', 'VP Public Relations']))
+        || (collectionName == 'elections' && clubLeaders())
+        || (collectionName == 'reminders' && clubLeaders());
+    }
+
+    function canAppendOwnVote() {
+      return hasProfile()
+        && resource.data.votes is list
+        && request.resource.data.votes is list
+        && request.resource.data.votes.size() == resource.data.votes.size() + 1
+        && request.resource.data.votes.toSet().hasAll(resource.data.votes.toSet())
+        && request.resource.data.votes[resource.data.votes.size()].voterKey == request.auth.uid;
+    }
+
+    match /users/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+
+    match /clubs/{clubId}/{collectionName}/{recordId} {
+      allow read: if canRead(collectionName)
+        && (collectionName != 'supportTickets'
+          || clubLeaders()
+          || resource.data.createdByUid == request.auth.uid);
+      allow create: if canWrite(collectionName)
+        || (collectionName == 'supportTickets'
+          && hasProfile()
+          && request.resource.data.createdByUid == request.auth.uid);
+      allow delete: if canWrite(collectionName);
+      allow update: if canWrite(collectionName)
+        || (collectionName == 'elections'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes'])
+          && canAppendOwnVote());
+    }
+
+    match /clubs/{clubId}/auditLogs/{logId} {
+      allow read: if hasRole(['President']);
+      allow create: if hasProfile()
+        && request.resource.data.actorUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['collection', 'recordId', 'action', 'actorUid', 'recordedAt']);
+      allow update, delete: if false;
+    }
+  }
+}
