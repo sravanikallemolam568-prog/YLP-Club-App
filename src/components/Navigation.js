@@ -3,49 +3,61 @@
 import { authService } from '../services/authService.js';
 
 export function renderNavigation(activeView) {
-  const isVPM = authService.isVPMembership();
-  const isVPPR = authService.isVPPR();
-
   const highlightNavId = activeView === 'agenda' ? 'meetings' : activeView;
+  const role = authService.getCurrentUser()?.role;
 
-  let desktopNavItems = [
-    { id: 'dashboard', label: 'Home', icon: 'fa-house' },
-    { id: 'members', label: 'Members', icon: 'fa-users' },
-    { id: 'meetings', label: 'Meetings', icon: 'fa-calendar-days' },
-    { id: 'media', label: 'Media', icon: 'fa-photo-film' },
-    { id: 'more', label: 'More', icon: 'fa-ellipsis' }
-  ];
+  let primaryIds = [];
+  let extraIds = [];
 
-  let mobileNavItems = [
-    { id: 'dashboard', label: 'Home', icon: 'fa-house' },
-    { id: 'members', label: 'Members', icon: 'fa-users' },
-    { id: 'meetings', label: 'Meetings', icon: 'fa-calendar-days' },
-    { id: 'media', label: 'Media', icon: 'fa-photo-film' },
-    { id: 'more', label: 'More', icon: 'fa-ellipsis' }
-  ];
-
-  let extraItems = [
-    { id: 'attendance', label: 'Attendance', icon: 'fa-clipboard-user' },
-    { id: 'speeches', label: 'Speech Progress', icon: 'fa-microphone-lines' },
-    { id: 'mentors', label: 'Mentors', icon: 'fa-user-graduate' },
-    { id: 'roles', label: 'Roles', icon: 'fa-award' },
-    { id: 'settings', label: 'Leadership & EC', icon: 'fa-crown' },
-    { id: 'connect', label: 'Club Connect', icon: 'fa-comments' },
-    { id: 'elections', label: 'EC Elections', icon: 'fa-check-to-slot' }
-  ];
-
-  if (isVPM) {
-    desktopNavItems = desktopNavItems.filter(item => ['dashboard', 'members', 'meetings', 'more'].includes(item.id));
-    mobileNavItems = mobileNavItems.filter(item => ['dashboard', 'members', 'meetings', 'more'].includes(item.id));
-    extraItems = extraItems.filter(item => ['attendance', 'speeches', 'mentors', 'roles', 'connect', 'elections'].includes(item.id));
+  if (authService.isPresident() || authService.isMasterAdvisor()) {
+    primaryIds = ['dashboard', 'members', 'meetings', 'media'];
+    extraIds = ['attendance', 'speeches', 'mentors', 'roles', 'settings', 'connect', 'elections'];
+  } else if (authService.isVPEducation()) {
+    primaryIds = ['dashboard', 'speeches', 'meetings', 'attendance'];
+    extraIds = ['agenda', 'roles', 'mentors', 'connect', 'elections'];
+  } else if (authService.isVPMembership()) {
+    primaryIds = ['dashboard', 'members', 'attendance'];
+    extraIds = ['connect', 'elections'];
+  } else if (authService.isVPPR()) {
+    primaryIds = ['dashboard', 'meetings', 'media'];
+    extraIds = ['connect', 'elections'];
+  } else if (authService.isSecretary()) {
+    primaryIds = ['dashboard', 'attendance', 'meetings'];
+    extraIds = ['connect', 'elections'];
+  } else if (authService.isSergeant()) {
+    primaryIds = ['dashboard', 'meetings'];
+    extraIds = ['connect', 'elections'];
+  } else {
+    // Member (Tier 3)
+    primaryIds = ['dashboard', 'members', 'meetings', 'media'];
+    extraIds = ['attendance', 'speeches', 'mentors', 'roles', 'connect', 'elections'];
   }
 
-  if (isVPPR) {
-    desktopNavItems = desktopNavItems.filter(item => ['dashboard', 'media', 'more'].includes(item.id));
-    mobileNavItems = mobileNavItems.filter(item => ['dashboard', 'media', 'more'].includes(item.id));
-    extraItems = extraItems.filter(item => ['connect', 'elections'].includes(item.id));
+  const navItemLookup = {
+    dashboard: { id: 'dashboard', label: 'Home', icon: 'fa-house' },
+    members: { id: 'members', label: 'Members', icon: 'fa-users' },
+    speeches: { id: 'speeches', label: 'Speeches', icon: 'fa-microphone-lines' },
+    meetings: { id: 'meetings', label: 'Meetings', icon: 'fa-calendar-days' },
+    attendance: { id: 'attendance', label: 'Attendance', icon: 'fa-clipboard-user' },
+    media: { id: 'media', label: 'Media', icon: 'fa-photo-film' },
+    agenda: { id: 'agenda', label: 'Agenda Config', icon: 'fa-list-check' },
+    mentors: { id: 'mentors', label: 'Mentors', icon: 'fa-user-graduate' },
+    roles: { id: 'roles', label: 'Roles Tracker', icon: 'fa-award' },
+    settings: { id: 'settings', label: 'Leadership & EC', icon: 'fa-crown' },
+    connect: { id: 'connect', label: 'Club Connect', icon: 'fa-comments' },
+    elections: { id: 'elections', label: 'EC Elections', icon: 'fa-check-to-slot' },
+    more: { id: 'more', label: 'More', icon: 'fa-ellipsis' }
+  };
+
+  const desktopNavItems = primaryIds.map(id => navItemLookup[id]).filter(Boolean);
+  const mobileNavItems = [...desktopNavItems];
+
+  if (extraIds.length > 0) {
+    desktopNavItems.push(navItemLookup.more);
+    mobileNavItems.push(navItemLookup.more);
   }
 
+  const extraItems = extraIds.map(id => navItemLookup[id]).filter(Boolean);
   const isMoreActive = extraItems.some(item => item.id === activeView);
 
   const bottomNavHtml = `

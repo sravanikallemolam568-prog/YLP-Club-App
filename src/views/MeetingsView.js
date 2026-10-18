@@ -37,7 +37,7 @@ export function renderMeetingsView(branchFilter = 'All') {
           <h2 style="font-size: 1.5rem; color: var(--text-primary);"><i class="fa-solid fa-calendar-days" style="color: var(--gold-primary);"></i> Meetings & Agendas</h2>
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Manage upcoming sessions, assign Toastmasters roles, and track past meeting history.</p>
         </div>
-        ${authService.isECOfficer() ? `
+        ${authService.canManageMeetings() ? `
           <button id="create-meeting-btn" class="btn btn-primary">
             <i class="fa-solid fa-calendar-plus"></i> Create New Meeting
           </button>
@@ -94,7 +94,7 @@ export function renderMeetingsView(branchFilter = 'All') {
                   <a href="#agenda" class="btn btn-outline btn-sm">
                     <i class="fa-solid fa-list-check" style="color: #4285F4;"></i> Open Agenda
                   </a>
-                  ${authService.isECOfficer() ? `
+                  ${authService.canManageMeetings() ? `
                     <button class="btn btn-primary btn-sm assign-roles-btn" data-id="${mtg.id}">
                       <i class="fa-solid fa-user-tag"></i> Manage Roles
                     </button>

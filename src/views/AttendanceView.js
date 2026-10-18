@@ -62,6 +62,8 @@ export function renderAttendanceView(branchFilter = 'All') {
   const totalCount = members.length;
   const attendancePct = totalCount ? Math.round((presentCount / totalCount) * 100) : 0;
 
+  const canManage = authService.canManageAttendance();
+
   setTimeout(() => bindAttendanceEvents(selectedMeeting), 50);
 
   return `
@@ -95,11 +97,13 @@ export function renderAttendanceView(branchFilter = 'All') {
         </div>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
-        <button id="mark-all-present-btn" class="btn btn-primary" style="flex: 1; height: 42px; font-size: 0.82rem;">
-          <i class="fa-solid fa-check"></i> Mark All Present
-        </button>
-      </div>
+      ${canManage ? `
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
+          <button id="mark-all-present-btn" class="btn btn-primary" style="flex: 1; height: 42px; font-size: 0.82rem;">
+            <i class="fa-solid fa-check"></i> Mark All Present
+          </button>
+        </div>
+      ` : ''}
 
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
         <div style="flex:1; display:flex; align-items:center; gap:8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 12px; min-height: 44px; box-shadow: var(--shadow-sm);">
@@ -122,7 +126,7 @@ export function renderAttendanceView(branchFilter = 'All') {
                 <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${member.id || 'M-000'} • ${member.branch || 'Miyapur'}</div>
               </div>
               <label style="margin-left: auto;">
-                <select class="attendance-status-select" data-member-id="${member.id}" data-member-name="${member.name}" style="min-width: 150px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); font-weight: 700;">
+                <select class="attendance-status-select" data-member-id="${member.id}" data-member-name="${member.name}" ${canManage ? '' : 'disabled'} style="min-width: 150px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); font-weight: 700; ${!canManage ? 'opacity: 0.85; cursor: default;' : ''}">
                   <option value="Present" ${status === 'Present' ? 'selected' : ''}>✓ Present</option>
                   <option value="Informed Absent" ${status === 'Informed Absent' ? 'selected' : ''}>! Informed Absent</option>
                   <option value="Uninformed Absent" ${status === 'Uninformed Absent' ? 'selected' : ''}>× Uninformed Absent</option>
@@ -207,35 +211,37 @@ function bindAttendanceEvents(selectedMeeting) {
     });
   });
 
-  document.getElementById('mark-all-present-btn')?.addEventListener('click', () => {
-    const records = dbService.getAttendance().filter(r => r.meetingId !== selectedMeeting.id);
-    dbService.getMembers().forEach(member => {
-      records.push({ meetingId: selectedMeeting.id, date: selectedMeeting.date, branch: selectedMeeting.branch, memberId: member.id, memberName: member.name, status: 'Present', startTime: selectedMeeting.startTime });
-    });
-    dbService.saveAttendance(records);
-    reRender(selectedMeeting);
-    showToast('All members marked present.', 'success');
-  });
-
-  document.querySelectorAll('.attendance-status-select').forEach(select => {
-    select.addEventListener('change', (e) => {
-      const memberId = e.target.dataset.memberId;
-      const memberName = e.target.dataset.memberName;
-      const newStatus = e.target.value;
-      const records = dbService.getAttendance();
-      const index = records.findIndex(r => r.memberId === memberId && r.meetingId === selectedMeeting.id);
-
-      if (index >= 0) {
-        records[index].status = newStatus;
-      } else {
-        records.push({ meetingId: selectedMeeting.id, date: selectedMeeting.date, branch: selectedMeeting.branch, memberId, memberName, status: newStatus, startTime: selectedMeeting.startTime });
-      }
-
+  if (authService.canManageAttendance()) {
+    document.getElementById('mark-all-present-btn')?.addEventListener('click', () => {
+      const records = dbService.getAttendance().filter(r => r.meetingId !== selectedMeeting.id);
+      dbService.getMembers().forEach(member => {
+        records.push({ meetingId: selectedMeeting.id, date: selectedMeeting.date, branch: selectedMeeting.branch, memberId: member.id, memberName: member.name, status: 'Present', startTime: selectedMeeting.startTime });
+      });
       dbService.saveAttendance(records);
       reRender(selectedMeeting);
-      showToast(`${memberName} marked ${newStatus}`, 'info');
+      showToast('All members marked present.', 'success');
     });
-  });
+
+    document.querySelectorAll('.attendance-status-select').forEach(select => {
+      select.addEventListener('change', (e) => {
+        const memberId = e.target.dataset.memberId;
+        const memberName = e.target.dataset.memberName;
+        const newStatus = e.target.value;
+        const records = dbService.getAttendance();
+        const index = records.findIndex(r => r.memberId === memberId && r.meetingId === selectedMeeting.id);
+
+        if (index >= 0) {
+          records[index].status = newStatus;
+        } else {
+          records.push({ meetingId: selectedMeeting.id, date: selectedMeeting.date, branch: selectedMeeting.branch, memberId, memberName, status: newStatus, startTime: selectedMeeting.startTime });
+        }
+
+        dbService.saveAttendance(records);
+        reRender(selectedMeeting);
+        showToast(`${memberName} marked ${newStatus}`, 'info');
+      });
+    });
+  }
 }
 
 function reRender(selectedMeeting) {

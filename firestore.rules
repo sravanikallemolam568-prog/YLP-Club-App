@@ -18,26 +18,33 @@ service cloud.firestore {
     }
 
     function clubLeaders() {
-      return hasRole(['President', 'EC Officer']);
+      return hasRole(['President', 'Club Advisor', 'EC Officer']);
     }
 
     function canRead(collectionName) {
-      return hasRole(['President', 'EC Officer', 'Member'])
+      return hasRole(['President', 'Club Advisor', 'EC Officer', 'Member'])
+        || (hasRole(['VP Education'])
+          && collectionName in ['meetings', 'attendance', 'mentors', 'settings', 'elections', 'supportTickets', 'reminders', 'ecChat'])
         || (hasRole(['VP Membership'])
-          && collectionName in ['members', 'meetings', 'attendance', 'settings', 'elections', 'supportTickets', 'reminders'])
+          && collectionName in ['members', 'meetings', 'attendance', 'settings', 'elections', 'supportTickets', 'reminders', 'ecChat'])
         || (hasRole(['VP Public Relations'])
-          && collectionName in ['meetings', 'settings', 'media', 'elections', 'supportTickets', 'reminders']);
+          && collectionName in ['meetings', 'settings', 'media', 'elections', 'supportTickets', 'reminders', 'ecChat'])
+        || (hasRole(['Secretary'])
+          && collectionName in ['meetings', 'attendance', 'settings', 'elections', 'supportTickets', 'reminders', 'ecChat'])
+        || (hasRole(['Sergeant-at-Arms'])
+          && collectionName in ['meetings', 'settings', 'elections', 'supportTickets', 'reminders', 'ecChat']);
     }
 
     function canWrite(collectionName) {
-      return (collectionName == 'members' && hasRole(['President', 'EC Officer', 'VP Membership']))
-        || (collectionName == 'meetings' && clubLeaders())
-        || (collectionName == 'attendance' && hasRole(['President', 'EC Officer', 'VP Membership']))
-        || (collectionName == 'mentors' && clubLeaders())
+      return (collectionName == 'members' && hasRole(['President', 'Club Advisor', 'EC Officer', 'VP Membership']))
+        || (collectionName == 'meetings' && (clubLeaders() || hasRole(['VP Education', 'Secretary'])))
+        || (collectionName == 'attendance' && hasRole(['President', 'Club Advisor', 'EC Officer', 'VP Membership', 'Secretary', 'VP Education']))
+        || (collectionName == 'mentors' && (clubLeaders() || hasRole(['VP Education'])))
         || (collectionName == 'settings' && hasRole(['President']))
-        || (collectionName == 'media' && hasRole(['President', 'EC Officer', 'VP Public Relations']))
-        || (collectionName == 'elections' && clubLeaders())
-        || (collectionName == 'reminders' && clubLeaders());
+        || (collectionName == 'media' && hasRole(['President', 'Club Advisor', 'EC Officer', 'VP Public Relations']))
+        || (collectionName == 'elections' && (clubLeaders() || hasRole(['VP Education', 'Secretary'])))
+        || (collectionName == 'reminders' && (clubLeaders() || hasRole(['VP Education', 'Secretary'])))
+        || (collectionName == 'ecChat' && (clubLeaders() || hasRole(['VP Education', 'VP Membership', 'VP Public Relations', 'Secretary', 'Sergeant-at-Arms', 'Member'])));
     }
 
     function canAppendOwnVote() {

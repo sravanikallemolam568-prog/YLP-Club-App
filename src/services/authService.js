@@ -82,7 +82,9 @@ class AuthService {
     }
 
     if (!firebaseConfigured || !auth || !db) {
-      if (!this.currentUser && localStorage.getItem(LOCAL_MODE_KEY) === 'true') {
+      if (this.currentUser) {
+        this.currentUser.offline = true;
+      } else if (localStorage.getItem(LOCAL_MODE_KEY) === 'true') {
         this.currentUser = {
           name: 'Local device session',
           email: '',
@@ -97,6 +99,9 @@ class AuthService {
     }
 
     if (this.currentUser) {
+      if (!auth?.currentUser) {
+        this.currentUser.offline = true;
+      }
       return true;
     }
 
@@ -524,8 +529,61 @@ class AuthService {
     return this.currentUser?.role === ROLES.VP_EDUCATION;
   }
 
-  isReadOnly() {
+  isSecretary() {
+    return this.currentUser?.role === ROLES.SECRETARY;
+  }
+
+  isSergeant() {
+    return this.currentUser?.role === ROLES.SERGEANT;
+  }
+
+  isMember() {
     return this.currentUser?.role === ROLES.MEMBER || this.currentUser?.tier === 3;
+  }
+
+  isReadOnly() {
+    return this.isMember();
+  }
+
+  /**
+   * Returns list of allowed views for the currently authenticated user based on role
+   */
+  getAllowedViews() {
+    if (!this.currentUser) return ['login'];
+
+    const role = this.currentUser.role;
+
+    if (this.isPresident() || this.isMasterAdvisor() || role === ROLES.PRESIDENT) {
+      return ['dashboard', 'members', 'speeches', 'meetings', 'agenda', 'roles', 'attendance', 'mentors', 'media', 'settings', 'connect', 'elections', 'login'];
+    }
+
+    if (role === ROLES.VP_EDUCATION) {
+      return ['dashboard', 'speeches', 'meetings', 'agenda', 'roles', 'attendance', 'mentors', 'connect', 'elections', 'login'];
+    }
+
+    if (role === ROLES.VP_MEMBERSHIP) {
+      return ['dashboard', 'members', 'attendance', 'connect', 'elections', 'login'];
+    }
+
+    if (role === ROLES.VP_PR) {
+      return ['dashboard', 'meetings', 'media', 'connect', 'elections', 'login'];
+    }
+
+    if (role === ROLES.SECRETARY) {
+      return ['dashboard', 'attendance', 'meetings', 'connect', 'elections', 'login'];
+    }
+
+    if (role === ROLES.SERGEANT) {
+      return ['dashboard', 'meetings', 'connect', 'elections', 'login'];
+    }
+
+    // Regular Club Member (Tier 3) has read-only access across general club views
+    return ['dashboard', 'members', 'speeches', 'meetings', 'agenda', 'roles', 'attendance', 'mentors', 'media', 'connect', 'elections', 'login'];
+  }
+
+  canAccessView(viewName) {
+    if (viewName === 'login') return true;
+    return this.getAllowedViews().includes(viewName);
   }
 
   // Video Call Permissions:
@@ -535,25 +593,53 @@ class AuthService {
     return this.isMaster() || this.isTier2();
   }
 
-  // Only President can edit the Master and EC Team Roster
+  // Only President can edit the Master and EC Team Roster & Settings
   canManageEC() {
     return this.isPresident();
   }
 
+  // Member Management: President, Master Advisor, VP Membership
   canManageMembers() {
-    return this.isPresident() || this.isMaster() || this.isVPMembership() || this.isTier2();
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPMembership();
   }
 
+  // Speech Progress Management: President, Master Advisor, VP Education
+  canManageSpeeches() {
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPEducation();
+  }
+
+  // Meeting Management: President, Master Advisor, VP Education, Secretary
   canManageMeetings() {
-    return this.isPresident() || this.isMaster() || this.isVPEducation() || this.isTier2();
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPEducation() || this.isSecretary();
   }
 
+  // Agenda Configuration: President, Master Advisor, VP Education
+  canManageAgenda() {
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPEducation();
+  }
+
+  // Role Assignment: President, Master Advisor, VP Education
+  canManageRoles() {
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPEducation();
+  }
+
+  // Attendance Management: President, Master Advisor, VP Membership, Secretary, VP Education
+  canManageAttendance() {
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPMembership() || this.isSecretary() || this.isVPEducation();
+  }
+
+  // Media Hub Management: President, Master Advisor, VP Public Relations
   canManageMedia() {
-    return this.isPresident() || this.isMaster() || this.isVPPR() || this.isTier2();
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPPR();
+  }
+
+  // Mentor Assignment: President, Master Advisor, VP Education
+  canManageMentors() {
+    return this.isPresident() || this.isMasterAdvisor() || this.isVPEducation();
   }
 
   canEditAdmin() {
-    return this.isPresident() || this.isMaster();
+    return this.isPresident() || this.isMasterAdvisor();
   }
 }
 

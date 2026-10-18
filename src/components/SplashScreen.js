@@ -35,12 +35,31 @@ export function renderSplashScreen(onFinish) {
 
   document.body.appendChild(splash);
 
-  setTimeout(() => {
+  // Initialize the app in the background while splash is visible
+  if (onFinish) {
+    try {
+      const initResult = onFinish();
+      if (initResult && typeof initResult.catch === 'function') {
+        initResult.catch(console.error);
+      }
+    } catch (e) {
+      console.error('Initialization error during splash:', e);
+    }
+  }
+
+  let dismissed = false;
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
     splash.style.opacity = '0';
-    splash.style.transform = 'scale(1.05)';
+    splash.style.transform = 'scale(1.04)';
     setTimeout(() => {
       splash.remove();
-      if (onFinish) onFinish();
-    }, 500);
-  }, 1800);
+    }, 400);
+  };
+
+  // Allow clicking to dismiss faster if desired
+  splash.addEventListener('click', dismiss);
+
+  setTimeout(dismiss, 1400);
 }

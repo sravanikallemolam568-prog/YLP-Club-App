@@ -23,7 +23,7 @@ export function renderMentorsView(branchFilter = 'All') {
           <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-user-graduate" style="color: var(--gold-primary);"></i> Mentee & Mentor List</h2>
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Directory of mentees and mentors with contact numbers.</p>
         </div>
-        ${authService.isECOfficer() ? `
+        ${authService.canManageMentors() ? `
           <button id="assign-mentor-btn" class="btn btn-primary">
             <i class="fa-solid fa-user-plus"></i> Assign Mentor
           </button>
@@ -40,7 +40,7 @@ export function renderMentorsView(branchFilter = 'All') {
                 <th>Mentee Contact</th>
                 <th>Mentor Name</th>
                 <th>Mentor Contact</th>
-                ${authService.isECOfficer() ? `<th>Action</th>` : ''}
+                ${authService.canManageMentors() ? `<th>Action</th>` : ''}
               </tr>
             </thead>
             <tbody>
@@ -72,7 +72,7 @@ export function renderMentorsView(branchFilter = 'All') {
                         <i class="fa-solid fa-phone" style="color: #10B981; margin-right: 4px;"></i> ${mentorMember.mobile}
                       </a>
                     </td>
-                    ${authService.isECOfficer() ? `
+                    ${authService.canManageMentors() ? `
                       <td>
                         <button class="btn btn-outline remove-mentor-btn" data-id="${m.id}" style="padding: 4px 10px; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
                           <i class="fa-solid fa-trash-can"></i> Remove

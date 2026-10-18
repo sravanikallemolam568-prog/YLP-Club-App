@@ -60,6 +60,128 @@ export function renderSettingsView() {
         </div>
       </section>
 
+      <!-- EC Roles, Information Access & Permissions Handbook Card -->
+      <section class="card" style="margin-bottom: 24px; padding: 22px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); box-shadow: var(--shadow-sm);">
+        <details id="ec-roles-handbook-details" style="cursor: pointer;" open>
+          <summary style="display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(66, 133, 244, 0.12); color: #4285F4; display: grid; place-items: center; font-size: 1rem;">
+                <i class="fa-solid fa-table-list"></i>
+              </div>
+              <div>
+                <h3 style="margin: 0; font-size: 1.15rem; color: var(--text-primary); font-weight: 800;">EC Role Responsibilities &amp; Permissions Matrix</h3>
+                <p style="margin: 2px 0 0; font-size: 0.8rem; color: var(--text-secondary);">Official governance access levels and assigned responsibilities for all Executive Committee officers.</p>
+              </div>
+            </div>
+            <span class="badge badge-info" style="font-size: 0.74rem; font-weight: 700;">Governance Guide</span>
+          </summary>
+
+          <div style="margin-top: 18px; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.84rem;">
+              <thead>
+                <tr style="background: var(--badge-bg); border-bottom: 2px solid var(--border-color);">
+                  <th style="padding: 12px 14px; text-align: left; font-weight: 800; min-width: 170px;">Role</th>
+                  <th style="padding: 12px 14px; text-align: left; font-weight: 800; min-width: 280px;">Dashboard / Information Access</th>
+                  <th style="padding: 12px 14px; text-align: left; font-weight: 800; min-width: 300px;">Permissions / Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                  <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
+                    <div style="display: flex; align-items: center; gap: 7px; color: #B45309;">
+                      <i class="fa-solid fa-crown" style="color: #EAB308;"></i>
+                      <span>President</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 1 · Super Admin</span>
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-secondary); line-height: 1.5;">
+                    All club dashboards, attendance, speech progress, membership, meeting reports, EC reports, meeting schedules, agendas, leadership updates, action items
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-primary); line-height: 1.5;">
+                    View and monitor all club activities, track progress, review reports, manage leadership updates and action items
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                  <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
+                    <div style="display: flex; align-items: center; gap: 7px; color: #1D4ED8;">
+                      <i class="fa-solid fa-graduation-cap" style="color: #3B82F6;"></i>
+                      <span>VP-Education</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Education</span>
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-secondary); line-height: 1.5;">
+                    Speech progress, meeting agendas, role assignments, attendance
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-primary); line-height: 1.5;">
+                    Track speech completion status, assign meeting roles, monitor attendance and educational progress
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                  <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
+                    <div style="display: flex; align-items: center; gap: 7px; color: #047857;">
+                      <i class="fa-solid fa-users" style="color: #10B981;"></i>
+                      <span>VP-Membership</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Membership</span>
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-secondary); line-height: 1.5;">
+                    Membership roster, member status, attendance summaries
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-primary); line-height: 1.5;">
+                    Add membership requests, update approved membership status, record informed absences
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                  <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
+                    <div style="display: flex; align-items: center; gap: 7px; color: #0E7490;">
+                      <i class="fa-solid fa-photo-film" style="color: #06B6D4;"></i>
+                      <span>VP-Public Relations</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Publicity</span>
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-secondary); line-height: 1.5;">
+                    Meeting schedule, media assignments, approved photos/videos, newsletter
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-primary); line-height: 1.5;">
+                    Assign photographers and videographers, upload media, prepare newsletters
+                  </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                  <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
+                    <div style="display: flex; align-items: center; gap: 7px; color: #6D28D9;">
+                      <i class="fa-solid fa-pen-fancy" style="color: #8B5CF6;"></i>
+                      <span>Secretary</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Records</span>
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-secondary); line-height: 1.5;">
+                    Attendance register, meeting records, EC schedules, minutes
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-primary); line-height: 1.5;">
+                    Record attendance, prepare meeting minutes, update meeting records
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
+                    <div style="display: flex; align-items: center; gap: 7px; color: #B91C1C;">
+                      <i class="fa-solid fa-shield" style="color: #EF4444;"></i>
+                      <span>Sergeant-at-Arms</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Logistics</span>
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-secondary); line-height: 1.5;">
+                    Meeting setup checklist, property register, equipment status
+                  </td>
+                  <td style="padding: 12px 14px; vertical-align: top; color: var(--text-primary); line-height: 1.5;">
+                    Update equipment inventory, manage setup checklists, record opening and closing status
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
       <form id="leadership-settings-form">
         <!-- ================================================================= -->
         <!-- TOP CARD: TIER 1 - MASTER BLOCK (2 PEOPLE) -->

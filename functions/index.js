@@ -13,12 +13,26 @@ const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
 const FIRESTORE_BACKUP_BUCKET = defineString('FIRESTORE_BACKUP_BUCKET');
 const FIREBASE_CLUB_ID = defineString('FIREBASE_CLUB_ID', { default: 'pss-miyapur-gavel' });
 const GEMINI_MODEL = 'gemini-3.8-flash';
-const VALID_ROLES = new Set(['President', 'EC Officer', 'VP Membership', 'VP Public Relations', 'Member']);
+const VALID_ROLES = new Set([
+  'President',
+  'Club Advisor',
+  'VP Education',
+  'VP Membership',
+  'VP Public Relations',
+  'Secretary',
+  'Sergeant-at-Arms',
+  'EC Officer',
+  'Member'
+]);
 const ROLE_NAMES = {
   President: 'Full club management access.',
-  'EC Officer': 'Club operations access, including members and meetings.',
-  'VP Membership': 'Membership and attendance access.',
-  'VP Public Relations': 'Media and public relations access.',
+  'Club Advisor': 'Club advisor and mentorship access.',
+  'VP Education': 'Educational progress, speech tracking, meeting agendas, and role assignments access.',
+  'VP Membership': 'Membership roster, status, and attendance summaries access.',
+  'VP Public Relations': 'Meeting schedules, media assignments, and publicity access.',
+  Secretary: 'Attendance register, meeting records, EC schedules, and minutes access.',
+  'Sergeant-at-Arms': 'Meeting setup checklist, property register, and logistics access.',
+  'EC Officer': 'Club operations access.',
   Member: 'Read-only access.'
 };
 const SPEECH_PROGRAM = [
@@ -64,20 +78,26 @@ function sanitizeMembers(records) {
 }
 
 function buildContext(user, records) {
-  const isLeader = ['President', 'EC Officer'].includes(user.role);
+  const isLeader = ['President', 'Club Advisor', 'EC Officer'].includes(user.role);
+  const isEducation = user.role === 'VP Education';
   const isMembership = user.role === 'VP Membership';
   const isPR = user.role === 'VP Public Relations';
+  const isSecretary = user.role === 'Secretary';
+  const isSAA = user.role === 'Sergeant-at-Arms';
+
   const canSeeMembers = isLeader || isMembership || user.role === 'Member';
-  const canSeeLeadership = isLeader || user.role === 'Member';
+  const canSeeMeetings = isLeader || isEducation || isPR || isSecretary || isSAA || user.role === 'Member';
+  const canSeeAttendance = isLeader || isEducation || isMembership || isSecretary || user.role === 'Member';
+  const canSeeLeadership = isLeader || isEducation || user.role === 'Member';
   const canSeeMedia = isLeader || isPR || user.role === 'Member';
 
   const context = {
     asOf: new Date().toISOString().slice(0, 10),
     currentUser: { name: user.name, role: user.role, branch: user.branch },
     permissions: ROLE_NAMES,
-    meetings: canSeeLeadership ? records.meetings : 'Not included for this role',
+    meetings: canSeeMeetings ? records.meetings : 'Not included for this role',
     members: canSeeMembers ? sanitizeMembers(records.members) : 'Not included for this role',
-    attendance: canSeeMembers ? records.attendance : 'Not included for this role',
+    attendance: canSeeAttendance ? records.attendance : 'Not included for this role',
     speechProgram: records.speechProgram,
     mentorAssignments: canSeeLeadership ? records.mentors.map(({ id, juniorName, mentorName, speechScope, assignedDate, assignedBy }) => ({
       id, juniorName, mentorName, speechScope, assignedDate, assignedBy

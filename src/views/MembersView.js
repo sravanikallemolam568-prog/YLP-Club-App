@@ -33,7 +33,7 @@ export function renderMembersView(branchFilter = 'All') {
 
       <div class="simple-header">
         <h2>Members</h2>
-        ${authService.isECOfficer() ? `
+        ${authService.canManageMembers() ? `
           <button id="add-member-btn" class="btn btn-primary btn-sm">
             <i class="fa-solid fa-plus"></i> Add Member
           </button>
@@ -233,12 +233,13 @@ function openMemberDetails(member) {
     </div>
   `;
 
+  const canManage = authService.canManageMembers();
   const footer = `
     <div class="detail-action-row">
-      <button class="btn btn-outline btn-sm" data-action="edit"><i class="fa-solid fa-pen"></i> Edit</button>
+      ${canManage ? `<button class="btn btn-outline btn-sm" data-action="edit"><i class="fa-solid fa-pen"></i> Edit</button>` : ''}
       <button class="btn btn-outline btn-sm" data-action="attendance"><i class="fa-solid fa-clipboard-user"></i> Attendance</button>
       <button class="btn btn-outline btn-sm" data-action="speeches"><i class="fa-solid fa-scroll"></i> Speeches</button>
-      <button class="btn btn-danger btn-sm" data-action="delete"><i class="fa-solid fa-trash"></i> Delete</button>
+      ${canManage ? `<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
     </div>
   `;
 

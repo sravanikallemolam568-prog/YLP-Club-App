@@ -11,7 +11,7 @@ export function renderAgendaConfigView(branchFilter = 'All') {
     meetings = meetings.filter(m => m.branch === branchFilter);
   }
   const selectedMeeting = meetings[0] || dbService.getMeetings()[0];
-  const readOnly = authService.isReadOnly();
+  const readOnly = !authService.canManageAgenda();
 
   setTimeout(() => {
     bindAgendaEvents(selectedMeeting);

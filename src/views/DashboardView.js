@@ -198,6 +198,7 @@ export function renderDashboardView(branchFilter = 'All') {
         </div>
       </div>
 
+      ${authService.canAccessView('speeches') ? `
       <div class="home-speech-overview">
         <div class="home-speech-overview-copy">
           <div class="home-speech-overview-title"><i class="fa-solid fa-microphone-lines"></i> Speech progress</div>
@@ -208,6 +209,7 @@ export function renderDashboardView(branchFilter = 'All') {
         </div>
         <a class="btn btn-outline btn-sm" href="#speeches"><i class="fa-solid fa-arrow-right"></i> View progress</a>
       </div>
+      ` : ''}
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 26px;">
         <article style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 18px; box-shadow: var(--shadow-sm);">

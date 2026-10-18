@@ -28,7 +28,7 @@ export function renderSpeechesView(branchFilter = 'All') {
           <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-microphone-lines" style="color: var(--teal-deep);"></i> Member Speech Progress</h2>
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Follow each member’s prepared-speech journey and next project.</p>
         </div>
-        ${authService.isECOfficer() ? `
+        ${authService.canManageSpeeches() ? `
           <button id="record-speech-btn" class="btn btn-primary">
             <i class="fa-solid fa-circle-check"></i> Record progress
           </button>

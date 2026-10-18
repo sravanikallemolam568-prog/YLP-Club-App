@@ -23,7 +23,8 @@ const STORAGE_KEYS = {
   MEDIA: 'pssgavel_media',
   ELECTIONS: 'pssgavel_elections',
   SUPPORT_TICKETS: 'pssgavel_support_tickets',
-  REMINDERS: 'pssgavel_reminders'
+  REMINDERS: 'pssgavel_reminders',
+  EC_CHAT: 'pssgavel_ec_chat'
 };
 
 const DEFAULT_SPEECHES = [
@@ -336,6 +337,31 @@ class DBService {
   deleteReminder(id) {
     const reminders = this.getReminders().filter(reminder => reminder.id !== id);
     this.saveReminders(reminders);
+  }
+
+  // EC Chat Messages (Hierarchical & @Mention-Enforced)
+  getECChatMessages() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.EC_CHAT) || '[]');
+  }
+
+  addECChatMessage(messageData) {
+    const messages = this.getECChatMessages();
+    const newId = createRecordId('CHAT');
+    const newMessage = {
+      id: newId,
+      ...messageData,
+      createdAt: messageData.createdAt || new Date().toISOString()
+    };
+    messages.push(newMessage);
+    saveLocalData(STORAGE_KEYS.EC_CHAT, messages);
+    return newMessage;
+  }
+
+  deleteECChatMessage(id) {
+    let messages = this.getECChatMessages();
+    messages = messages.filter(m => m.id !== id);
+    saveLocalData(STORAGE_KEYS.EC_CHAT, messages);
+    return true;
   }
 }
 

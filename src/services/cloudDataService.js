@@ -18,7 +18,8 @@ const DATA_COLLECTIONS = [
   { key: 'pssgavel_media', name: 'media' },
   { key: 'pssgavel_elections', name: 'elections' },
   { key: 'pssgavel_support_tickets', name: 'supportTickets' },
-  { key: 'pssgavel_reminders', name: 'reminders' }
+  { key: 'pssgavel_reminders', name: 'reminders' },
+  { key: 'pssgavel_ec_chat', name: 'ecChat' }
 ];
 
 let state = 'unconfigured';
@@ -74,18 +75,24 @@ function collectionRef(spec) {
 }
 
 function collectionsForRole(role) {
-  if (role === 'President' || role === 'EC Officer' || role === 'Member') return DATA_COLLECTIONS;
+  if (['President', 'Club Advisor', 'EC Officer', 'Member'].includes(role)) return DATA_COLLECTIONS;
   const allowedKeys = role === 'VP Membership'
-    ? ['pssgavel_members', 'pssgavel_meetings', 'pssgavel_attendance', 'pssgavel_ec', 'pssgavel_elections', 'pssgavel_support_tickets', 'pssgavel_reminders']
-    : role === 'VP Public Relations'
-      ? ['pssgavel_meetings', 'pssgavel_ec', 'pssgavel_media', 'pssgavel_elections', 'pssgavel_support_tickets', 'pssgavel_reminders']
-      : [];
+    ? ['pssgavel_members', 'pssgavel_meetings', 'pssgavel_attendance', 'pssgavel_ec', 'pssgavel_elections', 'pssgavel_support_tickets', 'pssgavel_reminders', 'pssgavel_ec_chat']
+    : role === 'VP Education'
+      ? ['pssgavel_meetings', 'pssgavel_attendance', 'pssgavel_mentors', 'pssgavel_ec', 'pssgavel_elections', 'pssgavel_support_tickets', 'pssgavel_reminders', 'pssgavel_ec_chat']
+      : role === 'VP Public Relations'
+        ? ['pssgavel_meetings', 'pssgavel_ec', 'pssgavel_media', 'pssgavel_elections', 'pssgavel_support_tickets', 'pssgavel_reminders', 'pssgavel_ec_chat']
+        : role === 'Secretary'
+          ? ['pssgavel_meetings', 'pssgavel_attendance', 'pssgavel_ec', 'pssgavel_elections', 'pssgavel_support_tickets', 'pssgavel_reminders', 'pssgavel_ec_chat']
+          : role === 'Sergeant-at-Arms'
+            ? ['pssgavel_meetings', 'pssgavel_ec', 'pssgavel_elections', 'pssgavel_support_tickets', 'pssgavel_reminders', 'pssgavel_ec_chat']
+            : [];
   return DATA_COLLECTIONS.filter(spec => allowedKeys.includes(spec.key));
 }
 
 function queryForRole(spec, role, uid) {
   const ref = collectionRef(spec);
-  const isLeader = role === 'President' || role === 'EC Officer';
+  const isLeader = ['President', 'Club Advisor', 'VP Education', 'Secretary', 'EC Officer'].includes(role);
   return spec.name === 'supportTickets' && !isLeader
     ? query(ref, where('createdByUid', '==', uid))
     : ref;

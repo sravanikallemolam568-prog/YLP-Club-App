@@ -39,16 +39,25 @@ class AppController {
   init() {
     // Show splash screen first
     renderSplashScreen(async () => {
-      this.bindHashRouter();
-      await authService.initialize();
-      if (authService.isLoggedIn() && !authService.getCurrentUser()?.offline) {
-        const synced = await startCloudSync(authService.getCurrentUser().role);
-        if (!synced) {
-          await authService.logout();
-          window.location.hash = '#login';
+      try {
+        this.bindHashRouter();
+        await authService.initialize();
+        const currentUser = authService.getCurrentUser();
+        if (authService.isConfigured() && authService.isLoggedIn() && currentUser && !currentUser.offline) {
+          try {
+            const synced = await startCloudSync(currentUser.role);
+            if (!synced) {
+              console.warn('Could not sync with Firestore on start. Running with local records.');
+            }
+          } catch (syncErr) {
+            console.warn('Cloud sync error on startup:', syncErr);
+          }
         }
+      } catch (err) {
+        console.error('App initialization error:', err);
+      } finally {
+        this.renderApp();
       }
-      this.renderApp();
     });
   }
 
@@ -71,21 +80,11 @@ class AppController {
       window.location.hash = '#login';
     }
 
-    // Strict Route Guard for VP Membership
-    if (isLoggedIn && authService.isVPMembership()) {
-      const vpmAllowed = ['dashboard', 'members', 'attendance', 'connect', 'elections', 'login'];
-      if (!vpmAllowed.includes(this.activeView)) {
-        this.activeView = 'dashboard';
-        window.location.hash = '#dashboard';
-      }
-    }
-
-    if (isLoggedIn && authService.isVPPR()) {
-      const prAllowed = ['dashboard', 'media', 'connect', 'elections', 'login'];
-      if (!prAllowed.includes(this.activeView)) {
-        this.activeView = 'dashboard';
-        window.location.hash = '#dashboard';
-      }
+    // Unified Route Guard: Enforce view access based on the user's role
+    if (isLoggedIn && !authService.canAccessView(this.activeView)) {
+      showToast(`Your role (${authService.getCurrentUser()?.role || 'Member'}) does not have access to this section.`, 'warning');
+      this.activeView = 'dashboard';
+      window.location.hash = '#dashboard';
     }
 
     const isLoginPage = (this.activeView === 'login' && !isLoggedIn);
@@ -155,7 +154,13 @@ class AppController {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function startApp() {
   const app = new AppController();
   app.init();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApp, { once: true });
+} else {
+  startApp();
+}
