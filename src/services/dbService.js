@@ -339,28 +339,100 @@ class DBService {
     this.saveReminders(reminders);
   }
 
-  // EC Chat Messages (Hierarchical & @Mention-Enforced)
+  // EC Chat Messages (Hierarchical, Multi-Conversation & Broadcast Synced)
   getECChatMessages() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.EC_CHAT) || '[]');
+    try {
+      const records = JSON.parse(localStorage.getItem(STORAGE_KEYS.EC_CHAT) || '[]');
+      return Array.isArray(records) ? records.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0)) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  getECChatMessagesByConversation(conversationId = 'general', { limit = 50, offset = 0 } = {}) {
+    const all = this.getECChatMessages();
+    const filtered = all.filter(msg => (msg.conversationId || 'general') === conversationId);
+    if (!limit) return filtered;
+    const start = Math.max(0, filtered.length - offset - limit);
+    const end = Math.max(0, filtered.length - offset);
+    return filtered.slice(start, end);
   }
 
   addECChatMessage(messageData) {
     const messages = this.getECChatMessages();
-    const newId = createRecordId('CHAT');
+    const tempId = messageData.clientTempId;
+    const existingIndex = messages.findIndex(m => (tempId && m.clientTempId === tempId) || (messageData.id && m.id === messageData.id));
+
     const newMessage = {
-      id: newId,
-      ...messageData,
-      createdAt: messageData.createdAt || new Date().toISOString()
+      id: messageData.id || createRecordId('CHAT'),
+      conversationId: messageData.conversationId || 'general',
+      senderName: messageData.senderName || 'Club Member',
+      senderEmail: messageData.senderEmail || '',
+      senderRole: messageData.senderRole || 'Member',
+      senderTier: messageData.senderTier || 3,
+      recipientTag: messageData.recipientTag || '',
+      recipientRole: messageData.recipientRole || '',
+      recipientEmail: messageData.recipientEmail || '',
+      content: messageData.content || '',
+      status: messageData.status || 'sent',
+      createdAt: messageData.createdAt || new Date().toISOString(),
+      clientTempId: tempId || null
     };
-    messages.push(newMessage);
+
+    if (existingIndex >= 0) {
+      messages[existingIndex] = { ...messages[existingIndex], ...newMessage };
+    } else {
+      messages.push(newMessage);
+    }
+
     saveLocalData(STORAGE_KEYS.EC_CHAT, messages);
+
+    // Broadcast message to other tabs/windows
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('pssgavel_chat_channel');
+        bc.postMessage({ type: 'NEW_MESSAGE', message: newMessage });
+        bc.close();
+      }
+    } catch (e) {
+      // Broadcast fallback
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('club:chat-message-added', { detail: newMessage }));
+    }
+
     return newMessage;
+  }
+
+  updateECChatMessageStatus(idOrTempId, status = 'sent') {
+    const messages = this.getECChatMessages();
+    const index = messages.findIndex(m => m.id === idOrTempId || m.clientTempId === idOrTempId);
+    if (index >= 0) {
+      messages[index].status = status;
+      saveLocalData(STORAGE_KEYS.EC_CHAT, messages);
+      return messages[index];
+    }
+    return null;
   }
 
   deleteECChatMessage(id) {
     let messages = this.getECChatMessages();
     messages = messages.filter(m => m.id !== id);
     saveLocalData(STORAGE_KEYS.EC_CHAT, messages);
+
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('pssgavel_chat_channel');
+        bc.postMessage({ type: 'DELETE_MESSAGE', messageId: id });
+        bc.close();
+      }
+    } catch (e) {}
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('club:chat-message-deleted', { detail: id }));
+    }
+
     return true;
   }
 }

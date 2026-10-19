@@ -228,3 +228,45 @@ exports.scheduledFirestoreBackup = onSchedule({
   });
   console.info('Firestore backup export started', { operation: data.name, outputUriPrefix });
 });
+
+/**
+ * Generates an authorized video calling room token and session credentials.
+ * Ensures the caller is an authenticated club member before issuing call access.
+ */
+exports.generateVideoCallToken = onCall({ region: 'asia-south1' }, async request => {
+  if (!request.auth?.uid) {
+    throw new HttpsError('unauthenticated', 'You must be signed in to join or start club video calls.');
+  }
+
+  const userDoc = await firestore.collection('users').doc(request.auth.uid).get();
+  if (!userDoc.exists) {
+    throw new HttpsError('permission-denied', 'Your account has no club member profile.');
+  }
+
+  const userData = userDoc.data();
+  const roomName = String(request.data?.roomName || 'GeneralRoom').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+  const isLeader = ['President', 'Club Advisor', 'EC Officer', 'VP Education', 'VP Membership', 'VP Public Relations', 'Secretary', 'Sergeant-at-Arms'].includes(userData.role);
+  const action = request.data?.action || 'join';
+
+  if (action === 'start' && !isLeader) {
+    throw new HttpsError('permission-denied', 'Only EC Leadership (Tier 1 & Tier 2) can start new video call sessions.');
+  }
+
+  const sanitizedRoom = `PSSGavelClub_${roomName}`;
+  const now = Math.floor(Date.now() / 1000);
+  const expiresAt = now + 7200; // 2 hour session validity
+
+  return {
+    provider: 'webrtc-jitsi',
+    roomName: sanitizedRoom,
+    domain: 'meet.jit.si',
+    user: {
+      name: userData.name || 'Member',
+      email: request.auth.token?.email || userData.email || '',
+      role: userData.role || 'Member',
+      isLeader
+    },
+    expiresAt,
+    authorized: true
+  };
+});

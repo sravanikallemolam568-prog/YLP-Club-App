@@ -56,6 +56,29 @@ service cloud.firestore {
         && request.resource.data.votes[resource.data.votes.size()].voterKey == request.auth.uid;
     }
 
+    function canReadECChat() {
+      return resource.data.conversationId == 'general'
+        || (resource.data.conversationId == 'ec-leadership' && (clubLeaders() || hasRole(['VP Education', 'VP Membership', 'VP Public Relations', 'Secretary', 'Sergeant-at-Arms'])))
+        || clubLeaders()
+        || resource.data.senderEmail == request.auth.token.email
+        || resource.data.recipientEmail == request.auth.token.email
+        || (resource.data.senderUid != null && resource.data.senderUid == request.auth.uid);
+    }
+
+    function canCreateECChat() {
+      return request.resource.data.content is string
+        && request.resource.data.content.size() > 0
+        && request.resource.data.content.size() <= 3000
+        && (request.resource.data.senderUid == request.auth.uid || request.resource.data.senderEmail == request.auth.token.email || clubLeaders())
+        && (request.resource.data.conversationId != 'ec-leadership' || clubLeaders() || hasRole(['VP Education', 'VP Membership', 'VP Public Relations', 'Secretary', 'Sergeant-at-Arms']));
+    }
+
+    function canDeleteECChat() {
+      return clubLeaders()
+        || resource.data.senderEmail == request.auth.token.email
+        || (resource.data.senderUid != null && resource.data.senderUid == request.auth.uid);
+    }
+
     match /users/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
       allow list, create, update, delete: if false;
@@ -65,12 +88,15 @@ service cloud.firestore {
       allow read: if canRead(collectionName)
         && (collectionName != 'supportTickets'
           || clubLeaders()
-          || resource.data.createdByUid == request.auth.uid);
+          || resource.data.createdByUid == request.auth.uid)
+        && (collectionName != 'ecChat' || canReadECChat());
       allow create: if canWrite(collectionName)
+        && (collectionName != 'ecChat' || canCreateECChat())
         || (collectionName == 'supportTickets'
           && hasProfile()
           && request.resource.data.createdByUid == request.auth.uid);
-      allow delete: if canWrite(collectionName);
+      allow delete: if canWrite(collectionName)
+        && (collectionName != 'ecChat' || canDeleteECChat());
       allow update: if canWrite(collectionName)
         || (collectionName == 'elections'
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes'])
