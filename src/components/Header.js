@@ -1,10 +1,12 @@
 // Top Bar Header Component with cleaner branding and app-focused identity
 
 import { authService } from '../services/authService.js';
+import { dbService } from '../services/dbService.js';
 
 export function renderHeader(activeBranch) {
   const user = authService.getCurrentUser();
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const branches = dbService.getBranches();
 
   return `
     <header class="top-header">
@@ -21,9 +23,7 @@ export function renderHeader(activeBranch) {
         ${user.offline ? '<span class="badge badge-warning" title="Changes are saved only in this browser">Local-only</span>' : ''}
         <select id="global-branch-selector" class="form-select" style="padding: 6px 10px; font-size: 0.82rem; height: 38px; border-radius: 8px; font-weight: 600; width: 130px;">
           <option value="All" ${activeBranch === 'All' ? 'selected' : ''}>All Branches</option>
-          <option value="Miyapur" ${activeBranch === 'Miyapur' ? 'selected' : ''}>Miyapur</option>
-          <option value="GHMC" ${activeBranch === 'GHMC' ? 'selected' : ''}>GHMC</option>
-          <option value="MKR" ${activeBranch === 'MKR' ? 'selected' : ''}>MKR</option>
+          ${branches.map(b => `<option value="${b}" ${activeBranch === b ? 'selected' : ''}>${b}</option>`).join('')}
         </select>
 
         <button id="theme-toggle-btn" class="btn btn-outline btn-icon" style="width: 38px; height: 38px;" title="Toggle Light/Dark Theme">

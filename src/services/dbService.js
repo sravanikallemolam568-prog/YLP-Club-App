@@ -24,7 +24,8 @@ const STORAGE_KEYS = {
   ELECTIONS: 'pssgavel_elections',
   SUPPORT_TICKETS: 'pssgavel_support_tickets',
   REMINDERS: 'pssgavel_reminders',
-  EC_CHAT: 'pssgavel_ec_chat'
+  EC_CHAT: 'pssgavel_ec_chat',
+  BRANCHES: 'pssgavel_branches'
 };
 
 const DEFAULT_SPEECHES = [
@@ -109,6 +110,53 @@ class DBService {
     let members = this.getMembers();
     members = members.filter(m => m.id !== id);
     saveLocalData(STORAGE_KEYS.MEMBERS, members);
+    return true;
+  }
+
+  // Branches CRUD
+  getBranches() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.BRANCHES) || '[]');
+      if (Array.isArray(stored) && stored.length > 0) return stored;
+    } catch {}
+
+    // Initialize with standard branches + existing records
+    const members = this.getMembers();
+    const meetings = this.getMeetings();
+    const branchSet = new Set(['Miyapur', 'MKR']);
+    members.forEach(m => { if (m.branch) branchSet.add(m.branch.trim()); });
+    meetings.forEach(m => { if (m.branch) branchSet.add(m.branch.trim()); });
+    const initialList = Array.from(branchSet);
+    saveLocalData(STORAGE_KEYS.BRANCHES, initialList);
+    return initialList;
+  }
+
+  addBranch(branchName) {
+    const clean = String(branchName || '').trim();
+    if (!clean) return false;
+    const branches = this.getBranches();
+    if (!branches.some(b => b.toLowerCase() === clean.toLowerCase())) {
+      branches.push(clean);
+      saveLocalData(STORAGE_KEYS.BRANCHES, branches);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('club:branch-added', { detail: clean }));
+      }
+      return true;
+    }
+    return false;
+  }
+
+  deleteBranch(branchName) {
+    const clean = String(branchName || '').trim().toLowerCase();
+    if (clean === 'miyapur' || clean === 'mkr') {
+      return false; // protect primary core branches
+    }
+    let branches = this.getBranches();
+    branches = branches.filter(b => b.trim().toLowerCase() !== clean);
+    saveLocalData(STORAGE_KEYS.BRANCHES, branches);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('club:branch-deleted', { detail: branchName }));
+    }
     return true;
   }
 
