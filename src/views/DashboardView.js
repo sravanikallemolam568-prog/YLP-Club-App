@@ -1,4 +1,4 @@
-// Modern, Dynamic Gavel Club Dashboard with Automated Branch Metrics & Management
+// Gavel Club Dashboard — Redesigned with Blue (Confidence), Green (Growth), and Yellow (Lead)
 
 import { dbService } from '../services/dbService.js';
 import { authService } from '../services/authService.js';
@@ -22,16 +22,16 @@ function showReminderAlertPopup(reminders) {
   if (alertBox) {
     alertBox.innerHTML = `
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-        <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: rgba(16,185,129,0.12); color:#0f766e; font-size:14px;">
+        <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: #FEFCE8; color:#854D0E; font-size:14px; border: 1px solid #FDE047;">
           <i class="fa-solid fa-bell"></i>
         </div>
         <div>
-          <div style="font-size: 0.68rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#5b6470;">Reminder</div>
-          <div style="font-size: 0.92rem; font-weight:800; color:#111827;">${escapeHtml(reminder.title)}</div>
+          <div style="font-size: 0.68rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#64748B;">Priority Reminder</div>
+          <div style="font-size: 0.92rem; font-weight:800; color:#0F172A;">${escapeHtml(reminder.title)}</div>
         </div>
       </div>
-      <div style="font-size: 0.8rem; color:#4b5563; line-height:1.45;">${escapeHtml(reminder.message)}</div>
-      <div style="margin-top: 10px; font-size: 0.72rem; color:#0f766e; font-weight:700;">Due: ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+      <div style="font-size: 0.8rem; color:#475569; line-height:1.45;">${escapeHtml(reminder.message)}</div>
+      <div style="margin-top: 10px; font-size: 0.72rem; color:#854D0E; font-weight:700;">Due: ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
     `;
     alertBox.style.display = 'block';
     alertBox.dataset.active = 'true';
@@ -47,23 +47,23 @@ function showReminderAlertPopup(reminders) {
   popup.style.width = 'min(320px, calc(100vw - 28px))';
   popup.style.padding = '14px 16px';
   popup.style.borderRadius = '16px';
-  popup.style.background = 'linear-gradient(135deg, #ecfdf5, #ffffff)';
-  popup.style.border = '1px solid rgba(16,185,129,0.22)';
-  popup.style.boxShadow = '0 18px 42px rgba(15, 23, 42, 0.18)';
+  popup.style.background = '#FFFFFF';
+  popup.style.border = '1px solid #FDE047';
+  popup.style.boxShadow = '0 18px 42px rgba(15, 23, 42, 0.16)';
   popup.style.zIndex = '1000';
   popup.style.display = 'block';
   popup.innerHTML = `
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-      <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: rgba(16,185,129,0.12); color:#0f766e; font-size:14px;">
+      <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: #FEFCE8; color:#854D0E; font-size:14px; border: 1px solid #FDE047;">
         <i class="fa-solid fa-bell"></i>
       </div>
       <div>
-        <div style="font-size: 0.68rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#5b6470;">Reminder</div>
-        <div style="font-size: 0.92rem; font-weight:800; color:#111827;">${escapeHtml(reminder.title)}</div>
+        <div style="font-size: 0.68rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#64748B;">Priority Reminder</div>
+        <div style="font-size: 0.92rem; font-weight:800; color:#0F172A;">${escapeHtml(reminder.title)}</div>
       </div>
     </div>
-    <div style="font-size: 0.8rem; color:#4b5563; line-height:1.45;">${escapeHtml(reminder.message)}</div>
-    <div style="margin-top: 10px; font-size: 0.72rem; color:#0f766e; font-weight:700;">Due: ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+    <div style="font-size: 0.8rem; color:#475569; line-height:1.45;">${escapeHtml(reminder.message)}</div>
+    <div style="margin-top: 10px; font-size: 0.72rem; color:#854D0E; font-weight:700;">Due: ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
   `;
   document.body.appendChild(popup);
 }
@@ -137,10 +137,11 @@ export function renderDashboardView(branchFilter = 'All') {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
   const todayLabel = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-  const todaysMeeting = displayMeetings.find(m => m.date === todayLabel) || displayMeetings.find(m => m.status === 'Upcoming') || displayMeetings[0];
+  const nextMeeting = displayMeetings.find(m => m.status === 'Upcoming') || displayMeetings[0];
   
   const presentCount = displayAttendance.filter(a => a.status === 'Present').length;
   const absentCount = displayAttendance.filter(a => a.status !== 'Present').length;
+  const attendancePercent = displayAttendance.length ? Math.round((presentCount / displayAttendance.length) * 100) : 0;
   
   const speechList = dbService.getSpeechList();
   const totalSpeechProjects = displayMembers.length * speechList.length;
@@ -150,122 +151,112 @@ export function renderDashboardView(branchFilter = 'All') {
     ? Math.round((completedSpeechProjects / totalSpeechProjects) * 100)
     : 0;
 
-  // Permission: Add Branch appears ONLY for President / Super Admin (Tier 1)
+  // Permission: Add Branch button appears strictly for President / Super Admin (Tier 1)
   const canAddBranch = authService.isMaster();
 
   setTimeout(() => bindDashboardEvents(), 40);
 
   return `
-    <div class="animate-fade-in" style="max-width: 1040px; margin: 0 auto; padding-bottom: 30px;">
+    <div class="animate-fade-in gd-container">
       
-      <!-- Top Title Bar -->
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 20px; flex-wrap: wrap;">
+      <!-- ================================================================= -->
+      <!-- 1. DASHBOARD HEADER -->
+      <!-- ================================================================= -->
+      <header class="gd-header">
         <div>
-          <div style="font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal-deep, #0F766E); font-weight: 800; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-crown" style="color: #EAB308;"></i>
+          <div class="gd-brand-badge">
+            <i class="fa-solid fa-crown" style="color: #CA8A04;"></i>
             <span>PSS MIYAPUR GAVEL CLUB</span>
           </div>
-          <h2 style="font-size: 1.85rem; font-weight: 800; line-height: 1.2; margin: 4px 0 0; color: var(--text-primary);">
-            Gavel Club Dashboard
-          </h2>
-          <p style="margin: 2px 0 0; font-size: 0.86rem; color: var(--text-secondary);">
-            ${greeting}, <strong>${escapeHtml(user?.name || 'Club Leader')}</strong> · Active Branch: <span class="badge badge-info" style="font-weight: 700;">${escapeHtml(branchFilter)}</span>
+          <h2 class="gd-title">Gavel Club Dashboard</h2>
+          <p class="gd-subtitle">
+            ${greeting}, <strong>${escapeHtml(user?.name || 'Club Leader')}</strong> · Active: <span class="badge" style="background: #EFF6FF; color: #1E3A8A; font-weight: 700;">${escapeHtml(branchFilter)}</span>
           </p>
         </div>
         
         <div style="display: flex; align-items: center; gap: 8px;">
-          <a href="#connect" class="btn btn-primary" style="display: flex; align-items: center; gap: 7px; font-weight: 700; padding: 8px 16px; border-radius: 12px;">
+          <a href="#connect" class="btn btn-primary" style="background: #2563EB; border-color: #2563EB; display: inline-flex; align-items: center; gap: 7px; font-weight: 700; padding: 8px 16px; border-radius: 12px;">
             <i class="fa-solid fa-comments"></i> Club Connect
           </a>
         </div>
-      </div>
+      </header>
 
       <!-- ================================================================= -->
-      <!-- 1. METRICS CARDS: AUTOMATIC COUNTS FROM DATABASE -->
+      <!-- 2. SIX SUMMARY CARDS (BLUE, GREEN, YELLOW SYSTEM) -->
       <!-- ================================================================= -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 22px;">
+      <div class="gd-cards-grid">
         
-        <!-- Total Members -->
-        <article class="card" style="margin: 0; padding: 18px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-          <div style="position: absolute; right: 14px; top: 14px; width: 36px; height: 36px; border-radius: 10px; background: rgba(13, 148, 136, 0.12); color: var(--teal-deep, #0F766E); display: grid; place-items: center; font-size: 1rem;">
-            <i class="fa-solid fa-users"></i>
+        <!-- 1. Total Members (Blue Confidence) -->
+        <article class="gd-card gd-accent-blue">
+          <div class="gd-card-top">
+            <span class="gd-card-label">Total Members</span>
+            <div class="gd-card-icon"><i class="fa-solid fa-users"></i></div>
           </div>
-          <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 800;">
-            Total Members
-          </div>
-          <div style="font-size: 2.3rem; font-weight: 800; color: var(--teal-deep, #0F766E); margin: 6px 0 2px; line-height: 1;">
-            ${totalMembersCount}
-          </div>
-          <div style="font-size: 0.78rem; color: var(--text-secondary);">
-            All branches
-          </div>
+          <div class="gd-card-value">${totalMembersCount}</div>
+          <div class="gd-card-desc">All branches</div>
         </article>
 
-        <!-- Miyapur Members -->
-        <article class="card" style="margin: 0; padding: 18px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-          <div style="position: absolute; right: 14px; top: 14px; width: 36px; height: 36px; border-radius: 10px; background: rgba(59, 130, 246, 0.12); color: #1D4ED8; display: grid; place-items: center; font-size: 1rem;">
-            <i class="fa-solid fa-location-dot"></i>
+        <!-- 2. Miyapur Branch Members (Blue Confidence) -->
+        <article class="gd-card gd-accent-blue">
+          <div class="gd-card-top">
+            <span class="gd-card-label">Miyapur</span>
+            <div class="gd-card-icon"><i class="fa-solid fa-location-dot"></i></div>
           </div>
-          <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 800;">
-            Miyapur
-          </div>
-          <div style="font-size: 2.3rem; font-weight: 800; color: #1D4ED8; margin: 6px 0 2px; line-height: 1;">
-            ${miyapurCount}
-          </div>
-          <div style="font-size: 0.78rem; color: var(--text-secondary);">
-            Members
-          </div>
+          <div class="gd-card-value">${miyapurCount}</div>
+          <div class="gd-card-desc">Members</div>
         </article>
 
-        <!-- MKR Branch Members -->
-        <article class="card" style="margin: 0; padding: 18px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-          <div style="position: absolute; right: 14px; top: 14px; width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); color: #047857; display: grid; place-items: center; font-size: 1rem;">
-            <i class="fa-solid fa-building-user"></i>
+        <!-- 3. MKR Branch Members (Green Growth) -->
+        <article class="gd-card gd-accent-green">
+          <div class="gd-card-top">
+            <span class="gd-card-label">MKR Branch</span>
+            <div class="gd-card-icon"><i class="fa-solid fa-seedling"></i></div>
           </div>
-          <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 800;">
-            MKR Branch
-          </div>
-          <div style="font-size: 2.3rem; font-weight: 800; color: #047857; margin: 6px 0 2px; line-height: 1;">
-            ${mkrCount}
-          </div>
-          <div style="font-size: 0.78rem; color: var(--text-secondary);">
-            Members
-          </div>
+          <div class="gd-card-value">${mkrCount}</div>
+          <div class="gd-card-desc">Members</div>
         </article>
 
-        <!-- Scheduled Sessions / Upcoming Meetings -->
-        <article class="card" style="margin: 0; padding: 18px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-          <div style="position: absolute; right: 14px; top: 14px; width: 36px; height: 36px; border-radius: 10px; background: rgba(234, 179, 8, 0.14); color: #B45309; display: grid; place-items: center; font-size: 1rem;">
-            <i class="fa-solid fa-calendar-check"></i>
+        <!-- 4. Upcoming Meetings (Yellow Leadership) -->
+        <article class="gd-card gd-accent-yellow">
+          <div class="gd-card-top">
+            <span class="gd-card-label">Upcoming Meetings</span>
+            <div class="gd-card-icon"><i class="fa-solid fa-calendar-check"></i></div>
           </div>
-          <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 800;">
-            Upcoming Meetings
-          </div>
-          <div style="font-size: 2.3rem; font-weight: 800; color: #B45309; margin: 6px 0 2px; line-height: 1;">
-            ${scheduledMeetingsCount}
-          </div>
-          <div style="font-size: 0.78rem; color: var(--text-secondary);">
-            Scheduled sessions
-          </div>
+          <div class="gd-card-value">${scheduledMeetingsCount}</div>
+          <div class="gd-card-desc">Scheduled sessions</div>
         </article>
 
-        <!-- Custom Branches (if added by President) -->
+        <!-- 5. Attendance Overview (Green Growth) -->
+        <article class="gd-card gd-accent-green">
+          <div class="gd-card-top">
+            <span class="gd-card-label">Attendance</span>
+            <div class="gd-card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          </div>
+          <div class="gd-card-value">${attendancePercent}%</div>
+          <div class="gd-card-desc">${presentCount} Present · ${absentCount} Absent</div>
+        </article>
+
+        <!-- 6. Speech Progress (Blue & Green Accents) -->
+        <article class="gd-card gd-accent-blue">
+          <div class="gd-card-top">
+            <span class="gd-card-label">Speech Progress</span>
+            <div class="gd-card-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+          </div>
+          <div class="gd-card-value">${speechProgressPercent}%</div>
+          <div class="gd-card-desc">${completedSpeechProjects} of ${totalSpeechProjects} completed</div>
+        </article>
+
+        <!-- Custom Branches (if created by President) -->
         ${customBranches.map(branchName => {
           const count = allMembers.filter(m => (m.branch || '').toLowerCase() === branchName.toLowerCase()).length;
           return `
-            <article class="card" style="margin: 0; padding: 18px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-              <div style="position: absolute; right: 14px; top: 14px; width: 36px; height: 36px; border-radius: 10px; background: rgba(139, 92, 246, 0.12); color: #6D28D9; display: grid; place-items: center; font-size: 1rem;">
-                <i class="fa-solid fa-sitemap"></i>
+            <article class="gd-card gd-accent-blue">
+              <div class="gd-card-top">
+                <span class="gd-card-label">${escapeHtml(branchName)}</span>
+                <div class="gd-card-icon"><i class="fa-solid fa-sitemap"></i></div>
               </div>
-              <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 800;">
-                ${escapeHtml(branchName)}
-              </div>
-              <div style="font-size: 2.3rem; font-weight: 800; color: #6D28D9; margin: 6px 0 2px; line-height: 1;">
-                ${count}
-              </div>
-              <div style="font-size: 0.78rem; color: var(--text-secondary);">
-                Members
-              </div>
+              <div class="gd-card-value">${count}</div>
+              <div class="gd-card-desc">Members</div>
             </article>
           `;
         }).join('')}
@@ -273,23 +264,26 @@ export function renderDashboardView(branchFilter = 'All') {
       </div>
 
       <!-- ================================================================= -->
-      <!-- 2. BRANCHES BAR: DYNAMIC LIST & PRESIDENT-ONLY ADD BRANCH -->
+      <!-- 3. OUR BRANCHES MANAGEMENT SECTION -->
       <!-- ================================================================= -->
-      <div class="card" style="margin-bottom: 24px; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-sitemap" style="color: var(--teal-primary, #0D9488);"></i> Branches:
-          </span>
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-            <button type="button" class="dash-branch-pill ${branchFilter === 'All' ? 'active' : ''}" data-branch="All" style="padding: 5px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; border: 1px solid ${branchFilter === 'All' ? 'var(--teal-primary, #0D9488)' : 'var(--border-color)'}; background: ${branchFilter === 'All' ? 'var(--teal-primary, #0D9488)' : 'var(--bg-main)'}; color: ${branchFilter === 'All' ? '#FFFFFF' : 'var(--text-secondary)'}; cursor: pointer; transition: all 0.15s;">
-              All (${totalMembersCount})
+      <section class="gd-branch-panel" aria-label="Our Branches">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <div class="gd-branch-title">
+            <i class="fa-solid fa-sitemap" style="color: #2563EB;"></i>
+            <span>Our Branches:</span>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <button type="button" class="gd-branch-pill ${branchFilter === 'All' ? 'active' : ''}" data-branch="All">
+              <span>All Branches</span>
+              <span class="badge" style="background: rgba(0,0,0,0.06); color: inherit; padding: 1px 6px; font-size: 0.7rem;">${totalMembersCount}</span>
             </button>
             ${allBranches.map(b => {
               const bCount = allMembers.filter(m => (m.branch || '').toLowerCase() === b.toLowerCase()).length;
               const isSelected = branchFilter.toLowerCase() === b.toLowerCase();
               return `
-                <button type="button" class="dash-branch-pill ${isSelected ? 'active' : ''}" data-branch="${escapeHtml(b)}" style="padding: 5px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; border: 1px solid ${isSelected ? 'var(--teal-primary, #0D9488)' : 'var(--border-color)'}; background: ${isSelected ? 'var(--teal-primary, #0D9488)' : 'var(--bg-main)'}; color: ${isSelected ? '#FFFFFF' : 'var(--text-secondary)'}; cursor: pointer; transition: all 0.15s;">
-                  ${escapeHtml(b)} (${bCount})
+                <button type="button" class="gd-branch-pill ${isSelected ? 'active' : ''}" data-branch="${escapeHtml(b)}">
+                  <span>${escapeHtml(b)}</span>
+                  <span class="badge" style="background: rgba(0,0,0,0.06); color: inherit; padding: 1px 6px; font-size: 0.7rem;">${bCount}</span>
                 </button>
               `;
             }).join('')}
@@ -298,78 +292,85 @@ export function renderDashboardView(branchFilter = 'All') {
 
         <!-- Add Branch button strictly for President / Super Admin -->
         ${canAddBranch ? `
-          <button type="button" id="dash-add-branch-btn" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; border-radius: 10px; border-color: var(--teal-primary, #0D9488); color: var(--teal-deep, #0F766E); padding: 6px 14px;">
-            <i class="fa-solid fa-plus"></i> Add Branch
+          <button type="button" id="gd-add-branch-btn" class="gd-add-branch-btn" title="Add a new club branch">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Branch</span>
           </button>
         ` : ''}
-      </div>
+      </section>
 
       <!-- ================================================================= -->
-      <!-- 3. SPEECH PROGRESS & MEETING SUMMARY -->
+      <!-- 4. MEETINGS, ATTENDANCE & MEMBER GROWTH OVERVIEW -->
       <!-- ================================================================= -->
-      ${authService.canAccessView('speeches') ? `
-      <div class="home-speech-overview" style="margin-bottom: 22px;">
-        <div class="home-speech-overview-copy">
-          <div class="home-speech-overview-title"><i class="fa-solid fa-microphone-lines"></i> Speech Completion Progress</div>
-          <div class="home-speech-overview-count">${completedSpeechProjects} of ${totalSpeechProjects} projects completed (${speechProgressPercent}%)</div>
-          <div class="home-speech-overview-track" role="progressbar" aria-label="Club speech project completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${speechProgressPercent}">
-            <span style="width: ${speechProgressPercent}%"></span>
-          </div>
-        </div>
-        <a class="btn btn-outline btn-sm" href="#speeches"><i class="fa-solid fa-arrow-right"></i> View Speeches</a>
-      </div>
-      ` : ''}
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <div class="gd-split-row">
         
-        <!-- Meeting Summary -->
-        <article class="card" style="margin: 0; padding: 18px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; flex-direction: column; justify-content: space-between;">
-          <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <span style="font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 800;">Next Meeting</span>
-              <span class="badge ${todaysMeeting?.status === 'Upcoming' ? 'badge-success' : 'badge-info'}" style="font-size: 0.72rem;">${todaysMeeting ? todaysMeeting.status : 'None'}</span>
-            </div>
-            <h4 style="margin: 0 0 6px; font-size: 1.1rem; color: var(--text-primary);">
-              ${todaysMeeting ? `${escapeHtml(todaysMeeting.date)} · ${escapeHtml(todaysMeeting.startTime)}` : 'No upcoming session'}
-            </h4>
-            <p style="margin: 0; font-size: 0.82rem; color: var(--text-secondary);">
-              <i class="fa-solid fa-location-dot" style="color: #EF4444; margin-right: 4px;"></i> Branch: <strong>${todaysMeeting ? escapeHtml(todaysMeeting.branch) : branchFilter}</strong>
-            </p>
+        <!-- Next Meeting Overview (Yellow Leadership Highlight) -->
+        <article class="gd-section-card" style="border-left: 4px solid #FACC15;">
+          <div class="gd-section-header">
+            <h3>
+              <i class="fa-solid fa-calendar-days" style="color: #CA8A04;"></i>
+              <span>Next Meeting Session</span>
+            </h3>
+            <span class="badge ${nextMeeting?.status === 'Upcoming' ? 'badge-success' : 'badge-info'}" style="font-weight: 700; font-size: 0.72rem;">
+              ${nextMeeting ? nextMeeting.status : 'None'}
+            </span>
           </div>
-          <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <a href="#connect" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 6px;">
+
+          <div style="margin: 8px 0 14px;">
+            <div style="font-size: 1.15rem; font-weight: 800; color: #0F172A;">
+              ${nextMeeting ? `${escapeHtml(nextMeeting.date)} · ${escapeHtml(nextMeeting.startTime)}` : 'No upcoming session scheduled'}
+            </div>
+            <div style="font-size: 0.82rem; color: #64748B; margin-top: 4px;">
+              <i class="fa-solid fa-location-dot" style="color: #2563EB; margin-right: 4px;"></i>
+              Branch: <strong>${nextMeeting ? escapeHtml(nextMeeting.branch) : branchFilter}</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="#connect" class="btn btn-primary btn-sm" style="background: #2563EB; border-color: #2563EB; display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
               <i class="fa-solid fa-video"></i> In-App Call
             </a>
-            <a href="#agenda" class="btn btn-outline btn-sm" style="display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-list-check"></i> Agenda
+            <a href="#agenda" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+              <i class="fa-solid fa-list-check"></i> Open Agenda
             </a>
           </div>
         </article>
 
-        <!-- Attendance Summary -->
-        <article class="card" style="margin: 0; padding: 18px; border-radius: 18px; border: 1px solid var(--border-color); background: var(--bg-card); display: flex; flex-direction: column; justify-content: space-between;">
-          <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <span style="font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 800;">Attendance Rate</span>
-              <span style="font-size: 0.78rem; font-weight: 800; color: var(--teal-deep, #0F766E);">${displayAttendance.length ? Math.round((presentCount / displayAttendance.length) * 100) : 0}%</span>
+        <!-- Attendance & Speech Progress (Growth Green & Blue) -->
+        <article class="gd-section-card" style="border-left: 4px solid #16A34A;">
+          <div class="gd-section-header">
+            <h3>
+              <i class="fa-solid fa-chart-line" style="color: #16A34A;"></i>
+              <span>Growth &amp; Attendance</span>
+            </h3>
+            <span style="font-size: 0.78rem; font-weight: 800; color: #15803D;">${attendancePercent}% Attendance</span>
+          </div>
+
+          <!-- Attendance bar -->
+          <div style="margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748B; margin-bottom: 4px;">
+              <span>Present: <strong>${presentCount}</strong></span>
+              <span>Absent: <strong>${absentCount}</strong></span>
             </div>
-            <div style="display: flex; align-items: baseline; gap: 16px; margin: 8px 0 10px;">
-              <div>
-                <span style="font-size: 1.8rem; font-weight: 800; color: var(--teal-deep, #0F766E);">${presentCount}</span>
-                <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; margin-left: 4px;">Present</span>
-              </div>
-              <div>
-                <span style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">${absentCount}</span>
-                <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; margin-left: 4px;">Absent</span>
-              </div>
-            </div>
-            <div style="height: 8px; background: var(--badge-bg); border-radius: 999px; overflow: hidden;">
-              <div style="height: 100%; width: ${displayAttendance.length ? Math.max(10, Math.round((presentCount / displayAttendance.length) * 100)) : 0}%; background: linear-gradient(90deg, var(--teal-primary, #0D9488), var(--teal-deep, #0F766E)); border-radius: inherit;"></div>
+            <div style="height: 8px; background: #E2E8F0; border-radius: 999px; overflow: hidden;">
+              <div style="height: 100%; width: ${displayAttendance.length ? Math.max(10, attendancePercent) : 0}%; background: #16A34A; border-radius: inherit;"></div>
             </div>
           </div>
+
+          <!-- Speech Progress bar -->
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748B; margin-bottom: 4px;">
+              <span>Speech Projects</span>
+              <span><strong>${completedSpeechProjects} / ${totalSpeechProjects}</strong> (${speechProgressPercent}%)</span>
+            </div>
+            <div style="height: 8px; background: #E2E8F0; border-radius: 999px; overflow: hidden;">
+              <div style="height: 100%; width: ${speechProgressPercent}%; background: linear-gradient(90deg, #2563EB, #16A34A); border-radius: inherit;"></div>
+            </div>
+          </div>
+
           <div style="margin-top: 14px;">
-            <a href="#attendance" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-clipboard-user"></i> Full Attendance
+            <a href="#speeches" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+              <i class="fa-solid fa-arrow-right"></i> View Speech Tracker
             </a>
           </div>
         </article>
@@ -377,32 +378,33 @@ export function renderDashboardView(branchFilter = 'All') {
       </div>
 
       <!-- ================================================================= -->
-      <!-- 4. REMINDERS PANEL: KEEPING ALL WORKING REMINDERS FEATURES -->
+      <!-- 5. REMINDERS & PRIORITIES (YELLOW LEADERSHIP ACCENT) -->
       <!-- ================================================================= -->
-      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-sm);">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+      <section class="gd-section-card" style="border-top: 4px solid #FACC15;">
+        <div class="gd-section-header">
           <div>
-            <div style="font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); font-weight: 800;">Club Task Management</div>
-            <h3 style="margin: 4px 0 0; font-size: 1.25rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-bell" style="color: var(--teal-primary, #0D9488);"></i> Upcoming Reminders
+            <div style="font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: #854D0E; font-weight: 800;">Leadership Action Items</div>
+            <h3 style="margin: 3px 0 0;">
+              <i class="fa-solid fa-bell" style="color: #CA8A04;"></i>
+              <span>Reminders &amp; Priorities</span>
             </h3>
           </div>
-          <span style="display: inline-flex; align-items: center; justify-content: center; padding: 5px 12px; border-radius: 999px; background: rgba(13, 148, 136, 0.12); color: var(--teal-deep, #0F766E); font-size: 0.74rem; font-weight: 800;">
+          <span class="badge" style="background: #FEFCE8; color: #854D0E; border: 1px solid #FDE047; font-weight: 800; font-size: 0.74rem;">
             ${reminders.filter(item => !item.done).length} active
           </span>
         </div>
 
-        <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 18px;">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 18px;">
           
           <!-- Add Reminder Form -->
-          <form id="reminder-form" style="display: grid; gap: 12px; padding: 16px; border: 1px solid var(--border-color); background: var(--bg-main); border-radius: 16px;">
+          <form id="reminder-form" style="display: grid; gap: 12px; padding: 16px; border: 1px solid #E2E8F0; background: #F8FAFC; border-radius: 14px;">
             <label style="display: grid; gap: 4px;">
-              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);">Title</span>
-              <input id="reminder-title" class="form-input" type="text" maxlength="80" placeholder="e.g. Confirm Meeting Roles" required />
+              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #64748B;">Reminder Title</span>
+              <input id="reminder-title" class="form-input" type="text" maxlength="80" placeholder="e.g. Confirm Toastmaster Roles" required />
             </label>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
               <label style="display: grid; gap: 4px;">
-                <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);">Type</span>
+                <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #64748B;">Category</span>
                 <select id="reminder-type" class="form-select">
                   <option value="Meeting">Meeting</option>
                   <option value="Attendance">Attendance</option>
@@ -411,49 +413,67 @@ export function renderDashboardView(branchFilter = 'All') {
                 </select>
               </label>
               <label style="display: grid; gap: 4px;">
-                <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);">Due Date</span>
+                <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #64748B;">Due Date</span>
                 <input id="reminder-date" class="form-input" type="date" required />
               </label>
             </div>
             <label style="display: grid; gap: 4px;">
-              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);">Message</span>
-              <textarea id="reminder-message" class="form-input" rows="3" maxlength="200" placeholder="Details or action needed..." required></textarea>
+              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #64748B;">Action Details</span>
+              <textarea id="reminder-message" class="form-input" rows="3" maxlength="200" placeholder="Required action or deadline..." required></textarea>
             </label>
-            <button type="submit" class="btn btn-primary" style="justify-self: start; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-plus"></i> Add Reminder
+            <button type="submit" class="btn btn-primary" style="background: #2563EB; border-color: #2563EB; justify-self: start; display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+              <i class="fa-solid fa-plus"></i> Add Priority
             </button>
           </form>
 
-          <!-- Reminders List -->
-          <div style="display: grid; gap: 10px; max-height: 400px; overflow-y: auto;">
+          <!-- Reminders Feed -->
+          <div style="display: grid; gap: 10px; max-height: 420px; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
-              <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase;">Active Alerts</span>
+              <span style="font-size: 0.72rem; font-weight: 800; color: #64748B; letter-spacing: 0.06em; text-transform: uppercase;">Active Alerts</span>
               <button id="enable-reminder-alerts" type="button" class="btn btn-outline btn-sm" style="font-size: 0.74rem;">Enable Desktop Alerts</button>
             </div>
             ${reminders.length ? reminders.map(reminder => `
-              <article style="padding: 12px 14px; border: 1px solid ${reminder.done ? 'rgba(16,185,129,0.25)' : 'var(--border-color)'}; border-radius: 14px; background: ${reminder.done ? 'rgba(16,185,129,0.04)' : 'var(--bg-main)'};">
+              <article style="padding: 12px 14px; border: 1px solid ${reminder.done ? 'rgba(22, 163, 74, 0.25)' : '#E2E8F0'}; border-radius: 14px; background: ${reminder.done ? '#F0FDF4' : '#FFFFFF'};">
                 <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start;">
                   <div>
-                    <div style="font-size: 0.66rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;">${escapeHtml(reminder.type)}</div>
-                    <h4 style="margin: 3px 0 2px; font-size: 0.95rem; color: var(--text-primary);">${escapeHtml(reminder.title)}</h4>
+                    <span style="font-size: 0.66rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em;">${escapeHtml(reminder.type)}</span>
+                    <h4 style="margin: 2px 0 2px; font-size: 0.95rem; color: #0F172A;">${escapeHtml(reminder.title)}</h4>
                   </div>
-                  <span style="padding: 3px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 800; color: ${reminder.done ? '#047857' : 'var(--teal-deep, #0F766E)'}; background: ${reminder.done ? 'rgba(16,185,129,0.12)' : 'rgba(13, 148, 136, 0.12)'};">
+                  <span style="padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 800; color: ${reminder.done ? '#15803D' : '#854D0E'}; background: ${reminder.done ? '#DCFCE7' : '#FEFCE8'};">
                     ${reminder.done ? 'Done' : 'Pending'}
                   </span>
                 </div>
-                <p style="margin: 4px 0 8px; color: var(--text-secondary); font-size: 0.78rem; line-height: 1.45;">${escapeHtml(reminder.message)}</p>
+                <p style="margin: 4px 0 8px; color: #475569; font-size: 0.78rem; line-height: 1.45;">${escapeHtml(reminder.message)}</p>
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
-                  <span style="font-size: 0.7rem; color: var(--text-muted);"><i class="fa-solid fa-calendar-day"></i> ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  <span style="font-size: 0.7rem; color: #64748B;"><i class="fa-solid fa-calendar-day"></i> ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                   <div style="display: flex; gap: 6px;">
                     <button type="button" class="btn btn-outline btn-sm reminder-toggle-btn" data-reminder-id="${escapeHtml(reminder.id)}" style="font-size: 0.72rem; padding: 3px 8px;">${reminder.done ? 'Undo' : 'Mark Done'}</button>
                     <button type="button" class="btn btn-outline btn-sm reminder-delete-btn" data-reminder-id="${escapeHtml(reminder.id)}" style="font-size: 0.72rem; padding: 3px 8px; color: #EF4444;">Delete</button>
                   </div>
                 </div>
               </article>
-            `).join('') : '<div style="padding: 24px; border: 1px dashed var(--border-color); border-radius: 14px; color: var(--text-secondary); text-align: center; font-size: 0.84rem;">No reminders yet. Add one to track club actions.</div>'}
+            `).join('') : '<div style="padding: 24px; border: 1px dashed #E2E8F0; border-radius: 14px; color: #64748B; text-align: center; font-size: 0.84rem;">No priorities set. Add a reminder above.</div>'}
           </div>
 
         </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- 6. QUICK ACTIONS BAR -->
+      <!-- ================================================================= -->
+      <div style="margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="#connect" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #2563EB; color: #2563EB;">
+          <i class="fa-solid fa-comments"></i> Club Connect
+        </a>
+        <a href="#meetings" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #CA8A04; color: #854D0E;">
+          <i class="fa-solid fa-calendar-days"></i> All Meetings
+        </a>
+        <a href="#attendance" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #16A34A; color: #16A34A;">
+          <i class="fa-solid fa-clipboard-user"></i> Record Attendance
+        </a>
+        <a href="#speeches" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #2563EB; color: #2563EB;">
+          <i class="fa-solid fa-microphone-lines"></i> Speech Tracker
+        </a>
       </div>
 
     </div>
@@ -464,7 +484,7 @@ function bindDashboardEvents() {
   bindReminderEvents();
 
   // Branch filter pills in Dashboard
-  document.querySelectorAll('.dash-branch-pill').forEach(pill => {
+  document.querySelectorAll('.gd-branch-pill').forEach(pill => {
     pill.addEventListener('click', () => {
       const branch = pill.dataset.branch;
       const globalSelector = document.getElementById('global-branch-selector');
@@ -476,21 +496,21 @@ function bindDashboardEvents() {
   });
 
   // Add Branch Button (President / Super Admin)
-  document.getElementById('dash-add-branch-btn')?.addEventListener('click', () => {
+  document.getElementById('gd-add-branch-btn')?.addEventListener('click', () => {
     openModal({
       title: 'Add New Club Branch',
       content: `
         <form id="dash-create-branch-form" style="display: grid; gap: 14px;">
           <label style="display: grid; gap: 6px;">
-            <span style="font-weight: 700; font-size: 0.82rem; color: var(--text-secondary);">Branch / Location Name</span>
+            <span style="font-weight: 700; font-size: 0.82rem; color: #0F172A;">Branch / Location Name</span>
             <input type="text" id="dash-new-branch-input" class="form-input" placeholder="e.g. Kondapur or Hitec City" maxlength="40" required />
           </label>
-          <p style="font-size: 0.76rem; color: var(--text-muted); margin: 0;">
-            This creates an official branch category across the club roster, attendance, and meetings.
+          <p style="font-size: 0.76rem; color: #64748B; margin: 0;">
+            This creates an official chartered branch across club rosters, attendance, and meeting sessions.
           </p>
           <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
             <button type="button" id="dash-cancel-branch-btn" class="btn btn-outline">Cancel</button>
-            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Branch</button>
+            <button type="submit" class="btn btn-primary" style="background: #2563EB; border-color: #2563EB;"><i class="fa-solid fa-plus"></i> Create Branch</button>
           </div>
         </form>
       `

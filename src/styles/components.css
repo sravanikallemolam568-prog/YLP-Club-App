@@ -2413,3 +2413,257 @@
     border-radius: 14px;
   }
 }
+
+/* ==========================================================================
+   YLP GAVEL CLUB DASHBOARD: BLUE (CONFIDENCE), GREEN (GROWTH), YELLOW (LEAD)
+   ========================================================================== */
+
+.gd-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 36px;
+}
+
+.gd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.gd-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #1E3A8A;
+  background: #EFF6FF;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 4px;
+}
+
+.gd-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.gd-subtitle {
+  font-size: 0.86rem;
+  color: #64748B;
+  margin: 3px 0 0;
+}
+
+/* 6-Card Grid */
+.gd-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.gd-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gd-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.gd-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.gd-card-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748B;
+}
+
+.gd-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.gd-card-value {
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 2px 0 4px;
+}
+
+.gd-card-desc {
+  font-size: 0.76rem;
+  color: #64748B;
+}
+
+/* Color Identity Accents */
+.gd-accent-blue {
+  border-top: 3px solid #2563EB;
+}
+.gd-accent-blue .gd-card-icon {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+.gd-accent-blue .gd-card-value {
+  color: #1E3A8A;
+}
+
+.gd-accent-green {
+  border-top: 3px solid #16A34A;
+}
+.gd-accent-green .gd-card-icon {
+  background: #F0FDF4;
+  color: #16A34A;
+}
+.gd-accent-green .gd-card-value {
+  color: #15803D;
+}
+
+.gd-accent-yellow {
+  border-top: 3px solid #FACC15;
+}
+.gd-accent-yellow .gd-card-icon {
+  background: #FEFCE8;
+  color: #CA8A04;
+}
+.gd-accent-yellow .gd-card-value {
+  color: #A16207;
+}
+
+/* Branch Section */
+.gd-branch-panel {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.gd-branch-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0F172A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gd-branch-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #E2E8F0;
+  background: #F8FAFC;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gd-branch-pill:hover {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+  color: #1E3A8A;
+}
+
+.gd-branch-pill.active {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.gd-add-branch-btn {
+  background: #FEFCE8;
+  border: 1px solid #FDE047;
+  color: #854D0E;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.gd-add-branch-btn:hover {
+  background: #FEF08A;
+  border-color: #EAB308;
+}
+
+/* Two-column layout for Meetings & Growth */
+.gd-split-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.gd-section-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.gd-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.gd-section-header h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
