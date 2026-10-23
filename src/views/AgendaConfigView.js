@@ -33,7 +33,7 @@ export function renderAgendaConfigView(branchFilter = 'All') {
           <i class="fa-solid fa-calendar-days"></i> Meetings
         </a>
         <a href="#agenda"
-           style="padding:10px 18px; font-size:0.875rem; font-weight:700; color:#4285F4; border-bottom:3px solid #4285F4; margin-bottom:-2px; text-decoration:none; display:flex; align-items:center; gap:7px; background:#F8F9FA;">
+           style="padding:10px 18px; font-size:0.875rem; font-weight:700; color:#2563EB; border-bottom:3px solid #2563EB; margin-bottom:-2px; text-decoration:none; display:flex; align-items:center; gap:7px; background:#EFF6FF;">
           <i class="fa-solid fa-list-check"></i> Agenda Config
         </a>
       </div>
@@ -100,7 +100,7 @@ export function renderAgendaConfigView(branchFilter = 'All') {
                   </td>
                   <td>
                     <select class="form-select agenda-member" style="min-height: 38px;" ${readOnly ? 'disabled' : ''}>
-                      <option value="TBD" ${!item.member || item.member === 'TBD' ? 'selected' : ''}>TBD</option>
+                      <option value="Not Assigned" ${!item.member || item.member === 'TBD' || item.member === 'Not Assigned' ? 'selected' : ''}>Not Assigned</option>
                       ${dbService.getMembers().map(m => `
                         <option value="${m.name}" ${item.member === m.name ? 'selected' : ''}>${m.name}</option>
                       `).join('')}
@@ -166,7 +166,7 @@ function bindAgendaEvents(selectedMeeting) {
   });
 
   document.getElementById('add-agenda-row-btn')?.addEventListener('click', () => {
-    selectedMeeting.agenda.push({ order: selectedMeeting.agenda.length + 1, activity: 'New Activity', member: 'TBD', duration: 10 });
+    selectedMeeting.agenda.push({ order: selectedMeeting.agenda.length + 1, activity: 'New Activity', member: 'Not Assigned', duration: 10 });
     dbService.updateMeeting(selectedMeeting.id, { agenda: selectedMeeting.agenda });
     recalcAgendaUi(selectedMeeting);
   });
@@ -213,7 +213,7 @@ function saveAndRecalcAgendaRows(selectedMeeting) {
   const updatedAgenda = [];
   rows.forEach((row, idx) => {
     const activity = row.querySelector('.agenda-activity')?.value || 'Activity';
-    const member = row.querySelector('.agenda-member')?.value || 'TBD';
+    const member = row.querySelector('.agenda-member')?.value || 'Not Assigned';
     const duration = parseInt(row.querySelector('.agenda-duration')?.value || '5', 10);
     updatedAgenda.push({ order: idx + 1, activity, member, duration });
   });

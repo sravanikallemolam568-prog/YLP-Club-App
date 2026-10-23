@@ -27,10 +27,10 @@ export function renderHeader(activeBranch) {
         </select>
 
         <button id="theme-toggle-btn" class="btn btn-outline btn-icon" style="width: 38px; height: 38px;" title="Toggle Light/Dark Theme">
-          <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}" style="color: ${isDark ? '#FBBC04' : '#5F6368'}"></i>
+          <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}" style="color: ${isDark ? '#FACC15' : '#64748B'}"></i>
         </button>
 
-        <div class="badge badge-info" style="padding: 6px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-weight: 700;" id="user-profile-pill" title="Click to view account session">
+        <div class="badge ${user.tier === 1 ? 'badge-warning' : user.tier === 2 ? 'badge-info' : 'badge-success'}" style="padding: 6px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-weight: 700;" id="user-profile-pill" title="Click to view account session">
           <span>${user.tier === 1 ? '👑' : user.tier === 2 ? '🛡️' : '👤'}</span>
           <span>${user.title || user.role}</span>
         </div>

@@ -25,6 +25,25 @@ export function renderSettingsView() {
 
   const disabledAttr = isPresident ? '' : 'disabled';
 
+  const renderMemberPicker = (targetPrefix, currentName) => {
+    if (!isPresident || members.length === 0) return '';
+    return `
+      <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <span style="font-size: 0.76rem; font-weight: 700; color: #2563EB;">
+          <i class="fa-solid fa-user-check"></i> Choose from registered club members:
+        </span>
+        <select class="form-select ec-member-quickselect" data-target="${targetPrefix}" style="font-size: 0.78rem; padding: 4px 10px; height: 32px; width: auto; min-width: 230px; border-color: #BFDBFE; background: #FFFFFF;">
+          <option value="">-- Or select existing member to auto-fill --</option>
+          ${members.map(m => `
+            <option value="${m.id}" data-name="${m.name}" data-email="${m.email || ''}" data-phone="${m.mobile || ''}" ${currentName === m.name ? 'selected' : ''}>
+              ${m.name} (${m.branch}) • ${m.mobile || 'No Phone'}
+            </option>
+          `).join('')}
+        </select>
+      </div>
+    `;
+  };
+
   return `
     <div class="animate-fade-in" style="max-width: 860px; margin: 0 auto; padding-bottom: 40px;">
       <!-- Page Header -->
@@ -65,7 +84,7 @@ export function renderSettingsView() {
         <details id="ec-roles-handbook-details" style="cursor: pointer;" open>
           <summary style="display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none;">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(66, 133, 244, 0.12); color: #4285F4; display: grid; place-items: center; font-size: 1rem;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #EFF6FF; color: #2563EB; display: grid; place-items: center; font-size: 1rem;">
                 <i class="fa-solid fa-table-list"></i>
               </div>
               <div>
@@ -119,7 +138,7 @@ export function renderSettingsView() {
                 <tr style="border-bottom: 1px solid var(--border-color);">
                   <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
                     <div style="display: flex; align-items: center; gap: 7px; color: #047857;">
-                      <i class="fa-solid fa-users" style="color: #10B981;"></i>
+                      <i class="fa-solid fa-users" style="color: #16A34A;"></i>
                       <span>VP-Membership</span>
                     </div>
                     <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Membership</span>
@@ -133,8 +152,8 @@ export function renderSettingsView() {
                 </tr>
                 <tr style="border-bottom: 1px solid var(--border-color);">
                   <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
-                    <div style="display: flex; align-items: center; gap: 7px; color: #0E7490;">
-                      <i class="fa-solid fa-photo-film" style="color: #06B6D4;"></i>
+                    <div style="display: flex; align-items: center; gap: 7px; color: #854D0E;">
+                      <i class="fa-solid fa-photo-film" style="color: #FACC15;"></i>
                       <span>VP-Public Relations</span>
                     </div>
                     <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Publicity</span>
@@ -148,8 +167,8 @@ export function renderSettingsView() {
                 </tr>
                 <tr style="border-bottom: 1px solid var(--border-color);">
                   <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
-                    <div style="display: flex; align-items: center; gap: 7px; color: #6D28D9;">
-                      <i class="fa-solid fa-pen-fancy" style="color: #8B5CF6;"></i>
+                    <div style="display: flex; align-items: center; gap: 7px; color: #1E3A8A;">
+                      <i class="fa-solid fa-pen-fancy" style="color: #2563EB;"></i>
                       <span>Secretary</span>
                     </div>
                     <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Records</span>
@@ -163,8 +182,8 @@ export function renderSettingsView() {
                 </tr>
                 <tr>
                   <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
-                    <div style="display: flex; align-items: center; gap: 7px; color: #B91C1C;">
-                      <i class="fa-solid fa-shield" style="color: #EF4444;"></i>
+                    <div style="display: flex; align-items: center; gap: 7px; color: #854D0E;">
+                      <i class="fa-solid fa-shield" style="color: #FACC15;"></i>
                       <span>Sergeant-at-Arms</span>
                     </div>
                     <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Logistics</span>
@@ -205,6 +224,7 @@ export function renderSettingsView() {
               <span style="width: 26px; height: 26px; border-radius: 8px; background: #EAB308; color: #000; display: inline-flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 900;">1</span>
               <span>Person 1: Club President (Super Admin)</span>
             </div>
+            ${renderMemberPicker('ec-pres', ec.president)}
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
               <div class="form-group" style="margin: 0;">
                 <label class="form-label required">President Full Name</label>
@@ -264,7 +284,7 @@ export function renderSettingsView() {
           <div style="background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(139,92,246,0.10)); border: 1px solid rgba(59,130,246,0.3); border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px;">
             <i class="fa-solid fa-circle-info" style="color: #3B82F6; font-size: 1.1rem;"></i>
             <span style="font-size: 0.84rem; color: var(--text-primary); font-weight: 600;">
-              <strong>President Portal:</strong> This is where you add and manage VP members. Fill in their Name, Email, Phone, and Password below. They can then log in with those credentials.
+              <strong>President Portal:</strong> You can select any existing club member from the dropdown below to auto-fill their details, or type credentials manually. Click Save below to activate their login.
             </span>
           </div>
           ` : ''}
@@ -275,7 +295,7 @@ export function renderSettingsView() {
               </span>
               <h3 style="margin: 8px 0 0; font-size: 1.25rem; color: var(--text-primary);">Add / Manage VP Members</h3>
               <p style="margin: 4px 0 0; font-size: 0.82rem; color: var(--text-secondary);">
-                Add VP members here with their credentials. They will be able to log in and start/host video calls for club sessions.
+                Select from existing club members or enter credentials. They will be able to log in and start/host video calls for club sessions.
               </p>
             </div>
           </div>
@@ -286,6 +306,7 @@ export function renderSettingsView() {
               <div style="font-weight: 800; font-size: 0.9rem; color: #1E3E62; margin-bottom: 10px;">
                 <i class="fa-solid fa-graduation-cap" style="color: #3B82F6; margin-right: 6px;"></i> 1. VP Education
               </div>
+              ${renderMemberPicker('ec-vped', ec.vpEducation)}
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 <input type="text" id="ec-vped" class="form-input" placeholder="Full Name" value="${ec.vpEducation || ''}" required ${disabledAttr} />
                 <input type="email" id="ec-vped-email" class="form-input" placeholder="Login Email" value="${ec.vpEducationEmail || ''}" required ${disabledAttr} />
@@ -297,8 +318,9 @@ export function renderSettingsView() {
             <!-- Officer 2: VP Membership -->
             <div style="background: var(--badge-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color);">
               <div style="font-weight: 800; font-size: 0.9rem; color: #1E3E62; margin-bottom: 10px;">
-                <i class="fa-solid fa-users" style="color: #10B981; margin-right: 6px;"></i> 2. VP Membership
+                <i class="fa-solid fa-users" style="color: #16A34A; margin-right: 6px;"></i> 2. VP Membership
               </div>
+              ${renderMemberPicker('ec-vpmem', ec.vpMembership)}
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 <input type="text" id="ec-vpmem" class="form-input" placeholder="Full Name" value="${ec.vpMembership || ''}" required ${disabledAttr} />
                 <input type="email" id="ec-vpmem-email" class="form-input" placeholder="Login Email" value="${ec.vpMembershipEmail || ''}" required ${disabledAttr} />
@@ -310,8 +332,9 @@ export function renderSettingsView() {
             <!-- Officer 3: VP Public Relations -->
             <div style="background: var(--badge-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color);">
               <div style="font-weight: 800; font-size: 0.9rem; color: #1E3E62; margin-bottom: 10px;">
-                <i class="fa-solid fa-photo-film" style="color: #F59E0B; margin-right: 6px;"></i> 3. VP Public Relations (PR)
+                <i class="fa-solid fa-photo-film" style="color: #FACC15; margin-right: 6px;"></i> 3. VP Public Relations (PR)
               </div>
+              ${renderMemberPicker('ec-vppr', ec.vpPR)}
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 <input type="text" id="ec-vppr" class="form-input" placeholder="Full Name" value="${ec.vpPR || ''}" required ${disabledAttr} />
                 <input type="email" id="ec-vppr-email" class="form-input" placeholder="Login Email" value="${ec.vpPREmail || ''}" required ${disabledAttr} />
@@ -323,8 +346,9 @@ export function renderSettingsView() {
             <!-- Officer 4: Secretary -->
             <div style="background: var(--badge-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color);">
               <div style="font-weight: 800; font-size: 0.9rem; color: #1E3E62; margin-bottom: 10px;">
-                <i class="fa-solid fa-pen-fancy" style="color: #8B5CF6; margin-right: 6px;"></i> 4. Secretary
+                <i class="fa-solid fa-pen-fancy" style="color: #2563EB; margin-right: 6px;"></i> 4. Secretary
               </div>
+              ${renderMemberPicker('ec-sec', ec.secretary)}
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 <input type="text" id="ec-sec" class="form-input" placeholder="Full Name" value="${ec.secretary || ''}" required ${disabledAttr} />
                 <input type="email" id="ec-sec-email" class="form-input" placeholder="Login Email" value="${ec.secretaryEmail || ''}" required ${disabledAttr} />
@@ -336,8 +360,9 @@ export function renderSettingsView() {
             <!-- Officer 5: Sergeant-at-Arms -->
             <div style="background: var(--badge-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color);">
               <div style="font-weight: 800; font-size: 0.9rem; color: #1E3E62; margin-bottom: 10px;">
-                <i class="fa-solid fa-shield" style="color: #EF4444; margin-right: 6px;"></i> 5. Sergeant-at-Arms
+                <i class="fa-solid fa-shield" style="color: #FACC15; margin-right: 6px;"></i> 5. Sergeant-at-Arms
               </div>
+              ${renderMemberPicker('ec-sgt', ec.sergeant)}
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 <input type="text" id="ec-sgt" class="form-input" placeholder="Full Name" value="${ec.sergeant || ''}" required ${disabledAttr} />
                 <input type="email" id="ec-sgt-email" class="form-input" placeholder="Login Email" value="${ec.sergeantEmail || ''}" required ${disabledAttr} />
@@ -354,7 +379,7 @@ export function renderSettingsView() {
             <i class="fa-solid fa-floppy-disk"></i> Save Leadership &amp; EC Roster Updates
           </button>
         ` : `
-          <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 14px; padding: 14px 18px; margin-bottom: 24px; color: #DC2626; font-size: 0.85rem; font-weight: 700;">
+          <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 14px; padding: 14px 18px; margin-bottom: 24px; color: #1E3A8A; font-size: 0.85rem; font-weight: 700;">
             <i class="fa-solid fa-lock"></i> Only the President has administrative authority to edit and save Master and EC Team rosters.
           </div>
         `}
@@ -363,10 +388,10 @@ export function renderSettingsView() {
       <!-- ================================================================= -->
       <!-- LOWER CARD: TIER 3 - CLUB MEMBERS DIRECTORY SUMMARY -->
       <!-- ================================================================= -->
-      <section class="card" style="padding: 24px; border-radius: 20px; border-left: 6px solid #10B981; box-shadow: var(--shadow-sm);">
+      <section class="card" style="padding: 24px; border-radius: 20px; border-left: 6px solid #16A34A; box-shadow: var(--shadow-sm);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div>
-            <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #047857; font-weight: 800; font-size: 0.76rem; border: 1px solid #A7F3D0;">
+            <span class="badge" style="background: #F0FDF4; color: #16A34A; font-weight: 800; font-size: 0.76rem; border: 1px solid #BBF7D0;">
               👤 TIER 3: LOWER BLOCK (CLUB MEMBERS)
             </span>
             <h3 style="margin: 8px 0 0; font-size: 1.25rem; color: var(--text-primary);">Club Member Directory</h3>
@@ -387,6 +412,31 @@ function bindSettingsEvents() {
   document.getElementById('download-cloud-cache-btn')?.addEventListener('click', () => {
     exportCloudBackup();
     showToast('Current device cache downloaded. Use scheduled Firestore exports for cloud backups.', 'success');
+  });
+
+  // Handle quick-selecting existing registered members to auto-fill EC officer inputs
+  document.querySelectorAll('.ec-member-quickselect').forEach(select => {
+    select.addEventListener('change', (e) => {
+      const selectedOption = e.target.selectedOptions?.[0];
+      if (!selectedOption) return;
+      const targetPrefix = e.target.getAttribute('data-target');
+      if (!targetPrefix) return;
+
+      const name = selectedOption.getAttribute('data-name');
+      const email = selectedOption.getAttribute('data-email');
+      const phone = selectedOption.getAttribute('data-phone');
+
+      if (name) {
+        const nameInput = document.getElementById(targetPrefix);
+        const emailInput = document.getElementById(`${targetPrefix}-email`);
+        const phoneInput = document.getElementById(`${targetPrefix}-phone`);
+
+        if (nameInput) nameInput.value = name;
+        if (emailInput && email) emailInput.value = email;
+        if (phoneInput && phone) phoneInput.value = phone;
+        showToast(`Auto-filled ${name}'s details. Click Save below to confirm.`, 'info');
+      }
+    });
   });
 
   document.getElementById('leadership-settings-form')?.addEventListener('submit', (e) => {

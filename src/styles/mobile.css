@@ -115,12 +115,12 @@
 }
 
 .nav-item.active {
-  color: var(--teal-dark);
+  color: #2563EB;
 }
 
 .nav-item.active i {
   transform: translateY(-2px);
-  color: var(--teal-dark);
+  color: #2563EB;
 }
 
 .nav-item.active::after {
@@ -131,7 +131,7 @@
   transform: translateX(-50%);
   width: 24px;
   height: 3px;
-  background: var(--teal-primary);
+  background: #2563EB;
   border-radius: 0 0 3px 3px;
 }
 
@@ -288,15 +288,15 @@
 }
 
 .side-nav-item:hover {
-  background-color: var(--teal-soft);
-  color: var(--teal-dark);
+  background-color: #EFF6FF;
+  color: #1E3A8A;
 }
 
 .side-nav-item.active {
-  background: var(--teal-soft);
-  color: var(--teal-dark);
+  background: #EFF6FF;
+  color: #2563EB;
   font-weight: 700;
-  border: 1px solid rgba(69, 201, 189, 0.22);
+  border: 1px solid rgba(37, 99, 235, 0.25);
 }
 
 /* Mobile Data Cards */
@@ -347,9 +347,9 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-dark) 100%);
-  color: var(--gold-primary);
-  border: 2px solid var(--gold-primary);
+  background: #EFF6FF;
+  color: #2563EB;
+  border: 2px solid #2563EB;
   display: flex;
   align-items: center;
   justify-content: center;

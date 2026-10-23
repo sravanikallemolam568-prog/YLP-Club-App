@@ -83,16 +83,16 @@ export function renderAttendanceView(branchFilter = 'All') {
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px;">
-        <div style="background: var(--bg-card); border: 1px solid #DDF3EF; border-radius: 16px; padding: 14px 12px; text-align: center; border-top: 4px solid #34A853;">
-          <div style="font-size: 1.65rem; font-weight: 800; color: #34A853;">${presentCount}</div>
+        <div style="background: var(--bg-card); border: 1px solid #DCFCE7; border-radius: 16px; padding: 14px 12px; text-align: center; border-top: 4px solid #16A34A;">
+          <div style="font-size: 1.65rem; font-weight: 800; color: #16A34A;">${presentCount}</div>
           <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Present</div>
         </div>
-        <div style="background: var(--bg-card); border: 1px solid #F7EAD0; border-radius: 16px; padding: 14px 12px; text-align: center; border-top: 4px solid #FBBC04;">
-          <div style="font-size: 1.65rem; font-weight: 800; color: #B06000;">${informedCount}</div>
+        <div style="background: var(--bg-card); border: 1px solid #FEF9C3; border-radius: 16px; padding: 14px 12px; text-align: center; border-top: 4px solid #FACC15;">
+          <div style="font-size: 1.65rem; font-weight: 800; color: #854D0E;">${informedCount}</div>
           <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Informed</div>
         </div>
-        <div style="background: var(--bg-card); border: 1px solid #F9D8D4; border-radius: 16px; padding: 14px 12px; text-align: center; border-top: 4px solid #EA4335;">
-          <div style="font-size: 1.65rem; font-weight: 800; color: #EA4335;">${uninformedCount}</div>
+        <div style="background: var(--bg-card); border: 1px solid #DBEAFE; border-radius: 16px; padding: 14px 12px; text-align: center; border-top: 4px solid #2563EB;">
+          <div style="font-size: 1.65rem; font-weight: 800; color: #1E3A8A;">${uninformedCount}</div>
           <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Uninformed</div>
         </div>
       </div>
@@ -120,7 +120,7 @@ export function renderAttendanceView(branchFilter = 'All') {
           const status = getMemberStatusForMeeting(member.id, selectedMeeting.id);
           return `
             <div style="display: flex; align-items: center; gap: 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; padding: 12px 14px; box-shadow: var(--shadow-sm);">
-              <div style="width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--teal-primary), var(--teal-dark)); color: var(--white); font-weight: 800; font-size: 0.8rem; flex-shrink: 0;">${(member.name || 'M').split(' ').map(part => part[0]).slice(0,2).join('').toUpperCase()}</div>
+              <div style="width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #2563EB, #1E3A8A); color: #FFFFFF; font-weight: 800; font-size: 0.8rem; flex-shrink: 0;">${(member.name || 'M').split(' ').map(part => part[0]).slice(0,2).join('').toUpperCase()}</div>
               <div style="flex: 1; min-width: 0;">
                 <div style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">${member.name}</div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${member.id || 'M-000'} • ${member.branch || 'Miyapur'}</div>

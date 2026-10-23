@@ -25,7 +25,7 @@ export function renderSpeechesView(branchFilter = 'All') {
     <div class="animate-fade-in">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
         <div>
-          <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-microphone-lines" style="color: var(--teal-deep);"></i> Member Speech Progress</h2>
+          <h2 style="font-size: 1.5rem;"><i class="fa-solid fa-microphone-lines" style="color: #2563EB;"></i> Member Speech Progress</h2>
           <p style="font-size: 0.88rem; color: var(--text-secondary);">Follow each member’s prepared-speech journey and next project.</p>
         </div>
         ${authService.canManageSpeeches() ? `

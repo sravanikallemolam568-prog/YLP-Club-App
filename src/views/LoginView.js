@@ -11,9 +11,9 @@ export function renderLoginView() {
   }, 50);
 
   const tierBadgeMap = {
-    1: { label: '👑 Tier 1: Master Block', bg: 'rgba(234, 179, 8, 0.15)', color: '#B45309', border: '#FDE047' },
-    2: { label: '🛡️ Tier 2: EC Team Block', bg: 'rgba(59, 130, 246, 0.15)', color: '#1D4ED8', border: '#93C5FD' },
-    3: { label: '👤 Tier 3: Member Block', bg: 'rgba(16, 185, 129, 0.15)', color: '#047857', border: '#A7F3D0' }
+    1: { label: '👑 Tier 1: President Block', bg: '#FEFCE8', color: '#854D0E', border: '#FACC15' },
+    2: { label: '🛡️ Tier 2: EC Team Block',   bg: '#EFF6FF', color: '#1E3A8A', border: '#2563EB' },
+    3: { label: '👤 Tier 3: Member Block',     bg: '#F0FDF4', color: '#16A34A', border: '#16A34A' }
   };
 
   const currentTier = currentUser ? (currentUser.tier || (currentUser.role === 'President' ? 1 : (currentUser.role === 'Member' ? 3 : 2))) : null;
@@ -125,8 +125,8 @@ export function renderLoginView() {
               </div>
 
               <!-- Account Verified Banner (Shown dynamically when Email + Phone match) -->
-              <div id="account-matched-banner" style="display: none; background: rgba(16, 185, 129, 0.12); color: #047857; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: 0.82rem; font-weight: 700;">
-                <i class="fa-solid fa-circle-check" style="margin-right: 6px; color: #10B981;"></i>
+              <div id="account-matched-banner" style="display: none; background: #F0FDF4; color: #16A34A; border: 1px solid #16A34A; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: 0.82rem; font-weight: 700;">
+                <i class="fa-solid fa-circle-check" style="margin-right: 6px; color: #16A34A;"></i>
                 <span id="account-matched-text">Account verified</span>
               </div>
 
@@ -155,12 +155,12 @@ export function renderLoginView() {
               </div>
 
               <!-- Step 1 Button: Continue (Checks if Email & Mobile match) -->
-              <button type="button" id="verify-continue-btn" class="btn btn-primary" style="width: 100%; height: 48px; border-radius: 12px; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 14px rgba(66, 133, 244, 0.35);">
+              <button type="button" id="verify-continue-btn" class="btn btn-primary" style="width: 100%; height: 48px; border-radius: 12px; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
                 <i class="fa-solid fa-arrow-right"></i> Continue
               </button>
 
               <!-- Step 2 Button: Login (Revealed after Email & Mobile are matched) -->
-              <button type="submit" id="login-submit-btn" class="btn btn-primary" style="display: none; width: 100%; height: 48px; border-radius: 12px; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); background: #10B981; border-color: #10B981;">
+              <button type="submit" id="login-submit-btn" class="btn btn-success" style="display: none; width: 100%; height: 48px; border-radius: 12px; font-weight: 800; font-size: 1rem;">
                 <i class="fa-solid fa-right-to-bracket"></i> Login
               </button>
             </form>

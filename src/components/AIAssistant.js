@@ -158,14 +158,14 @@ function renderChatMessages() {
     return `
       <div style="display: flex; flex-direction: ${isUser ? 'row-reverse' : 'row'}; gap: 8px; margin-bottom: 10px; align-items: flex-end;">
         <div style="width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
-          background: ${isUser ? 'var(--teal-primary)' : 'rgba(69,201,189,0.18)'}; color: ${isUser ? '#123532' : 'var(--teal-deep)'};">
+          background: ${isUser ? '#2563EB' : '#EFF6FF'}; color: ${isUser ? '#FFFFFF' : '#2563EB'};">
           <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'}"></i>
         </div>
         <div style="max-width: 78%; padding: 10px 13px; border-radius: ${isUser ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};
-          background: ${isUser ? 'var(--gold-primary)' : 'var(--badge-bg)'}; 
-          color: ${isUser ? '#000' : 'var(--text-primary)'}; 
+          background: ${isUser ? '#EFF6FF' : 'var(--bg-card)'}; 
+          color: ${isUser ? '#1E3A8A' : 'var(--text-primary)'}; 
           font-size: 0.84rem; line-height: 1.5;
-          border: 1px solid ${isUser ? 'transparent' : 'var(--border-color)'};
+          border: 1px solid ${isUser ? '#BFDBFE' : 'var(--border-color)'};
           word-break: break-word;">
           ${escapeHtml(text).replace(/\n/g, '<br>')}
           ${retryButton}
@@ -199,9 +199,9 @@ function injectChatUI() {
     <button id="ai-chat-toggle-btn" style="
       position: fixed; bottom: 88px; right: 18px; z-index: 9998;
       width: 54px; height: 54px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--teal-primary), var(--teal-deep));
+      background: linear-gradient(135deg, #2563EB, #1E3A8A);
       color: #FFFFFF; border: none; cursor: pointer;
-      box-shadow: 0 6px 24px rgba(30,125,118,0.35);
+      box-shadow: 0 6px 24px rgba(37, 99, 235, 0.35);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.35rem; transition: transform 0.2s ease;
     " title="AI Assistant">
@@ -218,7 +218,7 @@ function injectChatUI() {
     ">
       <!-- Panel Header -->
       <div style="
-        padding: 14px 16px; background: linear-gradient(135deg, var(--teal-primary), var(--teal-deep));
+        padding: 14px 16px; background: linear-gradient(135deg, #2563EB, #1E3A8A);
         color: #FFFFFF; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
       ">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -258,7 +258,7 @@ function injectChatUI() {
         " rows="1"></textarea>
         <button id="ai-send-btn" style="
           width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
-          background: linear-gradient(135deg, var(--teal-primary), var(--teal-deep)); border: none;
+          background: linear-gradient(135deg, #2563EB, #1E3A8A); border: none;
           color: #FFF; cursor: pointer; font-size: 1rem;
           display: flex; align-items: center; justify-content: center;
           transition: opacity 0.2s ease;

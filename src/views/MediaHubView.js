@@ -238,7 +238,7 @@ function openMeetingMediaModal(title, branch, photos, videos) {
     return `
       <div>
         <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px;">
-          <i class="fa-solid fa-location-dot" style="color: #EF4444;"></i> Branch: <strong>${branch}</strong>
+          <i class="fa-solid fa-location-dot" style="color: #2563EB;"></i> Branch: <strong>${branch}</strong>
         </div>
 
         <div style="display: flex; gap: 8px; margin-bottom: 16px; background: var(--badge-bg); padding: 4px; border-radius: 12px; border: 1px solid var(--border-color); width: fit-content;">

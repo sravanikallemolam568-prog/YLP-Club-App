@@ -55,7 +55,7 @@ export function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   toast.innerHTML = `
-    <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info'}" style="color: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#D4AF37'};"></i>
+    <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info'}" style="color: ${type === 'success' ? '#16A34A' : type === 'error' ? '#854D0E' : '#2563EB'};"></i>
     <span>${message}</span>
   `;
 

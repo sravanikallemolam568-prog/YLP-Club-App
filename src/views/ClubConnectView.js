@@ -92,13 +92,13 @@ export function filterECChatMessages(messages = [], currentUser) {
 function getEcOfficers() {
   const committee = dbService.getECCommittee();
   return [
-    { role: 'President', name: committee.president || 'Sravani Kallemolam', email: committee.presidentEmail || 'sravanikallemolam568@gmail.com', phone: committee.presidentPhone || '9014231403', icon: 'fa-crown', tag: '@President', tier: 1, avatarBg: 'rgba(234, 179, 8, 0.16)', avatarColor: '#B45309', desc: 'Overall club oversight, meeting reports, governance & leadership.' },
-    { role: committee.master2Role || committee.ajithSirRole || 'Club Advisor & Mentor', name: committee.master2Name || committee.ajithSir || 'TM Ajith', email: committee.master2Email || committee.ajithSirEmail || 'tmajiit@gmail.com', phone: committee.master2Phone || committee.ajithSirPhone || '9391756155', icon: 'fa-user-graduate', tag: '@TM-Ajith', tier: 1, avatarBg: 'rgba(59, 130, 246, 0.14)', avatarColor: '#1D4ED8', desc: 'Educational guidance, mentor assignments & speech quality review.' },
-    { role: 'VP Education', name: committee.vpEducation || 'VP Education', email: committee.vpEducationEmail || 'vpeducation@pssgavelclub.org', phone: committee.vpEducationPhone || '9876543212', icon: 'fa-graduation-cap', tag: '@VP-Education', tier: 2, avatarBg: 'rgba(59, 130, 246, 0.14)', avatarColor: '#1D4ED8', desc: 'Meeting agendas, speech tracking, role allocations & evaluations.' },
-    { role: 'VP Membership', name: committee.vpMembership || 'VP Membership', email: committee.vpMembershipEmail || 'vpmembership@pssgavelclub.org', phone: committee.vpMembershipPhone || '9876543213', icon: 'fa-users', tag: '@VP-Membership', tier: 2, avatarBg: 'rgba(16, 185, 129, 0.14)', avatarColor: '#047857', desc: 'Member enrollment, guest relations, attendance summaries & inductions.' },
-    { role: 'VP Public Relations', name: committee.vpPR || 'VP Public Relations', email: committee.vpPREmail || 'vppr@pssgavelclub.org', phone: committee.vpPRPhone || '9876543214', icon: 'fa-photo-film', tag: '@VP-PR', tier: 2, avatarBg: 'rgba(14, 116, 144, 0.14)', avatarColor: '#0E7490', desc: 'Social media, flyers, meeting photography, video recording & newsletters.' },
-    { role: 'Secretary', name: committee.secretary || 'Secretary', email: committee.secretaryEmail || 'secretary@pssgavelclub.org', phone: committee.secretaryPhone || '9876543215', icon: 'fa-pen-fancy', tag: '@Secretary', tier: 2, avatarBg: 'rgba(139, 92, 246, 0.14)', avatarColor: '#6D28D9', desc: 'Meeting minutes, attendance records, official correspondence & rosters.' },
-    { role: 'Sergeant-at-Arms', name: committee.sergeant || 'Sergeant-at-Arms', email: committee.sergeantEmail || 'sergeant@pssgavelclub.org', phone: committee.sergeantPhone || '9876543216', icon: 'fa-shield', tag: '@Sergeant-at-Arms', tier: 2, avatarBg: 'rgba(239, 68, 68, 0.14)', avatarColor: '#B91C1C', desc: 'Meeting room setup, equipment logistics, online call preparation & timing flags.' }
+    { role: 'President', name: committee.president || 'Sravani Kallemolam', email: committee.presidentEmail || 'sravanikallemolam568@gmail.com', phone: committee.presidentPhone || '9014231403', icon: 'fa-crown', tag: '@President', tier: 1, avatarBg: '#FEFCE8', avatarColor: '#CA8A04', desc: 'Overall club oversight, meeting reports, governance & leadership.' },
+    { role: committee.master2Role || committee.ajithSirRole || 'Club Advisor & Mentor', name: committee.master2Name || committee.ajithSir || 'TM Ajith', email: committee.master2Email || committee.ajithSirEmail || 'tmajiit@gmail.com', phone: committee.master2Phone || committee.ajithSirPhone || '9391756155', icon: 'fa-user-graduate', tag: '@TM-Ajith', tier: 1, avatarBg: '#EFF6FF', avatarColor: '#2563EB', desc: 'Educational guidance, mentor assignments & speech quality review.' },
+    { role: 'VP Education', name: committee.vpEducation || 'VP Education', email: committee.vpEducationEmail || 'vpeducation@pssgavelclub.org', phone: committee.vpEducationPhone || '9876543212', icon: 'fa-graduation-cap', tag: '@VP-Education', tier: 2, avatarBg: '#EFF6FF', avatarColor: '#2563EB', desc: 'Meeting agendas, speech tracking, role allocations & evaluations.' },
+    { role: 'VP Membership', name: committee.vpMembership || 'VP Membership', email: committee.vpMembershipEmail || 'vpmembership@pssgavelclub.org', phone: committee.vpMembershipPhone || '9876543213', icon: 'fa-users', tag: '@VP-Membership', tier: 2, avatarBg: '#F0FDF4', avatarColor: '#16A34A', desc: 'Member enrollment, guest relations, attendance summaries & inductions.' },
+    { role: 'VP Public Relations', name: committee.vpPR || 'VP Public Relations', email: committee.vpPREmail || 'vppr@pssgavelclub.org', phone: committee.vpPRPhone || '9876543214', icon: 'fa-photo-film', tag: '@VP-PR', tier: 2, avatarBg: '#FEFCE8', avatarColor: '#CA8A04', desc: 'Social media, flyers, meeting photography, video recording & newsletters.' },
+    { role: 'Secretary', name: committee.secretary || 'Secretary', email: committee.secretaryEmail || 'secretary@pssgavelclub.org', phone: committee.secretaryPhone || '9876543215', icon: 'fa-pen-fancy', tag: '@Secretary', tier: 2, avatarBg: '#EFF6FF', avatarColor: '#2563EB', desc: 'Meeting minutes, attendance records, official correspondence & rosters.' },
+    { role: 'Sergeant-at-Arms', name: committee.sergeant || 'Sergeant-at-Arms', email: committee.sergeantEmail || 'sergeant@pssgavelclub.org', phone: committee.sergeantPhone || '9876543216', icon: 'fa-shield', tag: '@Sergeant-at-Arms', tier: 2, avatarBg: '#F0FDF4', avatarColor: '#16A34A', desc: 'Meeting room setup, equipment logistics, online call preparation & timing flags.' }
   ].filter(c => c.name && (c.email || c.phone));
 }
 
@@ -156,7 +156,7 @@ export function renderClubConnectView(branchFilter = 'All') {
       <!-- Top Branding & Status Header -->
       <header class="cc-header">
         <div class="cc-header-title">
-          <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(13, 148, 136, 0.12); color: var(--teal-deep, #0F766E); display: grid; place-items: center; font-size: 1.3rem;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #EFF6FF; color: #2563EB; display: grid; place-items: center; font-size: 1.3rem;">
             <i class="fa-solid fa-comments"></i>
           </div>
           <div>
@@ -168,8 +168,8 @@ export function renderClubConnectView(branchFilter = 'All') {
           <span class="badge ${isLeader ? 'badge-gold' : 'badge-info'}" style="font-weight: 700; font-size: 0.78rem;">
             ${isLeader ? '🛡️ EC Leadership Access' : '👤 Club Member Access'}
           </span>
-          <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; color: #10B981; font-weight: 700; background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 999px;">
-            <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981;"></span> Live Sync
+          <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; color: #16A34A; font-weight: 700; background: #F0FDF4; padding: 4px 10px; border-radius: 999px;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #16A34A;"></span> Live Sync
           </span>
         </div>
       </header>
@@ -184,12 +184,12 @@ export function renderClubConnectView(branchFilter = 'All') {
         <button type="button" class="cc-nav-tab ${activeTab === 'meetings' ? 'active' : ''}" data-target-tab="meetings">
           <i class="fa-solid fa-calendar-days"></i>
           <span>Meetings</span>
-          ${meetings.length > 0 ? `<span class="badge" style="background: rgba(66, 133, 244, 0.15); color: #4285F4; font-size: 0.72rem; padding: 2px 7px;">${meetings.length}</span>` : ''}
+          ${meetings.length > 0 ? `<span class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 0.72rem; padding: 2px 7px;">${meetings.length}</span>` : ''}
         </button>
         <button type="button" class="cc-nav-tab ${activeTab === 'contacts' ? 'active' : ''}" data-target-tab="contacts">
           <i class="fa-solid fa-address-book"></i>
           <span>EC Contacts</span>
-          <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #047857; font-size: 0.72rem; padding: 2px 7px;">${officers.length}</span>
+          <span class="badge" style="background: #F0FDF4; color: #16A34A; font-size: 0.72rem; padding: 2px 7px;">${officers.length}</span>
         </button>
         <button type="button" class="cc-nav-tab ${activeTab === 'support' ? 'active' : ''}" data-target-tab="support">
           <i class="fa-solid fa-circle-question"></i>
@@ -268,7 +268,7 @@ export function renderClubConnectView(branchFilter = 'All') {
         
         <!-- Support Navigation Switcher -->
         <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 6px;">
-          <button type="button" class="btn-sm cc-support-subtab-btn active" data-subtab="tickets" style="font-weight: 700; border: none; background: none; color: var(--teal-deep, #0F766E); border-bottom: 3px solid var(--teal-primary, #0D9488); padding: 8px 14px; cursor: pointer;">
+          <button type="button" class="btn-sm cc-support-subtab-btn active" data-subtab="tickets" style="font-weight: 700; border: none; background: none; color: #2563EB; border-bottom: 3px solid #2563EB; padding: 8px 14px; cursor: pointer;">
             <i class="fa-solid fa-ticket"></i> Support Tickets (${supportTickets.length})
           </button>
           <button type="button" class="btn-sm cc-support-subtab-btn" data-subtab="faq" style="font-weight: 700; border: none; background: none; color: var(--text-secondary); padding: 8px 14px; cursor: pointer;">
@@ -330,15 +330,15 @@ export function renderClubConnectView(branchFilter = 'All') {
         <div id="cc-subtab-faq" class="cc-support-subtab-content" style="display: none;">
           <div class="connect-faq-list">
             <details class="connect-faq" open>
-              <summary><i class="fa-solid fa-video" style="color: var(--teal-primary, #0D9488); margin-right: 6px;"></i> How do I join the live club video call?</summary>
+              <summary><i class="fa-solid fa-video" style="color: #2563EB; margin-right: 6px;"></i> How do I join the live club video call?</summary>
               <p>You can join directly inside Club Connect! Switch to the <strong>Meetings</strong> tab or click <strong>Start / Join In-App Call</strong> inside the Chat tab. No external Zoom or Google Meet app installation is needed.</p>
             </details>
             <details class="connect-faq">
-              <summary><i class="fa-solid fa-lock" style="color: #10B981; margin-right: 6px;"></i> Who can see my chat messages?</summary>
+              <summary><i class="fa-solid fa-lock" style="color: #16A34A; margin-right: 6px;"></i> Who can see my chat messages?</summary>
               <p>In <strong>General Club Discussion</strong>, all members can participate. In direct <strong>EC Officer 1-on-1 chats</strong>, only you and the club leadership team have access. Other club members cannot see your private messages.</p>
             </details>
             <details class="connect-faq">
-              <summary><i class="fa-solid fa-calendar-check" style="color: #4285F4; margin-right: 6px;"></i> Where can I view my scheduled speech or meeting role?</summary>
+              <summary><i class="fa-solid fa-calendar-check" style="color: #2563EB; margin-right: 6px;"></i> Where can I view my scheduled speech or meeting role?</summary>
               <p>Navigate to <strong>Meetings</strong> or <strong>Agenda</strong> in the main navigation bar. The agenda lists the complete schedule, speakers, evaluators, and timer roles.</p>
             </details>
             <details class="connect-faq">
@@ -360,14 +360,14 @@ export function renderClubConnectView(branchFilter = 'All') {
         <div class="cc-video-box">
           <div class="cc-video-header">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: #EF4444; animation: pulse 1.5s infinite;"></span>
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #16A34A; animation: pulse 1.5s infinite;"></span>
               <div>
                 <strong id="cc-video-room-title" style="font-size: 0.95rem;">PSS Gavel Club Live Room</strong>
                 <div style="font-size: 0.72rem; color: #94A3B8;">WebRTC In-App Video Call</div>
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
-              <button type="button" id="cc-video-leave-btn" class="btn btn-sm" style="background: #EF4444; color: #FFFFFF; font-weight: 700; border: none; border-radius: 8px; padding: 6px 14px;">
+              <button type="button" id="cc-video-leave-btn" class="btn btn-sm" style="background: #854D0E; color: #FFFFFF; font-weight: 700; border: none; border-radius: 8px; padding: 6px 14px;">
                 <i class="fa-solid fa-phone-slash"></i> Leave Call
               </button>
             </div>
@@ -413,7 +413,7 @@ function renderConversationsList(currentUser) {
       subtitle: 'Open discussion with all members & EC',
       icon: 'fa-comments',
       iconBg: 'rgba(13, 148, 136, 0.15)',
-      iconColor: 'var(--teal-deep, #0F766E)',
+      iconColor: '#2563EB',
       isChannel: true
     }
   ];
@@ -557,7 +557,7 @@ function renderActiveChatPane(currentUser) {
         <button type="button" class="cc-chat-back-btn" id="cc-mobile-back-btn" aria-label="Back to conversations">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
-        <div style="width: 38px; height: 38px; border-radius: 12px; background: rgba(13, 148, 136, 0.12); color: var(--teal-deep, #0F766E); display: grid; place-items: center; font-size: 1rem; flex-shrink: 0;">
+        <div style="width: 38px; height: 38px; border-radius: 12px; background: #EFF6FF; color: #2563EB; display: grid; place-items: center; font-size: 1rem; flex-shrink: 0;">
           <i class="fa-solid ${icon}"></i>
         </div>
         <div class="cc-chat-header-details">
@@ -586,7 +586,7 @@ function renderActiveChatPane(currentUser) {
 
       ${displayedMessages.length === 0 ? `
         <div style="text-align: center; margin: auto; padding: 40px 16px; color: var(--text-muted);">
-          <div style="width: 54px; height: 54px; border-radius: 18px; background: rgba(13, 148, 136, 0.12); color: var(--teal-deep, #0F766E); display: grid; place-items: center; font-size: 1.5rem; margin: 0 auto 12px;">
+          <div style="width: 54px; height: 54px; border-radius: 18px; background: #EFF6FF; color: #2563EB; display: grid; place-items: center; font-size: 1.5rem; margin: 0 auto 12px;">
             <i class="fa-regular fa-comment-dots"></i>
           </div>
           <div style="font-weight: 700; color: var(--text-primary); font-size: 0.96rem;">No messages in this conversation yet</div>
@@ -598,7 +598,7 @@ function renderActiveChatPane(currentUser) {
     <!-- Quick Mentions Chips Bar -->
     <div class="cc-mention-chips-bar" aria-label="Quick Mentions">
       <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
-        <i class="fa-solid fa-at" style="color: var(--teal-primary, #0D9488);"></i> Mention:
+        <i class="fa-solid fa-at" style="color: #2563EB;"></i> Mention:
       </span>
       <button type="button" class="cc-chip cc-mention-chip" data-tag="@President">👑 @President</button>
       <button type="button" class="cc-chip cc-mention-chip" data-tag="@TM-Ajith">🎓 @TM-Ajith</button>
@@ -664,7 +664,7 @@ function renderMessageBubbleHtml(msg, currentUser) {
           ${status === 'sending' ? `
             <span class="cc-status-icon" title="Sending..."><i class="fa-solid fa-clock"></i></span>
           ` : status === 'failed' ? `
-            <span class="cc-status-icon" style="color: #EF4444;" title="Failed to deliver"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span class="cc-status-icon" style="color: #854D0E;" title="Failed to deliver"><i class="fa-solid fa-triangle-exclamation"></i></span>
             <button type="button" class="cc-retry-btn" data-retry-id="${escapeHtml(msg.id)}">Retry</button>
           ` : `
             <span class="cc-status-icon" title="Delivered"><i class="fa-solid fa-check"></i></span>
@@ -696,7 +696,7 @@ function renderMeetingsListHtml(meetings = [], canStartCall = false) {
     return `
       <article class="connect-meeting-card" data-meeting-id="${escapeHtml(meeting.id)}">
         <div class="connect-meeting-main">
-          <div class="connect-feature-icon" style="background: rgba(13, 148, 136, 0.15); color: var(--teal-deep, #0F766E);">
+          <div class="connect-feature-icon" style="background: #EFF6FF; color: #2563EB;">
             <i class="fa-solid fa-video"></i>
           </div>
           <div class="connect-card-title">
@@ -769,7 +769,7 @@ function renderContactsGridHtml(officers = [], searchQuery = '') {
             <h4 style="font-size: 0.95rem; font-weight: 800; margin: 0; color: var(--text-primary);">${escapeHtml(contact.name)}</h4>
             <span class="badge ${contact.tier === 1 ? 'badge-gold' : 'badge-info'}" style="font-size: 0.66rem; padding: 2px 6px;">Tier ${contact.tier}</span>
           </div>
-          <p style="margin: 2px 0 0; color: var(--teal-deep, #0F766E); font-weight: 700; font-size: 0.78rem;">${escapeHtml(contact.role)}</p>
+          <p style="margin: 2px 0 0; color: #2563EB; font-weight: 700; font-size: 0.78rem;">${escapeHtml(contact.role)}</p>
         </div>
       </div>
 
@@ -878,7 +878,7 @@ function renderRoleHandbookTableHtml() {
             <tr style="border-bottom: 1px solid var(--border-color);">
               <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
                 <div style="display: flex; align-items: center; gap: 7px; color: #047857;">
-                  <i class="fa-solid fa-users" style="color: #10B981;"></i>
+                  <i class="fa-solid fa-users" style="color: #16A34A;"></i>
                   <span>VP-Membership</span>
                 </div>
                 <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Membership</span>
@@ -892,8 +892,8 @@ function renderRoleHandbookTableHtml() {
             </tr>
             <tr style="border-bottom: 1px solid var(--border-color);">
               <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
-                <div style="display: flex; align-items: center; gap: 7px; color: #0E7490;">
-                  <i class="fa-solid fa-photo-film" style="color: #06B6D4;"></i>
+                <div style="display: flex; align-items: center; gap: 7px; color: #854D0E;">
+                  <i class="fa-solid fa-photo-film" style="color: #FACC15;"></i>
                   <span>VP-Public Relations</span>
                 </div>
                 <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Publicity</span>
@@ -907,8 +907,8 @@ function renderRoleHandbookTableHtml() {
             </tr>
             <tr style="border-bottom: 1px solid var(--border-color);">
               <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
-                <div style="display: flex; align-items: center; gap: 7px; color: #6D28D9;">
-                  <i class="fa-solid fa-pen-fancy" style="color: #8B5CF6;"></i>
+                <div style="display: flex; align-items: center; gap: 7px; color: #1E3A8A;">
+                  <i class="fa-solid fa-pen-fancy" style="color: #2563EB;"></i>
                   <span>Secretary</span>
                 </div>
                 <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Records</span>
@@ -922,8 +922,8 @@ function renderRoleHandbookTableHtml() {
             </tr>
             <tr>
               <td style="padding: 12px 14px; vertical-align: top; font-weight: 700;">
-                <div style="display: flex; align-items: center; gap: 7px; color: #B91C1C;">
-                  <i class="fa-solid fa-shield" style="color: #EF4444;"></i>
+                <div style="display: flex; align-items: center; gap: 7px; color: #854D0E;">
+                  <i class="fa-solid fa-shield" style="color: #FACC15;"></i>
                   <span>Sergeant-at-Arms</span>
                 </div>
                 <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Tier 2 · Logistics</span>
@@ -982,8 +982,8 @@ function bindClubConnectController(currentUser, branchFilter) {
       document.querySelectorAll('.cc-support-subtab-btn').forEach(b => {
         const isCurrent = b.dataset.subtab === subtab;
         b.classList.toggle('active', isCurrent);
-        b.style.color = isCurrent ? 'var(--teal-deep, #0F766E)' : 'var(--text-secondary)';
-        b.style.borderBottom = isCurrent ? '3px solid var(--teal-primary, #0D9488)' : 'none';
+        b.style.color = isCurrent ? '#2563EB' : 'var(--text-secondary)';
+        b.style.borderBottom = isCurrent ? '3px solid #2563EB' : 'none';
       });
       document.querySelectorAll('.cc-support-subtab-content').forEach(c => {
         c.style.display = c.id === `cc-subtab-${subtab}` ? '' : 'none';
@@ -1418,7 +1418,7 @@ async function openInAppVideoCall(roomName = 'ClubRoom', currentUser) {
 
   stage.innerHTML = `
     <div id="cc-video-loading" style="color: #FFFFFF; font-weight: 700; text-align: center; padding: 40px;">
-      <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--teal-primary, #0D9488); margin-bottom: 12px;"></i>
+      <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #2563EB; margin-bottom: 12px;"></i>
       <div>Connecting to secure video session...</div>
       <p style="font-size: 0.8rem; color: #94A3B8; margin-top: 6px;">Initializing microphone and camera permissions</p>
     </div>

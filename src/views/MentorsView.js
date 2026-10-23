@@ -61,20 +61,20 @@ export function renderMentorsView(branchFilter = 'All') {
                     </td>
                     <td>
                       <a href="tel:${juniorMember.mobile}" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">
-                        <i class="fa-solid fa-phone" style="color: #3B82F6; margin-right: 4px;"></i> ${juniorMember.mobile}
+                        <i class="fa-solid fa-phone" style="color: #2563EB; margin-right: 4px;"></i> ${juniorMember.mobile}
                       </a>
                     </td>
-                    <td style="font-weight: 700; color: #10B981;">
+                    <td style="font-weight: 700; color: #16A34A;">
                       <i class="fa-solid fa-user-tie" style="margin-right: 6px;"></i> ${m.mentorName}
                     </td>
                     <td>
                       <a href="tel:${mentorMember.mobile}" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">
-                        <i class="fa-solid fa-phone" style="color: #10B981; margin-right: 4px;"></i> ${mentorMember.mobile}
+                        <i class="fa-solid fa-phone" style="color: #16A34A; margin-right: 4px;"></i> ${mentorMember.mobile}
                       </a>
                     </td>
                     ${authService.canManageMentors() ? `
                       <td>
-                        <button class="btn btn-outline remove-mentor-btn" data-id="${m.id}" style="padding: 4px 10px; font-size: 0.78rem; color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">
+                        <button class="btn btn-outline remove-mentor-btn" data-id="${m.id}" style="padding: 4px 10px; font-size: 0.78rem; color: #854D0E; border-color: #FEF08A; background: #FEFCE8;">
                           <i class="fa-solid fa-trash-can"></i> Remove
                         </button>
                       </td>
