@@ -22,15 +22,15 @@ function showReminderAlertPopup(reminders) {
   if (alertBox) {
     alertBox.innerHTML = `
       <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-        <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: #FEFCE8; color:#854D0E; font-size:14px; border: 1px solid #FDE047;">
-          <i class="fa-solid fa-bell"></i>
+        <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: #FEFCE8; color:#854D0E; font-size:14px; border: 1px solid #FACC15;">
+          <i class="fa-solid fa-bell" style="color: #854D0E;"></i>
         </div>
         <div>
           <div style="font-size: 0.68rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#64748B;">Priority Reminder</div>
           <div style="font-size: 0.92rem; font-weight:800; color:#0F172A;">${escapeHtml(reminder.title)}</div>
         </div>
       </div>
-      <div style="font-size: 0.8rem; color:#475569; line-height:1.45;">${escapeHtml(reminder.message)}</div>
+      <div style="font-size: 0.8rem; color:#64748B; line-height:1.45;">${escapeHtml(reminder.message)}</div>
       <div style="margin-top: 10px; font-size: 0.72rem; color:#854D0E; font-weight:700;">Due: ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
     `;
     alertBox.style.display = 'block';
@@ -48,21 +48,21 @@ function showReminderAlertPopup(reminders) {
   popup.style.padding = '14px 16px';
   popup.style.borderRadius = '16px';
   popup.style.background = '#FFFFFF';
-  popup.style.border = '1px solid #FDE047';
+  popup.style.border = '1px solid #FACC15';
   popup.style.boxShadow = '0 18px 42px rgba(15, 23, 42, 0.16)';
   popup.style.zIndex = '1000';
   popup.style.display = 'block';
   popup.innerHTML = `
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-      <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: #FEFCE8; color:#854D0E; font-size:14px; border: 1px solid #FDE047;">
-        <i class="fa-solid fa-bell"></i>
+      <div style="width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background: #FEFCE8; color:#854D0E; font-size:14px; border: 1px solid #FACC15;">
+        <i class="fa-solid fa-bell" style="color: #854D0E;"></i>
       </div>
       <div>
         <div style="font-size: 0.68rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#64748B;">Priority Reminder</div>
         <div style="font-size: 0.92rem; font-weight:800; color:#0F172A;">${escapeHtml(reminder.title)}</div>
       </div>
     </div>
-    <div style="font-size: 0.8rem; color:#475569; line-height:1.45;">${escapeHtml(reminder.message)}</div>
+    <div style="font-size: 0.8rem; color:#64748B; line-height:1.45;">${escapeHtml(reminder.message)}</div>
     <div style="margin-top: 10px; font-size: 0.72rem; color:#854D0E; font-weight:700;">Due: ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
   `;
   document.body.appendChild(popup);
@@ -165,12 +165,12 @@ export function renderDashboardView(branchFilter = 'All') {
       <header class="gd-header">
         <div>
           <div class="gd-brand-badge">
-            <i class="fa-solid fa-crown" style="color: #CA8A04;"></i>
+            <i class="fa-solid fa-crown" style="color: #FACC15;"></i>
             <span>PSS MIYAPUR GAVEL CLUB</span>
           </div>
           <h2 class="gd-title">Gavel Club Dashboard</h2>
           <p class="gd-subtitle">
-            ${greeting}, <strong>${escapeHtml(user?.name || 'Club Leader')}</strong> · Active: <span class="badge" style="background: #EFF6FF; color: #1E3A8A; font-weight: 700;">${escapeHtml(branchFilter)}</span>
+            ${greeting}, <strong>${escapeHtml(user?.name || 'Club Leader')}</strong> · Active: <span class="badge" style="background: #EFF6FF; color: #1E3A8A; font-weight: 700; border: 1px solid #2563EB;">${escapeHtml(branchFilter)}</span>
           </p>
         </div>
         
@@ -308,10 +308,10 @@ export function renderDashboardView(branchFilter = 'All') {
         <article class="gd-section-card" style="border-left: 4px solid #FACC15;">
           <div class="gd-section-header">
             <h3>
-              <i class="fa-solid fa-calendar-days" style="color: #CA8A04;"></i>
+              <i class="fa-solid fa-calendar-days" style="color: #FACC15;"></i>
               <span>Next Meeting Session</span>
             </h3>
-            <span class="badge ${nextMeeting?.status === 'Upcoming' ? 'badge-success' : 'badge-info'}" style="font-weight: 700; font-size: 0.72rem;">
+            <span style="font-weight: 700; font-size: 0.72rem; padding: 4px 10px; border-radius: 999px; ${nextMeeting?.status === 'Upcoming' ? 'background: #F0FDF4; color: #16A34A; border: 1px solid #16A34A;' : 'background: #EFF6FF; color: #2563EB; border: 1px solid #2563EB;'}">
               ${nextMeeting ? nextMeeting.status : 'None'}
             </span>
           </div>
@@ -330,7 +330,7 @@ export function renderDashboardView(branchFilter = 'All') {
             <a href="#connect" class="btn btn-primary btn-sm" style="background: #2563EB; border-color: #2563EB; display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
               <i class="fa-solid fa-video"></i> In-App Call
             </a>
-            <a href="#agenda" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+            <a href="#agenda" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #2563EB; color: #2563EB;">
               <i class="fa-solid fa-list-check"></i> Open Agenda
             </a>
           </div>
@@ -343,7 +343,7 @@ export function renderDashboardView(branchFilter = 'All') {
               <i class="fa-solid fa-chart-line" style="color: #16A34A;"></i>
               <span>Growth &amp; Attendance</span>
             </h3>
-            <span style="font-size: 0.78rem; font-weight: 800; color: #15803D;">${attendancePercent}% Attendance</span>
+            <span style="font-size: 0.78rem; font-weight: 800; color: #16A34A;">${attendancePercent}% Attendance</span>
           </div>
 
           <!-- Attendance bar -->
@@ -369,7 +369,7 @@ export function renderDashboardView(branchFilter = 'All') {
           </div>
 
           <div style="margin-top: 14px;">
-            <a href="#speeches" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+            <a href="#speeches" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #16A34A; color: #16A34A; background: #F0FDF4;">
               <i class="fa-solid fa-arrow-right"></i> View Speech Tracker
             </a>
           </div>
@@ -385,11 +385,11 @@ export function renderDashboardView(branchFilter = 'All') {
           <div>
             <div style="font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: #854D0E; font-weight: 800;">Leadership Action Items</div>
             <h3 style="margin: 3px 0 0;">
-              <i class="fa-solid fa-bell" style="color: #CA8A04;"></i>
+              <i class="fa-solid fa-bell" style="color: #FACC15;"></i>
               <span>Reminders &amp; Priorities</span>
             </h3>
           </div>
-          <span class="badge" style="background: #FEFCE8; color: #854D0E; border: 1px solid #FDE047; font-weight: 800; font-size: 0.74rem;">
+          <span class="badge" style="background: #FEFCE8; color: #854D0E; border: 1px solid #FACC15; font-weight: 800; font-size: 0.74rem;">
             ${reminders.filter(item => !item.done).length} active
           </span>
         </div>
@@ -430,25 +430,25 @@ export function renderDashboardView(branchFilter = 'All') {
           <div style="display: grid; gap: 10px; max-height: 420px; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
               <span style="font-size: 0.72rem; font-weight: 800; color: #64748B; letter-spacing: 0.06em; text-transform: uppercase;">Active Alerts</span>
-              <button id="enable-reminder-alerts" type="button" class="btn btn-outline btn-sm" style="font-size: 0.74rem;">Enable Desktop Alerts</button>
+              <button id="enable-reminder-alerts" type="button" class="btn btn-outline btn-sm" style="font-size: 0.74rem; border-color: #2563EB; color: #2563EB;">Enable Desktop Alerts</button>
             </div>
             ${reminders.length ? reminders.map(reminder => `
-              <article style="padding: 12px 14px; border: 1px solid ${reminder.done ? 'rgba(22, 163, 74, 0.25)' : '#E2E8F0'}; border-radius: 14px; background: ${reminder.done ? '#F0FDF4' : '#FFFFFF'};">
+              <article style="padding: 12px 14px; border: 1px solid ${reminder.done ? '#16A34A' : '#E2E8F0'}; border-radius: 14px; background: ${reminder.done ? '#F0FDF4' : '#FFFFFF'};">
                 <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start;">
                   <div>
                     <span style="font-size: 0.66rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em;">${escapeHtml(reminder.type)}</span>
                     <h4 style="margin: 2px 0 2px; font-size: 0.95rem; color: #0F172A;">${escapeHtml(reminder.title)}</h4>
                   </div>
-                  <span style="padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 800; color: ${reminder.done ? '#15803D' : '#854D0E'}; background: ${reminder.done ? '#DCFCE7' : '#FEFCE8'};">
+                  <span style="padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 800; color: ${reminder.done ? '#16A34A' : '#854D0E'}; background: ${reminder.done ? '#F0FDF4' : '#FEFCE8'}; border: 1px solid ${reminder.done ? '#16A34A' : '#FACC15'};">
                     ${reminder.done ? 'Done' : 'Pending'}
                   </span>
                 </div>
-                <p style="margin: 4px 0 8px; color: #475569; font-size: 0.78rem; line-height: 1.45;">${escapeHtml(reminder.message)}</p>
+                <p style="margin: 4px 0 8px; color: #64748B; font-size: 0.78rem; line-height: 1.45;">${escapeHtml(reminder.message)}</p>
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
                   <span style="font-size: 0.7rem; color: #64748B;"><i class="fa-solid fa-calendar-day"></i> ${new Date(reminder.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                   <div style="display: flex; gap: 6px;">
-                    <button type="button" class="btn btn-outline btn-sm reminder-toggle-btn" data-reminder-id="${escapeHtml(reminder.id)}" style="font-size: 0.72rem; padding: 3px 8px;">${reminder.done ? 'Undo' : 'Mark Done'}</button>
-                    <button type="button" class="btn btn-outline btn-sm reminder-delete-btn" data-reminder-id="${escapeHtml(reminder.id)}" style="font-size: 0.72rem; padding: 3px 8px; color: #EF4444;">Delete</button>
+                    <button type="button" class="btn btn-outline btn-sm reminder-toggle-btn" data-reminder-id="${escapeHtml(reminder.id)}" style="font-size: 0.72rem; padding: 3px 8px; border-color: #16A34A; color: #16A34A;">${reminder.done ? 'Undo' : 'Mark Done'}</button>
+                    <button type="button" class="btn btn-outline btn-sm reminder-delete-btn" data-reminder-id="${escapeHtml(reminder.id)}" style="font-size: 0.72rem; padding: 3px 8px; color: #64748B; border-color: #E2E8F0;">Delete</button>
                   </div>
                 </div>
               </article>
@@ -459,19 +459,19 @@ export function renderDashboardView(branchFilter = 'All') {
       </section>
 
       <!-- ================================================================= -->
-      <!-- 6. QUICK ACTIONS BAR -->
+      <!-- 6. QUICK ACTIONS BAR (STRICTLY BLUE, GREEN, YELLOW) -->
       <!-- ================================================================= -->
       <div style="margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <a href="#connect" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #2563EB; color: #2563EB;">
+        <a href="#connect" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #2563EB; color: #2563EB; background: #EFF6FF;">
           <i class="fa-solid fa-comments"></i> Club Connect
         </a>
-        <a href="#meetings" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #CA8A04; color: #854D0E;">
+        <a href="#meetings" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #FACC15; color: #854D0E; background: #FEFCE8;">
           <i class="fa-solid fa-calendar-days"></i> All Meetings
         </a>
-        <a href="#attendance" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #16A34A; color: #16A34A;">
+        <a href="#attendance" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #16A34A; color: #16A34A; background: #F0FDF4;">
           <i class="fa-solid fa-clipboard-user"></i> Record Attendance
         </a>
-        <a href="#speeches" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #2563EB; color: #2563EB;">
+        <a href="#speeches" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-color: #2563EB; color: #2563EB; background: #EFF6FF;">
           <i class="fa-solid fa-microphone-lines"></i> Speech Tracker
         </a>
       </div>

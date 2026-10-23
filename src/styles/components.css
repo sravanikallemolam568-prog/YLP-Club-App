@@ -2528,7 +2528,7 @@
   color: #64748B;
 }
 
-/* Color Identity Accents */
+/* Color Identity Accents: Strictly Blue, Green, Yellow */
 .gd-accent-blue {
   border-top: 3px solid #2563EB;
 }
@@ -2548,7 +2548,7 @@
   color: #16A34A;
 }
 .gd-accent-green .gd-card-value {
-  color: #15803D;
+  color: #16A34A;
 }
 
 .gd-accent-yellow {
@@ -2556,10 +2556,10 @@
 }
 .gd-accent-yellow .gd-card-icon {
   background: #FEFCE8;
-  color: #CA8A04;
+  color: #854D0E;
 }
 .gd-accent-yellow .gd-card-value {
-  color: #A16207;
+  color: #854D0E;
 }
 
 /* Branch Section */
@@ -2604,7 +2604,7 @@
 
 .gd-branch-pill:hover {
   background: #EFF6FF;
-  border-color: #BFDBFE;
+  border-color: #2563EB;
   color: #1E3A8A;
 }
 
@@ -2617,7 +2617,7 @@
 
 .gd-add-branch-btn {
   background: #FEFCE8;
-  border: 1px solid #FDE047;
+  border: 1px solid #FACC15;
   color: #854D0E;
   font-weight: 800;
   font-size: 0.8rem;
@@ -2631,8 +2631,9 @@
 }
 
 .gd-add-branch-btn:hover {
-  background: #FEF08A;
-  border-color: #EAB308;
+  background: #FACC15;
+  border-color: #FACC15;
+  color: #0F172A;
 }
 
 /* Two-column layout for Meetings & Growth */
